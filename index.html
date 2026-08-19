@@ -94,5 +94,78 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
     </div>
   </div>
 </header>
+<script>
+(function(){
+  var canvas = document.getElementById('neuralCanvas');
+  if(!canvas || !canvas.getContext || window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    document.querySelector('.hero').style.background = 'radial-gradient(ellipse at 70% 40%, #1b2333 0%, #0a0d13 60%)';
+    return;
+  }
+  var ctx = canvas.getContext('2d');
+  var W, H, nodes = [], mouse = {x:-9999, y:-9999};
+  var COUNT = 55, DIST = 130, MOUSE_DIST = 170;
+
+  function resize(){
+    var rect = canvas.parentElement.getBoundingClientRect();
+    W = canvas.width = rect.width;
+    H = canvas.height = rect.height;
+  }
+  function seed(){
+    nodes = [];
+    for(var i = 0; i < COUNT; i++){
+      nodes.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        r: 1.5 + Math.random() * 1.5,
+        hue: Math.random()
+      });
+    }
+  }
+  function step(){
+    ctx.clearRect(0, 0, W, H);
+    for(var i = 0; i < nodes.length; i++){
+      var n = nodes[i];
+      n.x += n.vx; n.y += n.vy;
+      if(n.x < 0 || n.x > W) n.vx *= -1;
+      if(n.y < 0 || n.y > H) n.vy *= -1;
+    }
+    for(var a = 0; a < nodes.length; a++){
+      for(var b = a + 1; b < nodes.length; b++){
+        var p = nodes[a], q = nodes[b];
+        var dx = p.x - q.x, dy = p.y - q.y;
+        var d = Math.sqrt(dx*dx + dy*dy);
+        if(d < DIST){
+          var alpha = (1 - d / DIST) * 0.5;
+          ctx.strokeStyle = 'rgba(124,156,255,' + alpha + ')';
+          ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
+        }
+      }
+      var mdx = p.x - mouse.x, mdy = p.y - mouse.y;
+      var md = Math.sqrt(mdx*mdx + mdy*mdy);
+      if(md < MOUSE_DIST){
+        ctx.strokeStyle = 'rgba(245,166,35,' + (1 - md / MOUSE_DIST) + ')';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(mouse.x, mouse.y); ctx.stroke();
+      }
+    }
+    for(var c = 0; c < nodes.length; c++){
+      var s = nodes[c];
+      ctx.fillStyle = s.hue < 0.5 ? 'rgba(79,209,197,0.8)' : 'rgba(245,166,35,0.8)';
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx.fill();
+    }
+    requestAnimationFrame(step);
+  }
+  window.addEventListener('resize', function(){ resize(); seed(); });
+  document.addEventListener('mousemove', function(e){
+    var rect = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+  });
+  resize(); seed(); step();
+})();
+</script>
 </body>
 </html>
