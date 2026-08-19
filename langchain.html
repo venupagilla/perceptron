@@ -1910,13 +1910,13 @@ print(code_chunks)
       <pre><code class="language-python">from langchain_text_splitters import RecursiveCharacterTextSplitter, Language
 
 html_content = """
-<html>
-    <head><title>My Page</title></head>
-    <body>
-        <h1>Welcome</h1>
-        <p>This is a paragraph of text.</p>
-    </body>
-</html>
+&lt;html&gt;
+    &lt;head&gt;&lt;title&gt;My Page&lt;/title&gt;&lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;Welcome&lt;/h1&gt;
+        &lt;p&gt;This is a paragraph of text.&lt;/p&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
 """
 
 html_splitter = RecursiveCharacterTextSplitter.from_language(
