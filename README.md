@@ -8,6 +8,11 @@ single self-contained landing page linking to two reference pages.
 - `index.html` — landing page (hero, feature strip, links to the two note pages)
 - `introduction-to-llm.html` — notes on large language models
 - `agentic-ai-foundations.html` — notes on agentic AI, frameworks, and guardrails
+- `fastapi.html` — notes on building web APIs with FastAPI
+- `aws.html` — notes on AWS cloud foundations
+- `devops.html` — notes on DevOps practices and tooling
+- `java.html` — notes on the Java language
+- `langchain.html` — notes on building LLM applications with LangChain
 
 ## Usage
 
