@@ -1,0 +1,3125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java — Language Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/nord.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/java.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js"></script>
+<style>
+:root{
+  --bg:#0a0d13;
+  --panel:#11151d;
+  --panel-2:#161c27;
+  --border:#232a38;
+  --text:#e8eaf0;
+  --muted:#8b93a7;
+  --muted-2:#5c6478;
+  --amber:#f5a623;   /* Basics */
+  --teal:#4fd1c5;    /* Methods & Constructors */
+  --coral:#ff6b6b;   /* Runtime & Memory */
+  --periwinkle:#7c9cff; /* OOP & Interfaces */
+  --green:#7ee787;   /* Testing & Quality */
+  --mono:'JetBrains Mono', monospace;
+  --display:'Space Grotesk', sans-serif;
+  --body:'Inter', sans-serif;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--body);
+  line-height:1.65;
+  font-size:15.5px;
+}
+::selection{background:rgba(245,166,35,0.3);}
+
+/* subtle grid texture */
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size:36px 36px;
+  pointer-events:none;
+  z-index:0;
+}
+
+a{color:var(--periwinkle); text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* ===== Layout ===== */
+.shell{display:flex; min-height:100vh; position:relative; z-index:1;}
+
+.sidebar{
+  width:280px; flex-shrink:0;
+  background:var(--panel);
+  border-right:1px solid var(--border);
+  position:fixed; top:0; left:0; bottom:0;
+  overflow-y:auto;
+  padding:24px 0 40px;
+  z-index:20;
+  transition:transform .25s ease;
+}
+.sidebar::-webkit-scrollbar{width:6px;}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border); border-radius:4px;}
+
+.brand{
+  padding:0 22px 20px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:18px;
+}
+.brand .tag{
+  font-family:var(--mono); font-size:11px; letter-spacing:.12em;
+  color:var(--amber); text-transform:uppercase; display:block; margin-bottom:8px;
+}
+.brand h1{
+  font-family:var(--display); font-size:18px; font-weight:700; line-height:1.3;
+  color:var(--text);
+}
+.brand .sub{font-size:12.5px; color:var(--muted); margin-top:6px;}
+
+.navgroup{margin-bottom:4px;}
+.navgroup > .glabel{
+  display:flex; align-items:center; gap:8px;
+  padding:10px 22px 8px;
+  font-family:var(--mono); font-size:11px; letter-spacing:.08em;
+  color:var(--muted-2); text-transform:uppercase;
+}
+.navgroup .glabel .idx{color:var(--teal); font-weight:600;}
+.navlink{
+  display:block;
+  padding:6px 22px 6px 34px;
+  font-size:13.5px; color:var(--muted);
+  border-left:2px solid transparent;
+}
+.navlink:hover{color:var(--text); text-decoration:none; background:rgba(255,255,255,0.02);}
+.navlink.active{color:var(--text); border-left-color:var(--amber); background:rgba(245,166,35,0.06);}
+
+.menu-toggle{
+  display:none; position:fixed; top:16px; left:16px; z-index:30;
+  background:var(--panel-2); border:1px solid var(--border); color:var(--text);
+  width:40px; height:40px; border-radius:8px; font-size:18px; cursor:pointer;
+}
+
+.main{margin-left:280px; flex:1; min-width:0;}
+
+/* ===== Hero ===== */
+.hero{
+  padding:90px 64px 70px;
+  border-bottom:1px solid var(--border);
+  position:relative;
+  overflow:hidden;
+}
+.hero-inner{max-width:900px; position:relative; z-index:2;}
+.hero .eyebrow{
+  font-family:var(--mono); color:var(--amber); font-size:12px;
+  letter-spacing:.14em; text-transform:uppercase; display:block; margin-bottom:18px;
+}
+.hero h1{
+  font-family:var(--display); font-size:52px; line-height:1.08; font-weight:700;
+  letter-spacing:-.01em; margin-bottom:20px;
+}
+.hero h1 span{color:var(--amber);}
+.hero p.lead{
+  font-size:17px; color:var(--muted); max-width:560px; margin-bottom:36px;
+}
+.pillrow{display:flex; flex-wrap:wrap; gap:10px;}
+.pill{
+  font-family:var(--mono); font-size:11.5px; padding:6px 12px;
+  border:1px solid var(--border); border-radius:100px; color:var(--muted);
+  background:var(--panel);
+}
+
+/* Signature: compile-to-run loop */
+.loop-wrap{
+  position:absolute; right:40px; top:50%; transform:translateY(-50%);
+  width:340px; height:340px; z-index:1;
+}
+@media(max-width:1100px){.loop-wrap{display:none;}}
+.loop-ring{width:100%; height:100%; position:relative;}
+.loop-node{
+  position:absolute; width:96px; height:96px; border-radius:50%;
+  border:1px solid var(--border); background:var(--panel-2);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  font-family:var(--mono); font-size:11px; letter-spacing:.04em; text-align:center;
+  animation:pulse 8s ease-in-out infinite;
+}
+.loop-node .n{font-size:9px; color:var(--muted-2); margin-bottom:4px;}
+.loop-node.n1{top:0; left:50%; transform:translateX(-50%); color:var(--amber); border-color:rgba(245,166,35,.4); animation-delay:0s;}
+.loop-node.n2{top:50%; right:0; transform:translateY(-50%); color:var(--teal); border-color:rgba(79,209,197,.4); animation-delay:2s;}
+.loop-node.n3{bottom:0; left:50%; transform:translateX(-50%); color:var(--green); border-color:rgba(126,231,135,.4); animation-delay:4s;}
+.loop-node.n4{top:50%; left:0; transform:translateY(-50%); color:var(--periwinkle); border-color:rgba(124,156,255,.4); animation-delay:6s;}
+@keyframes pulse{
+  0%,88%,100%{box-shadow:none;}
+  4%{box-shadow:0 0 0 6px rgba(255,255,255,0.04);}
+}
+.loop-ring svg{position:absolute; inset:0; width:100%; height:100%;}
+.loop-ring circle.track{fill:none; stroke:var(--border); stroke-width:1;}
+.loop-ring circle.runner{fill:none; stroke:var(--amber); stroke-width:2; stroke-linecap:round;
+  stroke-dasharray:40 900; animation:run 8s linear infinite;}
+@keyframes run{ to { stroke-dashoffset:-940; } }
+
+/* ===== Sections ===== */
+section.block{padding:56px 64px; border-bottom:1px solid var(--border);}
+section.block:target{}
+.block-head{max-width:820px; margin-bottom:36px;}
+.block-head .eyebrow{
+  font-family:var(--mono); font-size:11.5px; letter-spacing:.12em; text-transform:uppercase;
+  display:block; margin-bottom:10px;
+}
+.block-head h2{font-family:var(--display); font-size:30px; font-weight:700; margin-bottom:10px;}
+.block-head p{color:var(--muted); max-width:680px;}
+
+h3.sub-h{
+  font-family:var(--display); font-size:20px; font-weight:600; margin:40px 0 14px;
+  padding-top:4px;
+}
+h3.sub-h .idx{color:var(--muted-2); font-family:var(--mono); font-size:14px; margin-right:8px;}
+h4.mini-h{font-family:var(--display); font-size:15.5px; font-weight:600; margin:24px 0 10px; color:var(--text);}
+
+.card{
+  background:var(--panel); border:1px solid var(--border); border-radius:12px;
+  padding:22px 24px; margin:18px 0;
+}
+.card.accent-amber{border-left:3px solid var(--amber);}
+.card.accent-teal{border-left:3px solid var(--teal);}
+.card.accent-coral{border-left:3px solid var(--coral);}
+.card.accent-peri{border-left:3px solid var(--periwinkle);}
+.card.accent-green{border-left:3px solid var(--green);}
+.card h4{margin-top:0;}
+.card p:last-child{margin-bottom:0;}
+
+.quote{
+  font-family:var(--body); font-style:normal; color:var(--text);
+  border-left:2px solid var(--amber); padding:4px 0 4px 18px; margin:18px 0;
+  color:var(--muted); font-size:14.5px;
+}
+.quote strong{color:var(--text);}
+
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+.grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+@media(max-width:900px){.grid2,.grid3{grid-template-columns:1fr;}}
+
+table{width:100%; border-collapse:collapse; margin:18px 0; font-size:13.5px;}
+thead th{
+  font-family:var(--mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase;
+  color:var(--muted-2); text-align:left; padding:10px 14px; border-bottom:1px solid var(--border);
+}
+tbody td{padding:11px 14px; border-bottom:1px solid var(--border); color:var(--muted); vertical-align:top;}
+tbody td:first-child{color:var(--text); font-weight:600;}
+tbody tr:hover{background:rgba(255,255,255,0.015);}
+.table-wrap{overflow-x:auto; border:1px solid var(--border); border-radius:10px;}
+.table-wrap table{margin:0;}
+
+pre{
+  background:#0d1117 !important; border:1px solid var(--border); border-radius:10px;
+  padding:18px 20px; overflow-x:auto; margin:16px 0; font-size:13px;
+}
+code{font-family:var(--mono);}
+:not(pre) > code{
+  background:var(--panel-2); padding:2px 6px; border-radius:4px; font-size:.9em; color:var(--teal);
+}
+.code-label{
+  font-family:var(--mono); font-size:11px; color:var(--muted-2); letter-spacing:.05em;
+  text-transform:uppercase; margin-bottom:-8px; display:block; margin-top:16px;
+}
+
+ul.list, ol.list{margin:12px 0 12px 20px; color:var(--muted);}
+ul.list li, ol.list li{margin-bottom:8px;}
+ul.list li strong, ol.list li strong{color:var(--text);}
+ul.checklist{list-style:none; margin:12px 0;}
+ul.checklist li{
+  padding-left:26px; position:relative; margin-bottom:9px; color:var(--muted); font-size:14px;
+}
+ul.checklist li::before{
+  content:"✓"; position:absolute; left:0; color:var(--green); font-family:var(--mono); font-weight:600;
+}
+
+.mermaid{background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:20px; margin:18px 0; display:flex; justify-content:center;}
+
+.diagram-box{
+  font-family:var(--mono); font-size:12.5px; white-space:pre; overflow-x:auto;
+  background:#0d1117; border:1px solid var(--border); border-radius:10px; padding:18px 20px; margin:16px 0;
+  color:var(--muted);
+}
+.diagram-box .hl{color:var(--amber);}
+
+.badge-row{display:flex; gap:8px; flex-wrap:wrap; margin:14px 0;}
+.badge{
+  font-family:var(--mono); font-size:11px; padding:4px 10px; border-radius:100px;
+  border:1px solid var(--border); color:var(--muted);
+}
+.badge.risk-low{color:var(--green); border-color:rgba(126,231,135,.3);}
+.badge.risk-med{color:var(--amber); border-color:rgba(245,166,35,.3);}
+.badge.risk-high{color:var(--coral); border-color:rgba(255,107,107,.3);}
+
+.layer-stack{margin:20px 0;}
+.layer{
+  border:1px solid var(--border); border-radius:10px; padding:18px 20px; margin-bottom:10px;
+  background:var(--panel); position:relative; padding-left:56px;
+}
+.layer .num{
+  position:absolute; left:18px; top:18px; font-family:var(--display); font-weight:700;
+  font-size:20px; color:var(--muted-2); width:28px;
+}
+.layer h4{margin:0 0 6px;}
+.layer p{color:var(--muted); font-size:13.5px; margin-bottom:8px;}
+
+.timeline-attack{
+  border-left:2px solid var(--coral); padding-left:20px; margin:20px 0 20px 8px;
+}
+.timeline-attack .att{margin-bottom:22px;}
+.timeline-attack .att .date{font-family:var(--mono); font-size:11px; color:var(--coral); text-transform:uppercase; letter-spacing:.05em;}
+.timeline-attack .att h4{margin:4px 0 6px;}
+.timeline-attack ol.list{margin-top:6px;}
+
+.footer{
+  padding:50px 64px 70px; color:var(--muted-2); font-size:13px;
+}
+.footer a{color:var(--muted);}
+.back-top{
+  display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:12px;
+  color:var(--muted); border:1px solid var(--border); padding:8px 14px; border-radius:8px; margin-bottom:24px;
+}
+
+.stub-card{
+  border:1px dashed var(--border); border-radius:12px; padding:20px; color:var(--muted-2);
+  font-size:13.5px;
+}
+.stub-card strong{color:var(--muted);}
+
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .menu-toggle{display:flex; align-items:center; justify-content:center;}
+  .hero, section.block, .footer{padding-left:26px; padding-right:26px;}
+  .hero{padding-top:80px;}
+  .hero h1{font-size:36px;}
+}
+</style>
+</head>
+<body>
+
+<button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">☰</button>
+
+<div class="shell">
+
+  <nav class="sidebar" id="sidebar">
+    <div class="brand">
+      <span class="tag">// Language Notes</span>
+      <h1>Java</h1>
+      <div class="sub">Java — from basics to advanced</div>
+    </div>
+
+    <div class="navgroup">
+      <a class="navlink" href="#top" style="padding-left:22px; font-weight:600; color:var(--text);">Overview</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">01</span> Language Basics</div>
+      <a class="navlink" href="#getting-started">Getting started</a>
+      <a class="navlink" href="#keywords-data-types">Keywords, identifiers & data types</a>
+      <a class="navlink" href="#type-conversion">Type conversion</a>
+      <a class="navlink" href="#control-structures">Control structures</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">02</span> Methods & Constructors</div>
+      <a class="navlink" href="#methods">Methods</a>
+      <a class="navlink" href="#constructors">Constructors</a>
+      <a class="navlink" href="#this-keyword">The <code>this</code> keyword</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">03</span> OOP & Interfaces</div>
+      <a class="navlink" href="#access-modifiers">Access modifiers</a>
+      <a class="navlink" href="#inheritance">Inheritance</a>
+      <a class="navlink" href="#aggregation">Aggregation</a>
+      <a class="navlink" href="#interfaces">Interfaces</a>
+      <a class="navlink" href="#final-keyword">The <code>final</code> keyword</a>
+      <a class="navlink" href="#wrapper-classes">Wrapper classes</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">04</span> Runtime & Memory</div>
+      <a class="navlink" href="#memory-management">Memory management & GC</a>
+      <a class="navlink" href="#class-diagrams">Class diagrams</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">05</span> Testing & Quality</div>
+      <a class="navlink" href="#testing-debugging">Testing, debugging & analysis</a>
+      <a class="navlink" href="#unit-testing">Unit testing & coverage</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">06</span> Algorithms & Text</div>
+      <a class="navlink" href="#recursion">Recursion</a>
+      <a class="navlink" href="#regex">Regular expressions</a>
+    </div>
+  </nav>
+
+  <main class="main" id="top">
+
+    <!-- HERO -->
+    <header class="hero">
+      <div class="loop-wrap">
+        <div class="loop-ring">
+          <svg viewBox="0 0 340 340">
+            <circle class="track" cx="170" cy="170" r="150"/>
+            <circle class="runner" cx="170" cy="170" r="150" transform="rotate(-90 170 170)"/>
+          </svg>
+          <div class="loop-node n1"><span class="n">01</span>Compile</div>
+          <div class="loop-node n2"><span class="n">02</span>Bytecode</div>
+          <div class="loop-node n3"><span class="n">03</span>JVM</div>
+          <div class="loop-node n4"><span class="n">04</span>Run</div>
+        </div>
+      </div>
+      <div class="hero-inner">
+        <span class="eyebrow">// Java — from basics to advanced</span>
+        <h1>Write once,<br><span>run anywhere.</span></h1>
+        <p class="lead">A working reference on the Java language — from getting started and data types, through object-oriented programming, memory management and the JVM, to testing, recursion, and regular expressions. Built for interviews and everyday use.</p>
+        <div class="pillrow">
+          <span class="pill">OOP · Inheritance</span>
+          <span class="pill">Type Conversion</span>
+          <span class="pill">Memory & Garbage Collection</span>
+          <span class="pill">Wrapper Classes</span>
+          <span class="pill">Interfaces</span>
+          <span class="pill">Unit Testing & Coverage</span>
+          <span class="pill">Recursion</span>
+          <span class="pill">Regular Expressions</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============ SECTION 01 : BASICS ============ -->
+    <section class="block" id="getting-started" style="background:linear-gradient(180deg, rgba(245,166,35,0.03), transparent 200px);">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">01 · Getting Started with Java</span>
+        <h2>Getting started with Java</h2>
+        <p>The language, its editions, tooling, and your first program.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">1</span>What is Java?</h3>
+      <ul class="list">
+        <li>Java is a <strong>high-level, object-oriented, platform-independent</strong> programming language.</li>
+        <li>Developed by <strong>Sun Microsystems (now owned by Oracle)</strong> in 1995.</li>
+        <li>Widely used for web applications, Android apps, enterprise software, games, and more.</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">2</span>Key features of Java</h3>
+      <ul class="list">
+        <li><strong>Platform Independent</strong> — Java code is compiled into bytecode (<code>.class</code>) that runs on any OS with the Java Virtual Machine (JVM).</li>
+        <li><strong>Simple and Secure</strong> — easy syntax (similar to C++), automatic memory management, no pointers.</li>
+        <li><strong>Object-Oriented</strong> — supports encapsulation, inheritance, polymorphism, abstraction.</li>
+        <li><strong>Robust</strong> — strong type checking, exception handling, garbage collection.</li>
+        <li><strong>Multithreaded</strong> — built-in support for concurrent execution.</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">3</span>Java editions</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Edition</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>Java SE (Standard Edition)</td><td>Core Java for desktop applications.</td></tr>
+            <tr><td>Java EE / ME (Enterprise / Micro Edition)</td><td>For web and mobile/embedded systems.</td></tr>
+            <tr><td>Jakarta EE</td><td>Successor to Java EE (community-driven).</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">4</span>Java Development Kit (JDK)</h3>
+      <ul class="list">
+        <li>Required tools: <code>javac</code> (compiler), <code>java</code> (runner), <code>javadoc</code>, etc.</li>
+        <li>Download from: Oracle JDK or OpenJDK (free and open-source).</li>
+        <li>Latest versions (as of 2025): Java 21+ (LTS), Java 23/24/25 (non-LTS).</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">5</span>Setting up the Java environment</h3>
+      <ol class="list">
+        <li>Download and install the JDK from <a href="https://www.oracle.com/java/">oracle.com</a> or <a href="https://openjdk.java.net/">openjdk.java.net</a>.</li>
+        <li>Set environment variables:
+          <ul class="list">
+            <li><code>JAVA_HOME</code> → path to the JDK folder.</li>
+            <li>Add <code>%JAVA_HOME%\bin</code> to <code>PATH</code>.</li>
+          </ul>
+        </li>
+        <li>Verify installation:</li>
+      </ol>
+      <span class="code-label">bash</span>
+      <pre><code class="language-bash">java -version
+javac -version</code></pre>
+
+      <h3 class="sub-h"><span class="idx">6</span>First Java program (Hello World)</h3>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}</code></pre>
+      <ul class="list">
+        <li><code>public class HelloWorld</code> — class name must match the filename (<code>HelloWorld.java</code>).</li>
+        <li><code>public static void main(String[] args)</code> — entry point of the program.</li>
+        <li><code>System.out.println()</code> — prints output to the console.</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">7</span>Compilation and execution</h3>
+      <ol class="list">
+        <li>Save the file as <code>HelloWorld.java</code>.</li>
+        <li>Compile → generates <code>HelloWorld.class</code> (bytecode):</li>
+      </ol>
+      <span class="code-label">bash</span>
+      <pre><code class="language-bash">javac HelloWorld.java</code></pre>
+      <ol class="list" start="3">
+        <li>Run:</li>
+      </ol>
+      <span class="code-label">bash</span>
+      <pre><code class="language-bash">java HelloWorld</code></pre>
+
+      <h3 class="sub-h"><span class="idx">8</span>Popular IDEs for Java</h3>
+      <ul class="list">
+        <li>IntelliJ IDEA (most popular)</li>
+        <li>Eclipse</li>
+        <li>NetBeans</li>
+        <li>Visual Studio Code (with Java extensions)</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">9</span>Basic tools and commands</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Tool</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td>javac</td><td>Compiler</td></tr>
+            <tr><td>java</td><td>Runs bytecode</td></tr>
+            <tr><td>jar</td><td>Packages classes into JAR files</td></tr>
+            <tr><td>jdb</td><td>Java debugger</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block" id="keywords-data-types">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">01 · Language Basics</span>
+        <h2>Keywords, variables, identifiers, and data types</h2>
+        <p>The building blocks of every Java program.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">1</span>Keywords</h3>
+      <ul class="list">
+        <li>Keywords (also called reserved words) are predefined words with special meaning in Java.</li>
+        <li>They cannot be used as identifiers (variable names, class names, etc.).</li>
+        <li>All keywords are in lowercase.</li>
+        <li>Total: 50 keywords (as of Java 23+; 2 unused: <code>const</code>, <code>goto</code>).</li>
+      </ul>
+      <p style="color:var(--muted);"><strong>Common keywords:</strong></p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Category</th><th>Examples</th></tr></thead>
+          <tbody>
+            <tr><td>Access Modifiers</td><td>public, private, protected</td></tr>
+            <tr><td>Class/Interface</td><td>class, interface, enum, record</td></tr>
+            <tr><td>Control Flow</td><td>if, else, switch, case, default, for, while, do, break, continue, return</td></tr>
+            <tr><td>Exception Handling</td><td>try, catch, finally, throw, throws</td></tr>
+            <tr><td>Data Types</td><td>int, float, double, boolean, char</td></tr>
+            <tr><td>Modifiers</td><td>static, final, abstract, synchronized, volatile</td></tr>
+            <tr><td>Others</td><td>new, this, super, instanceof, void, native, strictfp</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="quote"><strong>Note:</strong> <code>true</code>, <code>false</code>, <code>null</code> are literals, not keywords.</div>
+
+      <h3 class="sub-h"><span class="idx">2</span>Identifiers</h3>
+      <ul class="list">
+        <li>Identifiers are names given to variables, methods, classes, interfaces, etc.</li>
+      </ul>
+      <p style="color:var(--muted);"><strong>Rules for naming identifiers:</strong></p>
+      <ol class="list">
+        <li>Can consist of letters (a–z, A–Z), digits (0–9), underscore <code>_</code>, and dollar sign <code>$</code>.</li>
+        <li>Cannot start with a digit.</li>
+        <li>Cannot be a keyword or reserved word.</li>
+        <li>Case-sensitive (e.g., <code>age</code> and <code>Age</code> are different).</li>
+        <li>No length limit (but practically reasonable).</li>
+      </ol>
+      <p style="color:var(--muted);"><strong>Naming conventions (best practices):</strong></p>
+      <ul class="list">
+        <li>Variables/Methods: camelCase → <code>myVariable</code>, <code>calculateTotal()</code></li>
+        <li>Classes/Interfaces: PascalCase → <code>MyClass</code>, <code>Runnable</code></li>
+        <li>Constants: UPPER_SNAKE_CASE → <code>MAX_VALUE</code>, <code>PI</code></li>
+        <li>Packages: all lowercase → <code>com.example.myapp</code></li>
+      </ul>
+      <p style="color:var(--muted);"><strong>Valid examples:</strong></p>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">int age;
+double _salary;
+String $userName;
+int student2;</code></pre>
+      <p style="color:var(--muted);"><strong>Invalid examples:</strong></p>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">int 2age;        // starts with digit
+int class;       // keyword
+int my-var;      // hyphen not allowed</code></pre>
+
+      <h3 class="sub-h"><span class="idx">3</span>Variables</h3>
+      <ul class="list">
+        <li>A variable is a named storage location in memory that holds a value.</li>
+        <li>Must be declared before use.</li>
+      </ul>
+      <p style="color:var(--muted);"><strong>Syntax:</strong></p>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">dataType variableName;               // Declaration
+dataType variableName = value;       // Declaration + Initialization</code></pre>
+      <p style="color:var(--muted);"><strong>Types of variables:</strong></p>
+      <ol class="list">
+        <li><strong>Local Variables</strong> — declared inside methods/blocks; must be initialized before use; no default value.</li>
+        <li><strong>Instance Variables</strong> — declared inside the class but outside methods; stored in the object; default values provided.</li>
+        <li><strong>Static (Class) Variables</strong> — declared with the <code>static</code> keyword; one copy per class.</li>
+      </ol>
+      <span class="code-label">java — example</span>
+      <pre><code class="language-java">public class Example {
+    int instanceVar;              // Instance variable (default: 0)
+    static int staticVar = 100;   // Static variable
+
+    void method() {
+        int localVar = 50;         // Local variable (must initialize)
+    }
+}</code></pre>
+
+      <h3 class="sub-h"><span class="idx">4</span>Data types</h3>
+      <p style="color:var(--muted);">Java is statically typed → the variable type must be declared.</p>
+      <p style="color:var(--muted);"><strong>Two categories:</strong></p>
+      <h4 class="mini-h">A. Primitive data types (8 types)</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Type</th><th>Size</th><th>Default Value</th><th>Range/Example</th></tr></thead>
+          <tbody>
+            <tr><td>byte</td><td>1 byte</td><td>0</td><td>-128 to 127</td></tr>
+            <tr><td>short</td><td>2 bytes</td><td>0</td><td>-32,768 to 32,767</td></tr>
+            <tr><td>int</td><td>4 bytes</td><td>0</td><td>-2^31 to 2^31-1 (~ -2B to 2B)</td></tr>
+            <tr><td>long</td><td>8 bytes</td><td>0L</td><td>-2^63 to 2^63-1 (append L)</td></tr>
+            <tr><td>float</td><td>4 bytes</td><td>0.0f</td><td>~ ±3.4E38 (append f)</td></tr>
+            <tr><td>double</td><td>8 bytes</td><td>0.0d</td><td>~ ±1.7E308 (default for decimals)</td></tr>
+            <tr><td>char</td><td>2 bytes</td><td>''</td><td>Unicode character ('A', 'σ', etc.)</td></tr>
+            <tr><td>boolean</td><td>~1 bit</td><td>false</td><td>true or false</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="mini-h">B. Non-primitive (reference) data types</h4>
+      <ul class="list">
+        <li>Classes, interfaces, arrays, String, etc.</li>
+        <li>Default value: <code>null</code></li>
+      </ul>
+      <span class="code-label">java — example</span>
+      <pre><code class="language-java">String name = "John";
+int[] numbers = {1, 2, 3};</code></pre>
+      <p style="color:var(--muted);"><strong>Literals:</strong></p>
+      <ul class="list">
+        <li>Integer: 100, 0xFF (hex), 077 (octal), 100L (long)</li>
+        <li>Floating: 3.14, 2.5f (float)</li>
+        <li>Character: 'A', '\n', '\u0041'</li>
+        <li>String: "Hello World"</li>
+      </ul>
+    </section>
+
+    <section class="block" id="type-conversion">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">01 · Language Basics</span>
+        <h2>Type conversion in Java</h2>
+        <p>Widening, narrowing, wrappers, and the classic interview traps.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">1</span>Types of type conversion</h3>
+      <h4 class="mini-h">Implicit conversion (widening / automatic)</h4>
+      <ul class="list">
+        <li>Done automatically by the JVM.</li>
+        <li>No data loss (smaller → larger type).</li>
+        <li>Order (widening hierarchy): <code>byte → short → int → long → float → double</code> and <code>char → int → long → float → double</code>.</li>
+      </ul>
+      <span class="code-label">java — example</span>
+      <pre><code class="language-java">int i = 100;
+long l = i;      // Automatic
+float f = l;     // Automatic</code></pre>
+      <div class="quote"><strong>Interview tip:</strong> safe, no precision loss — except when <code>int → float</code> or <code>long → float/double</code> (possible minor precision loss for very large values).</div>
+
+      <h4 class="mini-h">Explicit conversion (narrowing / casting)</h4>
+      <ul class="list">
+        <li>Done manually by the programmer.</li>
+        <li>Potential data loss or truncation.</li>
+        <li>Syntax: <code>(targetType) value</code></li>
+      </ul>
+      <span class="code-label">java — example</span>
+      <pre><code class="language-java">double d = 100.04;
+long l = (long) d;    // 100 (fractional part lost)
+int i = (int) l;      // 100</code></pre>
+      <p style="color:var(--muted);"><strong>Common pitfall:</strong></p>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">int i = 128;
+byte b = (byte) i;    // b = -128 (overflow/truncation)</code></pre>
+
+      <h3 class="sub-h"><span class="idx">2</span>Key interview questions &amp; points</h3>
+      <div class="card accent-amber">
+        <h4>Q: Can you convert between boolean and other types?</h4>
+        <p>No. Boolean cannot be converted to/from any other primitive type (neither implicit nor explicit).</p>
+      </div>
+      <div class="card accent-amber">
+        <h4>Q: Difference between widening and narrowing?</h4>
+        <p>Widening: automatic, safe, no cast needed. Narrowing: manual cast required, risk of data loss.</p>
+      </div>
+      <div class="card accent-amber">
+        <h4>Q: What happens when converting float/double to int?</h4>
+        <p>The fractional part is truncated (not rounded).</p>
+        <pre><code class="language-java">int x = (int) 10.9;   // x = 10
+int y = (int) -10.9;  // y = -10</code></pre>
+      </div>
+      <div class="card accent-amber">
+        <h4>Q: char to int conversion?</h4>
+        <p><code>char</code> is unsigned 2-byte (0–65535). Converts to its Unicode value.</p>
+        <pre><code class="language-java">char c = 'A';
+int i = c;            // i = 65
+char c2 = (char) 97;  // c2 = 'a'</code></pre>
+      </div>
+      <div class="card accent-amber">
+        <h4>Q: Is casting allowed between unrelated types?</h4>
+        <p>No. Compile-time error unless using an explicit cast (and the types are compatible in some way). Example: <code>int</code> to <code>String</code> → not allowed directly (need <code>String.valueOf()</code> or <code>Integer.toString()</code>).</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">3</span>Type conversion with wrapper classes (common in interviews)</h3>
+      <h4 class="mini-h">Parsing strings to primitives</h4>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">int i = Integer.parseInt("123");        // String → int
+double d = Double.parseDouble("12.34"); // String → double
+boolean b = Boolean.parseBoolean("true");</code></pre>
+      <p style="color:var(--muted);">Risk: throws <code>NumberFormatException</code> if the string is invalid.</p>
+      <h4 class="mini-h">Converting primitives to String</h4>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">String s1 = String.valueOf(123);           // int → String
+String s2 = Integer.toString(123);
+String s3 = 123 + "";                      // Common trick</code></pre>
+      <h4 class="mini-h">Autoboxing &amp; unboxing (Java 5+)</h4>
+      <p style="color:var(--muted);">Primitive ↔ Wrapper automatic conversion.</p>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">Integer obj = 10;        // Autoboxing (int → Integer)
+int prim = obj;          // Unboxing (Integer → int)</code></pre>
+      <div class="quote"><strong>Interview gotcha:</strong> unboxing <code>null</code> → <code>NullPointerException</code>.</div>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">Integer obj = null;
+int i = obj;             // NPE</code></pre>
+
+      <h3 class="sub-h"><span class="idx">4</span>Common interview code traps</h3>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">byte b1 = 10;
+byte b2 = 20;
+byte b3 = (byte)(b1 + b2);  // Why cast needed?
+// b1 + b2 → int (binary numeric promotion), so explicit cast required</code></pre>
+
+      <h3 class="sub-h"><span class="idx">5</span>Quick summary table</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Conversion Type</th><th>Automatic?</th><th>Cast Needed?</th><th>Data Loss?</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td>byte → int</td><td>Yes</td><td>No</td><td>No</td><td>int x = byteVar;</td></tr>
+            <tr><td>double → int</td><td>No</td><td>Yes</td><td>Yes</td><td>int x = (int) doubleVar;</td></tr>
+            <tr><td>int → String</td><td>No</td><td>N/A</td><td>No</td><td>String s = String.valueOf(i);</td></tr>
+            <tr><td>String → int</td><td>No</td><td>N/A</td><td>Exception risk</td><td>Integer.parseInt(str);</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block" id="control-structures">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">01 · Language Basics</span>
+        <h2>Control structures in Java</h2>
+        <p>Decision-making, looping, and branching statements.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">1</span>Types of control structures</h3>
+      <ul class="list">
+        <li><strong>Decision-Making (Conditional)</strong>: if, if-else, if-else-if ladder, switch, ternary operator.</li>
+        <li><strong>Looping (Iteration)</strong>: for, enhanced for (for-each), while, do-while.</li>
+        <li><strong>Branching (Transfer)</strong>: break, continue, return.</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">2</span>Decision-making statements</h3>
+      <h4 class="mini-h">A. if, if-else, if-else-if</h4>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">if (condition) {
+    // execute if true
+} else if (anotherCondition) {
+    // execute if above false and this true
+} else {
+    // execute if all false
+}</code></pre>
+      <div class="quote"><strong>Interview tip:</strong> conditions must be boolean. No non-zero = true like C/C++.</div>
+
+      <h4 class="mini-h">B. Switch statement (traditional &amp; enhanced)</h4>
+      <ul class="list">
+        <li><strong>Traditional Switch</strong> (pre-Java 14): supports int, byte, short, char, String, enum, wrapper classes; requires <code>break</code> to avoid fall-through.</li>
+      </ul>
+      <span class="code-label">java — traditional</span>
+      <pre><code class="language-java">switch (value) {
+    case 1: System.out.println("One"); break;
+    case 2: System.out.println("Two"); break;
+    default: System.out.println("Other");
+}</code></pre>
+      <ul class="list">
+        <li><strong>Enhanced Switch</strong> (Java 14+) — more concise:</li>
+      </ul>
+      <span class="code-label">java — enhanced</span>
+      <pre><code class="language-java">switch (value) {
+    case 1 -> System.out.println("One");
+    case 2 -> System.out.println("Two");
+    default -> System.out.println("Other");
+}</code></pre>
+      <ul class="list">
+        <li><strong>Switch Expression</strong> (Java 14+) — returns a value:</li>
+      </ul>
+      <span class="code-label">java — expression</span>
+      <pre><code class="language-java">String result = switch (day) {
+    case "MON", "TUE" -> "Weekday";
+    case "SAT", "SUN" -> "Weekend";
+    default -> "Invalid";
+};</code></pre>
+      <ul class="list">
+        <li>Uses <code>-&gt;</code> (no fall-through) or <code>yield</code> in block form.</li>
+      </ul>
+      <p style="color:var(--muted);"><strong>Interview questions:</strong></p>
+      <div class="card accent-amber">
+        <h4>Q: Can switch accept long or float?</h4>
+        <p>No (compile error).</p>
+        <h4>Q: Can case labels be duplicate?</h4>
+        <p>No.</p>
+        <h4>Q: What happens without break?</h4>
+        <p>Fall-through (executes the next cases).</p>
+      </div>
+
+      <h4 class="mini-h">C. Ternary operator</h4>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">result = (condition) ? valueIfTrue : valueIfFalse;</code></pre>
+      <ul class="list">
+        <li>Shorthand for simple if-else.</li>
+        <li>Pitfall: both expressions must return a compatible type.</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">3</span>Looping statements</h3>
+      <h4 class="mini-h">A. for loop</h4>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">for (initialization; condition; update) {
+    // body
+}</code></pre>
+      <p style="color:var(--muted);">All three parts are optional.</p>
+      <span class="code-label">java — infinite</span>
+      <pre><code class="language-java">for(;;) { }  // Infinite loop</code></pre>
+      <h4 class="mini-h">B. Enhanced for loop (for-each) — Java 5+</h4>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">for (Type var : collection/array) {
+    // body
+}</code></pre>
+      <ul class="list">
+        <li>Read-only access. Cannot modify array/collection elements directly.</li>
+        <li>Interview gotcha: cannot easily iterate with an index (use a traditional for).</li>
+      </ul>
+      <h4 class="mini-h">C. while loop</h4>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">while (condition) {
+    // body
+}</code></pre>
+      <p style="color:var(--muted);">Checks the condition before execution.</p>
+      <h4 class="mini-h">D. do-while loop</h4>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">do {
+    // body
+} while (condition);</code></pre>
+      <p style="color:var(--muted);">Executes at least once.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Loop</th><th>Condition Check</th><th>Minimum Execution</th></tr></thead>
+          <tbody>
+            <tr><td>while</td><td>Before</td><td>0 times</td></tr>
+            <tr><td>do-while</td><td>After</td><td>1 time</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">4</span>Branching statements</h3>
+      <ul class="list">
+        <li><strong>break</strong> — exits the loop/switch immediately.
+          <ul class="list">
+            <li><strong>Labeled break</strong> (rarely used):</li>
+          </ul>
+        </li>
+      </ul>
+      <span class="code-label">java — labeled break</span>
+      <pre><code class="language-java">outer: for(int i=0; i&lt;5; i++) {
+    for(int j=0; j&lt;5; j++) {
+        if(condition) break outer;  // breaks outer loop
+    }
+}</code></pre>
+      <ul class="list">
+        <li><strong>continue</strong> — skips the rest of the current iteration, goes to the next. Labeled continue also exists.</li>
+        <li><strong>return</strong> — exits the method entirely (not just the loop).</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">5</span>Common interview questions</h3>
+      <div class="card accent-amber">
+        <h4>Q: Difference between break and continue?</h4>
+        <p>break → exits the loop; continue → skips to the next iteration.</p>
+        <h4>Q: Can we use floating-point in switch?</h4>
+        <p>No, only integer-based or String/enum.</p>
+        <h4>Q: Infinite loop examples?</h4>
+        <pre><code class="language-java">for(;;) { }
+while(true) { }</code></pre>
+        <h4>Q: Why is the enhanced for loop preferred?</h4>
+        <p>Cleaner, less error-prone, avoids index out of bounds.</p>
+        <h4>Q: Can we modify a collection in an enhanced for loop?</h4>
+        <p>Throws <code>ConcurrentModificationException</code> if structurally modified.</p>
+        <h4>Q: Nested switch allowed?</h4>
+        <p>Yes, an inner switch can be inside a case block.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">6</span>Quick cheat sheet</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Statement</th><th>Use Case</th><th>Key Feature</th></tr></thead>
+          <tbody>
+            <tr><td>if-else</td><td>Simple conditions</td><td>Basic branching</td></tr>
+            <tr><td>switch</td><td>Multiple constant checks</td><td>Enhanced version (Java 14+) preferred</td></tr>
+            <tr><td>for</td><td>Known iterations</td><td>Full control</td></tr>
+            <tr><td>for-each</td><td>Arrays/collections</td><td>Read-only, clean</td></tr>
+            <tr><td>while</td><td>Condition-based, unknown count</td><td>Check before</td></tr>
+            <tr><td>do-while</td><td>At least one execution needed</td><td>Check after</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ SECTION 02 : METHODS & CONSTRUCTORS ============ -->
+    <section class="block" id="methods" style="background:linear-gradient(180deg, rgba(79,209,197,0.03), transparent 200px);">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--teal);">02 · Methods &amp; Constructors</span>
+        <h2>Object-oriented programming: methods in Java</h2>
+        <p>Definition, types, overloading, overriding, arguments, varargs, and recursion.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">1</span>What is a method?</h3>
+      <ul class="list">
+        <li>A method is a block of code that performs a specific task and can be invoked (called) multiple times.</li>
+        <li>Methods promote code reusability, modularity, and better organization.</li>
+      </ul>
+      <p style="color:var(--muted);"><strong>Syntax:</strong></p>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">modifier returnType methodName(parameterList) throws ExceptionList {
+    // method body
+    return value;  // if returnType is not void
+}</code></pre>
+
+      <h3 class="sub-h"><span class="idx">2</span>Components of a method</h3>
+      <ul class="list">
+        <li><strong>Modifiers</strong> — public, private, protected, static, final, abstract, synchronized, etc.</li>
+        <li><strong>Return Type</strong> — the data type of the value returned (<code>void</code> if nothing is returned).</li>
+        <li><strong>Method Name</strong> — follows identifier rules (camelCase convention).</li>
+        <li><strong>Parameter List</strong> — zero or more parameters <code>(type paramName)</code>.</li>
+        <li><strong>Throws Clause</strong> — optional, declares checked exceptions.</li>
+        <li><strong>Body</strong> — code inside <code>{}</code>.</li>
+      </ul>
+      <span class="code-label">java — example</span>
+      <pre><code class="language-java">public int add(int a, int b) {
+    return a + b;
+}</code></pre>
+
+      <h3 class="sub-h"><span class="idx">3</span>Types of methods</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Type</th><th>Description</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td>Instance Method</td><td>Belongs to the object; can access instance variables &amp; methods</td><td><code>obj.display()</code></td></tr>
+            <tr><td>Static Method</td><td>Belongs to the class; accessed using the class name; cannot access instance members</td><td><code>Math.max(10, 20)</code></td></tr>
+            <tr><td>Abstract Method</td><td>Declared in an abstract class/interface; no body; must be overridden</td><td><code>abstract void draw();</code></td></tr>
+            <tr><td>Final Method</td><td>Cannot be overridden in a subclass</td><td><code>final void calculate()</code></td></tr>
+            <tr><td>Constructor</td><td>Special method to initialize objects (same name as class, no return type)</td><td><code>public ClassName(int x) { ... }</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">4</span>Method overloading</h3>
+      <ul class="list">
+        <li>Multiple methods with the <strong>same name</strong> but <strong>different parameter lists</strong> (type, number, or order).</li>
+        <li>Return type alone cannot overload.</li>
+        <li>Compile-time polymorphism.</li>
+      </ul>
+      <span class="code-label">java — example</span>
+      <pre><code class="language-java">void show(int a) { ... }
+void show(String s) { ... }
+void show(int a, double b) { ... }</code></pre>
+      <p style="color:var(--muted);"><strong>Interview questions:</strong></p>
+      <div class="card accent-teal">
+        <h4>Q: Can we overload the main() method?</h4>
+        <p>Yes.</p>
+        <h4>Q: Difference between overloading and overriding?</h4>
+        <p>Overloading: same class, different parameters. Overriding: different classes (inheritance), same signature.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">5</span>Method overriding</h3>
+      <ul class="list">
+        <li>Subclass provides a specific implementation of a method already defined in the superclass.</li>
+        <li>Runtime polymorphism.</li>
+      </ul>
+      <p style="color:var(--muted);"><strong>Rules:</strong></p>
+      <ul class="list">
+        <li>Same name, return type, and parameters.</li>
+        <li>Access modifier cannot be more restrictive.</li>
+        <li>Cannot override static/final/private methods.</li>
+        <li>Can throw narrower or fewer exceptions.</li>
+        <li>Use the <code>@Override</code> annotation (recommended — catches errors at compile time).</li>
+      </ul>
+      <span class="code-label">java — example</span>
+      <pre><code class="language-java">class Parent {
+    void display() { System.out.println("Parent"); }
+}
+
+class Child extends Parent {
+    @Override
+    void display() { System.out.println("Child"); }
+}</code></pre>
+
+      <h3 class="sub-h"><span class="idx">6</span>Passing arguments</h3>
+      <ul class="list">
+        <li><strong>Pass-by-Value</strong> — Java always passes primitive and reference variables by value:
+          <ul class="list">
+            <li>Primitives: copy of the value.</li>
+            <li>Objects: copy of the reference (changes to object fields affect the original).</li>
+          </ul>
+        </li>
+      </ul>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">void modify(int x) { x = 50; }          // No effect on original
+void modify(Student s) { s.name = "New"; }  // Affects original object</code></pre>
+      <p style="color:var(--muted);"><strong>Common interview trap:</strong></p>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">void swap(int a, int b) {
+    int temp = a; a = b; b = temp;
+}
+// Doesn't swap original variables – only copies</code></pre>
+
+      <h3 class="sub-h"><span class="idx">7</span>Varargs (variable arguments) — Java 5+</h3>
+      <ul class="list">
+        <li>Allows a method to accept zero or more arguments of the same type.</li>
+        <li>Syntax: <code>type... parameterName</code></li>
+      </ul>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">void print(String... values) {
+    for(String s : values) {
+        System.out.println(s);
+    }
+}
+// Call: print("A"), print("A","B","C"), print()</code></pre>
+      <p style="color:var(--muted);"><strong>Rules:</strong></p>
+      <ul class="list">
+        <li>Only one varargs per method.</li>
+        <li>Must be the last parameter.</li>
+        <li>Internally treated as an array.</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">8</span>Recursion</h3>
+      <ul class="list">
+        <li>A method calls itself.</li>
+        <li>Must have a base case to avoid <code>StackOverflowError</code>.</li>
+      </ul>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">int factorial(int n) {
+    if (n == 0) return 1;
+    return n * factorial(n-1);
+}</code></pre>
+
+      <h3 class="sub-h"><span class="idx">9</span>Key interview questions</h3>
+      <div class="card accent-teal">
+        <h4>Q: Can we change the return type in overriding?</h4>
+        <p>No (except covariant return types — Java 5+ allows a subclass of the original return type).</p>
+        <h4>Q: Static method overriding?</h4>
+        <p>Not possible — it's method hiding.</p>
+        <h4>Q: main() method — why public static void?</h4>
+        <p>public → JVM can access; static → no object needed; void → no return to JVM.</p>
+        <h4>Q: Can a constructor be final/static/abstract?</h4>
+        <p>No.</p>
+        <h4>Q: Difference between method hiding and overriding?</h4>
+        <p>Static methods → hiding (resolved at compile time); instance → overriding (runtime).</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">10</span>Quick summary table</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Feature</th><th>Overloading</th><th>Overriding</th></tr></thead>
+          <tbody>
+            <tr><td>Class</td><td>Same class</td><td>Different (parent-child)</td></tr>
+            <tr><td>Method Signature</td><td>Different parameters</td><td>Same name + parameters</td></tr>
+            <tr><td>Polymorphism</td><td>Compile-time</td><td>Runtime</td></tr>
+            <tr><td>Return Type</td><td>Can differ</td><td>Same or covariant</td></tr>
+            <tr><td>Access Modifier</td><td>No restriction</td><td>Cannot be more restrictive</td></tr>
+            <tr><td>Keywords</td><td>N/A</td><td>@Override (recommended)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block" id="constructors">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--teal);">02 · Methods &amp; Constructors</span>
+        <h2>Constructors</h2>
+        <p>Initializing objects, types of constructors, chaining, and the Singleton pattern.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">1</span>What is a constructor?</h3>
+      <ul class="list">
+        <li>Special member method used to initialize objects.</li>
+        <li>Automatically called when an object is created using <code>new</code>.</li>
+      </ul>
+      <p style="color:var(--muted);"><strong>Key characteristics:</strong></p>
+      <ul class="list">
+        <li>Same name as the class.</li>
+        <li>No return type (not even <code>void</code>).</li>
+        <li>Can be overloaded.</li>
+        <li>Can have access modifiers (public, private, protected, default).</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">2</span>Types of constructors</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Type</th><th>Description</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td>No-Arg (Default)</td><td>Takes no parameters; initializes with default values</td><td><code>public ClassName() { }</code></td></tr>
+            <tr><td>Parameterized</td><td>Accepts parameters to initialize instance variables</td><td><code>public ClassName(int x, String s) { }</code></td></tr>
+            <tr><td>Private</td><td>Used in the Singleton pattern or to prevent direct instantiation</td><td><code>private ClassName() { }</code></td></tr>
+            <tr><td>Copy Constructor</td><td>Not built-in; manually defined to create a copy of an object</td><td><code>ClassName(ClassName obj) { ... }</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <span class="code-label">java — example</span>
+      <pre><code class="language-java">class Student {
+    int id;
+    String name;
+
+    // No-arg constructor
+    Student() {
+        id = 0;
+        name = "Unknown";
+    }
+
+    // Parameterized constructor
+    Student(int i, String n) {
+        id = i;
+        name = n;
+    }
+}</code></pre>
+
+      <h3 class="sub-h"><span class="idx">3</span>Constructor overloading</h3>
+      <ul class="list">
+        <li>Multiple constructors with different parameter lists.</li>
+        <li>Achieves compile-time polymorphism.</li>
+      </ul>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">Student() { }                          // No-arg
+Student(int id) { this.id = id; }      // One param
+Student(int id, String name) { ... }   // Two params</code></pre>
+
+      <h3 class="sub-h"><span class="idx">4</span>Default constructor</h3>
+      <ul class="list">
+        <li>If no constructor is defined in the class, Java provides a default no-arg constructor.</li>
+        <li>As soon as you define any constructor (even parameterized), the default constructor is <strong>not</strong> provided.</li>
+      </ul>
+      <div class="quote"><strong>Interview tip:</strong> common question — "Will the compiler add a default constructor if I write a parameterized one?" → No.</div>
+
+      <h3 class="sub-h"><span class="idx">5</span>this() and super() in constructors</h3>
+      <h4 class="mini-h">this()</h4>
+      <p style="color:var(--muted);">Calls another constructor in the same class (constructor chaining). Must be the first statement.</p>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">Student() {
+    this(0, "Default");  // Calls parameterized constructor
+}
+Student(int id, String name) {
+    this.id = id;
+    this.name = name;
+}</code></pre>
+      <h4 class="mini-h">super()</h4>
+      <p style="color:var(--muted);">Calls a superclass constructor. Implicitly called if not written (calls the no-arg super). Must be the first statement if explicitly used.</p>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">class Child extends Parent {
+    Child() {
+        super();  // Calls Parent's no-arg constructor
+    }
+}</code></pre>
+      <div class="quote"><strong>Key rule:</strong> either <code>this()</code> or <code>super()</code> can be used, but not both in the same constructor.</div>
+
+      <h3 class="sub-h"><span class="idx">6</span>Important rules &amp; restrictions</h3>
+      <ul class="list">
+        <li>Cannot be <code>static</code>, <code>final</code>, or <code>abstract</code>.</li>
+        <li>Cannot be called explicitly like a method (only via <code>new</code> or <code>this()</code>/<code>super()</code>).</li>
+        <li>Private constructors prevent inheritance and instantiation (used in Singleton).</li>
+        <li>Constructors can throw exceptions.</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">7</span>Constructor vs method (common interview question)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Feature</th><th>Constructor</th><th>Method</th></tr></thead>
+          <tbody>
+            <tr><td>Name</td><td>Same as class</td><td>Any name</td></tr>
+            <tr><td>Return Type</td><td>None</td><td>Can have any (including void)</td></tr>
+            <tr><td>Called</td><td>Automatically on <code>new</code></td><td>Explicitly</td></tr>
+            <tr><td>Inheritance</td><td>Not inherited</td><td>Can be inherited/overridden</td></tr>
+            <tr><td>Purpose</td><td>Initialize object</td><td>Perform operations</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">8</span>Common interview questions</h3>
+      <div class="card accent-teal">
+        <h4>Q: Can we have a return statement in a constructor?</h4>
+        <p>Yes, but only <code>return;</code> (no value). Used for early exit.</p>
+        <h4>Q: What happens if the superclass has no no-arg constructor?</h4>
+        <p>The subclass must explicitly call <code>super(param)</code>; otherwise a compile error.</p>
+        <h4>Q: Can a constructor be synchronized?</h4>
+        <p>Yes, but rarely needed (the object is not fully created during construction).</p>
+        <h4>Q: Order of execution in inheritance?</h4>
+        <p>Superclass constructor → Subclass constructor (always).</p>
+        <h4>Q: Can we overload constructors?</h4>
+        <p>Yes. Can we override constructors? No (not inherited).</p>
+        <h4>Q: What is constructor chaining?</h4>
+        <p>Calling one constructor from another using <code>this()</code>.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">9</span>Singleton pattern using a private constructor</h3>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">class Singleton {
+    private static Singleton instance;
+
+    private Singleton() { }  // Private constructor
+
+    public static Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+}</code></pre>
+
+      <h3 class="sub-h"><span class="idx">10</span>Quick revision points</h3>
+      <ul class="checklist">
+        <li>No return type.</li>
+        <li>Default constructor auto-provided only if no constructor exists.</li>
+        <li><code>this()</code> and <code>super()</code> must be the first statement.</li>
+        <li>Private constructors → design patterns (Singleton, factory).</li>
+        <li>Constructor body executes after the superclass constructor.</li>
+      </ul>
+    </section>
+
+    <section class="block" id="this-keyword">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--teal);">02 · Methods &amp; Constructors</span>
+        <h2>The <code>this</code> keyword</h2>
+        <p>Referencing the current object, shadowing, chaining, and inner classes.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">1</span>What is the 'this' keyword?</h3>
+      <ul class="list">
+        <li><code>this</code> is a reference variable that refers to the <strong>current object</strong> in an instance method or constructor.</li>
+        <li>Automatically created by the JVM for every object.</li>
+        <li>Primarily used to differentiate between instance variables and parameters/local variables with the same name.</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">2</span>Common uses of 'this'</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Use Case</th><th>Description</th><th>Example Code</th></tr></thead>
+          <tbody>
+            <tr><td>Access Instance Variables</td><td>Resolves name conflicts between fields and parameters</td><td><code>this.name = name;</code></td></tr>
+            <tr><td>Invoke Current Class Constructor</td><td>Constructor chaining using <code>this()</code></td><td><code>this(1, "Default");</code></td></tr>
+            <tr><td>Invoke Current Class Method</td><td>Explicitly call another instance method</td><td><code>this.methodA();</code></td></tr>
+            <tr><td>Pass Current Object as Argument</td><td>Pass <code>this</code> to another method or constructor</td><td><code>new B(this);</code></td></tr>
+            <tr><td>Return Current Object</td><td>Return <code>this</code> from a method for method chaining</td><td><code>return this;</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <span class="code-label">java — method chaining</span>
+      <pre><code class="language-java">Student setName(String name) {
+    this.name = name;
+    return this;  // Enables chaining: obj.setName("X").setAge(20);
+}</code></pre>
+
+      <h3 class="sub-h"><span class="idx">3</span>Key rules &amp; restrictions</h3>
+      <ul class="list">
+        <li><code>this</code> <strong>cannot</strong> be used in <strong>static</strong> methods or static blocks → compile error ("non-static variable this cannot be referenced from a static context").</li>
+        <li><code>this()</code> must be the <strong>first statement</strong> in a constructor.</li>
+        <li>Only one <code>this()</code> or <code>super()</code> call allowed per constructor.</li>
+        <li><code>this</code> is <strong>final</strong> — cannot be reassigned.</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">4</span>Common interview questions</h3>
+      <div class="card accent-teal">
+        <h4>Q: Can we use 'this' in a static method?</h4>
+        <p>No. Static context belongs to the class, not the object. No current object exists.</p>
+        <h4>Q: What is the difference between 'this' and 'this()'?</h4>
+        <p><code>this</code> → refers to the current object. <code>this()</code> → calls another constructor in the same class.</p>
+        <h4>Q: When is the 'this' reference automatically passed?</h4>
+        <p>The JVM implicitly passes <code>this</code> as the first parameter in non-static method calls. Example: <code>obj.method()</code> internally becomes <code>method(obj)</code>.</p>
+        <h4>Q: Can we explicitly pass 'this' in a static method call?</h4>
+        <p>No. Compile error.</p>
+        <h4>Q: What happens if you write 'this = null' inside a method?</h4>
+        <p>Compile error — <code>this</code> is final and cannot be reassigned.</p>
+        <h4>Q: Why use 'this' to call a method when it's optional?</h4>
+        <p>Improves readability, especially in large methods or when chaining.</p>
+        <h4>Q: Can 'this' be used to refer to superclass members?</h4>
+        <p>No. Use <code>super</code> for superclass members. <code>this</code> always refers to the current class instance.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">5</span>Practical example (shadowing issue)</h3>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">class Employee {
+    String name;  // Instance variable
+
+    void setData(String name) {  // Parameter shadows instance variable
+        name = name;    // Wrong! Assigns parameter to itself
+        // this.name = name;  // Correct – assigns to instance variable
+    }
+}</code></pre>
+
+      <h3 class="sub-h"><span class="idx">6</span>this in inner classes</h3>
+      <p style="color:var(--muted);">To refer to the outer class instance from an inner class: <code>OuterClass.this</code></p>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">class Outer {
+    void display() {
+        class Inner {
+            void show() {
+                Outer.this.display();  // Access outer method
+            }
+        }
+    }
+}</code></pre>
+
+      <h3 class="sub-h"><span class="idx">7</span>Quick summary table</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Usage</th><th>Allowed in Static?</th><th>Must be First Statement?</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td>this.variable</td><td>No</td><td>N/A</td><td>Access shadowed fields</td></tr>
+            <tr><td>this.method()</td><td>No</td><td>N/A</td><td>Call instance method</td></tr>
+            <tr><td>this()</td><td>Yes (constructor)</td><td>Yes</td><td>Constructor chaining</td></tr>
+            <tr><td>return this</td><td>No</td><td>N/A</td><td>Method chaining</td></tr>
+            <tr><td>Pass this as argument</td><td>No</td><td>N/A</td><td>Pass current object</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ SECTION 03 : OOP & INTERFACES ============ -->
+    <section class="block" id="access-modifiers" style="background:linear-gradient(180deg, rgba(124,156,255,0.03), transparent 200px);">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--periwinkle);">03 · OOP &amp; Interfaces</span>
+        <h2>Access modifiers</h2>
+        <p>Visibility scopes, rules, and common use cases.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">1</span>Overview</h3>
+      <p style="color:var(--muted);">Access modifiers control the visibility and accessibility of class members (fields, methods, constructors, nested classes) from other classes.</p>
+      <p style="color:var(--muted);">Java has <strong>4 access modifiers</strong>:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Modifier</th><th>Visibility Scope</th><th>Can be Applied To</th></tr></thead>
+          <tbody>
+            <tr><td>public</td><td>Accessible from everywhere (any class, any package)</td><td>Class, field, method, constructor</td></tr>
+            <tr><td>protected</td><td>Accessible within the same package + subclasses in other packages (via inheritance)</td><td>Field, method, constructor</td></tr>
+            <tr><td>default (no keyword)</td><td>Accessible only within the same package</td><td>Class, field, method, constructor</td></tr>
+            <tr><td>private</td><td>Accessible only within the same class</td><td>Field, method, constructor, nested class</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">2</span>Detailed visibility table</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Modifier</th><th>Same Class</th><th>Same Package (Subclass)</th><th>Same Package (Non-Subclass)</th><th>Different Package (Subclass)</th><th>Different Package (Non-Subclass)</th></tr></thead>
+          <tbody>
+            <tr><td>public</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+            <tr><td>protected</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>No</td></tr>
+            <tr><td>default</td><td>Yes</td><td>Yes</td><td>Yes</td><td>No</td><td>No</td></tr>
+            <tr><td>private</td><td>Yes</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">3</span>Key points &amp; rules</h3>
+      <ul class="list">
+        <li><strong>Top-level classes</strong>: can only be <code>public</code> or default (package-private). Cannot be <code>private</code> or <code>protected</code>.</li>
+        <li><strong>Nested/Inner classes</strong>: can have all 4 modifiers.</li>
+        <li><strong>Constructors</strong>: can have any modifier (private → Singleton, factory patterns).</li>
+        <li><strong>Interfaces</strong>:
+          <ul class="list">
+            <li>Pre-Java 8: methods are implicitly <code>public abstract</code>.</li>
+            <li>Java 8+: default methods → <code>public default</code>, static methods → <code>public static</code>.</li>
+            <li>Java 9+: private methods allowed.</li>
+          </ul>
+        </li>
+        <li><strong>Interface members</strong>: variables are implicitly <code>public static final</code>.</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">4</span>Common use cases</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Modifier</th><th>Typical Usage</th></tr></thead>
+          <tbody>
+            <tr><td>public</td><td>API methods, classes meant for external use</td></tr>
+            <tr><td>protected</td><td>Members intended for subclass extension (e.g., template methods)</td></tr>
+            <tr><td>default</td><td>Package-private helpers, internal implementation details</td></tr>
+            <tr><td>private</td><td>Encapsulation — hide fields, expose via getters/setters</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <span class="code-label">java — example</span>
+      <pre><code class="language-java">public class Parent {
+    public int publicVar;
+    protected int protectedVar;
+    int defaultVar;         // package-private
+    private int privateVar;
+
+    public void publicMethod() { }
+    protected void protectedMethod() { }
+    void defaultMethod() { }
+    private void privateMethod() { }
+}
+
+class Child extends Parent {
+    void test() {
+        publicVar = 1;       // OK
+        protectedVar = 2;    // OK (inheritance)
+        defaultVar = 3;      // OK if same package
+        // privateVar = 4;   // Compile error
+    }
+}</code></pre>
+
+      <h3 class="sub-h"><span class="idx">5</span>Common interview questions</h3>
+      <div class="card accent-peri">
+        <h4>Q: Can a subclass in a different package access protected members?</h4>
+        <p>Yes, but only through inheritance (via <code>this</code> or <code>super</code>), not via another object of the parent class.</p>
+        <pre><code class="language-java">Parent p = new Parent();
+// p.protectedVar;  // Compile error in different package
+this.protectedVar;  // OK in subclass</code></pre>
+        <h4>Q: Why can't we use private/protected for top-level classes?</h4>
+        <p>Top-level classes are meant to be compilation units. Private/protected would make them inaccessible outside their scope, defeating the purpose.</p>
+        <h4>Q: What is the default access modifier if none is specified?</h4>
+        <p>Package-private (default).</p>
+        <h4>Q: Can a private method be overridden?</h4>
+        <p>No. Private methods are not inherited → no overriding (a subclass can define a same-name method, but it's a new method).</p>
+        <h4>Q: Can we reduce visibility while overriding?</h4>
+        <p>No. An overriding method must have the same or broader access (e.g., protected → public OK; public → protected NOT allowed).</p>
+        <h4>Q: What happens if a class is default and in a named package?</h4>
+        <p>Only classes in the same package can access it.</p>
+        <h4>Q: Best practice for fields?</h4>
+        <p>Always <code>private</code> + public getters/setters (encapsulation).</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">6</span>Quick summary cheat sheet</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Modifier</th><th>Class (Top-Level)</th><th>Class (Nested)</th><th>Field/Method/Constructor</th></tr></thead>
+          <tbody>
+            <tr><td>public</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+            <tr><td>protected</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+            <tr><td>default</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+            <tr><td>private</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block" id="inheritance">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--periwinkle);">03 · OOP &amp; Interfaces</span>
+        <h2>Inheritance</h2>
+        <p>Code reuse through the "IS-A" relationship.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">1</span>What is inheritance?</h3>
+      <ul class="list">
+        <li>Inheritance is a core OOP principle that allows a class (<strong>subclass/child</strong>) to <strong>inherit</strong> fields and methods from another class (<strong>superclass/parent</strong>).</li>
+        <li>Promotes <strong>code reusability</strong> and establishes an <strong>"IS-A"</strong> relationship.</li>
+        <li>Represented in UML with a <strong>solid line and hollow triangle arrow</strong> pointing to the superclass.</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">2</span>Syntax</h3>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">class Parent {
+    // fields and methods
+}
+
+class Child extends Parent {  // Child inherits from Parent
+    // can add new fields/methods or override inherited ones
+}</code></pre>
+      <ul class="list">
+        <li>Java supports <strong>single inheritance</strong> only (one direct superclass).</li>
+        <li>All classes implicitly extend <code>java.lang.Object</code> (ultimate superclass).</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">3</span>Key features</h3>
+      <ul class="list">
+        <li>Subclass gets <strong>all non-private</strong> members of the superclass.</li>
+        <li>Subclass can:
+          <ul class="list">
+            <li>Use inherited members as-is.</li>
+            <li><strong>Override</strong> inherited methods.</li>
+            <li>Add new members.</li>
+          </ul>
+        </li>
+        <li>Supports <strong>hierarchical</strong> inheritance (multiple levels).</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">4</span>Accessing superclass members</h3>
+      <ul class="list">
+        <li><code>super</code> keyword:
+          <ul class="list">
+            <li><code>super()</code> → call superclass constructor (must be first statement).</li>
+            <li><code>super.variable</code> → access a shadowed superclass field.</li>
+            <li><code>super.method()</code> → call an overridden superclass method.</li>
+          </ul>
+        </li>
+      </ul>
+      <span class="code-label">java — example</span>
+      <pre><code class="language-java">class Animal {
+    String name = "Generic Animal";
+
+    void eat() {
+        System.out.println("Animal eats");
+    }
+}
+
+class Dog extends Animal {
+    String name = "Dog";
+
+    void display() {
+        System.out.println(name);          // "Dog"
+        System.out.println(super.name);    // "Generic Animal"
+    }
+
+    @Override
+    void eat() {
+        super.eat();                       // Call parent's eat
+        System.out.println("Dog eats bones");
+    }
+}</code></pre>
+
+      <h3 class="sub-h"><span class="idx">5</span>Types of inheritance supported in Java</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Type</th><th>Supported?</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Single</td><td>Yes</td><td>One class extends one class</td></tr>
+            <tr><td>Multiple</td><td>No</td><td>Not allowed for classes (use interfaces)</td></tr>
+            <tr><td>Multilevel</td><td>Yes</td><td>A → B → C</td></tr>
+            <tr><td>Hierarchical</td><td>Yes</td><td>One parent, multiple children</td></tr>
+            <tr><td>Hybrid</td><td>Yes</td><td>Combination (via interfaces)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">6</span>Important rules &amp; restrictions</h3>
+      <ul class="list">
+        <li><strong>final class</strong>: cannot be extended (<code>final class A {}</code> → no subclass).</li>
+        <li><strong>final method</strong>: cannot be overridden.</li>
+        <li><strong>private members</strong>: not inherited.</li>
+        <li><strong>Constructors</strong>: not inherited, but can be called via <code>super()</code>.</li>
+        <li><strong>static members</strong>: inherited but not overridden (method hiding).</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">7</span>Method overriding rules</h3>
+      <ul class="list">
+        <li>Same name, return type, and parameters.</li>
+        <li>Cannot reduce visibility (e.g., public → protected not allowed).</li>
+        <li>Can throw fewer/narrower exceptions.</li>
+        <li>Use the <code>@Override</code> annotation (recommended — catches errors at compile time).</li>
+        <li><strong>Covariant return types</strong> (Java 5+): a subclass can return a subtype of the parent's return type.</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">8</span>Common interview questions</h3>
+      <div class="card accent-peri">
+        <h4>Q: Why is multiple inheritance not supported for classes?</h4>
+        <p>To avoid the <strong>Diamond Problem</strong> (ambiguity when two parents have the same method). Solved via interfaces (default methods with explicit override).</p>
+        <h4>Q: Can a constructor be inherited or overridden?</h4>
+        <p>No to both.</p>
+        <h4>Q: What is method hiding?</h4>
+        <p>Static methods in a subclass with the same signature hide the superclass method (not overridden).</p>
+        <h4>Q: Difference between inheritance and composition?</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Feature</th><th>Inheritance (IS-A)</th><th>Composition (HAS-A)</th></tr></thead>
+            <tbody>
+              <tr><td>Relationship</td><td>Tight coupling</td><td>Loose coupling</td></tr>
+              <tr><td>Code Reuse</td><td>Via extension</td><td>Via delegation</td></tr>
+              <tr><td>Flexibility</td><td>Less (fixed hierarchy)</td><td>More (can change at runtime)</td></tr>
+              <tr><td>Example</td><td>Dog extends Animal</td><td>Car has Engine</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h4>Q: When to prefer composition over inheritance?</h4>
+        <p>When the relationship is HAS-A, or to avoid the fragile base class problem (GoF recommendation).</p>
+        <h4>Q: Can a subclass access private members of the superclass?</h4>
+        <p>No, not directly. Use protected or public getters/setters.</p>
+        <h4>Q: What happens if the superclass doesn't have a no-arg constructor?</h4>
+        <p>The subclass must explicitly call <code>super(params)</code>.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">9</span>Class diagram example</h3>
+      <span class="code-label">uml</span>
+      <div class="diagram-box">          +------------------+
+          |     Animal       |
+          +------------------+
+          | - name: String   |
+          | + eat(): void    |
+          +------------------+
+                   /_\
+                    |
+                    |
+          +------------------+
+          |       Dog        |
+          +------------------+
+          | + bark(): void   |
+          +------------------+</div>
+
+      <h3 class="sub-h"><span class="idx">10</span>Quick summary</h3>
+      <ul class="checklist">
+        <li><code>extends</code> keyword for classes.</li>
+        <li><strong>IS-A</strong> relationship.</li>
+        <li>Single inheritance only.</li>
+        <li>Use <code>super</code> to access parent members.</li>
+        <li>Prefer composition for flexibility.</li>
+        <li><code>@Override</code> is best practice.</li>
+      </ul>
+    </section>
+
+    <section class="block" id="aggregation">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--periwinkle);">03 · OOP &amp; Interfaces</span>
+        <h2>Aggregation in Java OOP</h2>
+        <p>The "HAS-A" relationship and how it differs from composition.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">1</span>What is aggregation?</h3>
+      <ul class="list">
+        <li>Aggregation is a <strong>"HAS-A"</strong> relationship between two classes where one class <strong>contains</strong> a reference to another class.</li>
+        <li>It represents a <strong>weak</strong> whole-part relationship: the part can exist independently of the whole.</li>
+        <li>The lifecycle of the contained object is <strong>not</strong> managed by the container — it can be shared or exist separately.</li>
+        <li>Modeled using a <strong>hollow diamond</strong> arrow in UML class diagrams (container → part).</li>
+      </ul>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Feature</th><th>Aggregation</th><th>Composition</th></tr></thead>
+          <tbody>
+            <tr><td>Relationship Strength</td><td>Weak (part can live without whole)</td><td>Strong (part dies with whole)</td></tr>
+            <tr><td>UML Notation</td><td>Hollow diamond</td><td>Filled diamond</td></tr>
+            <tr><td>Lifecycle</td><td>Independent</td><td>Dependent</td></tr>
+            <tr><td>Example</td><td>Car HAS-A Driver (driver can exist alone)</td><td>Car HAS-A Engine (engine rarely reused)</td></tr>
+            <tr><td>Ownership</td><td>No strict ownership</td><td>Container owns the part</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">2</span>Implementation example</h3>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">class Address {
+    String city;
+    String street;
+
+    public Address(String city, String street) {
+        this.city = city;
+        this.street = street;
+    }
+}
+
+class Employee {
+    private int id;
+    private String name;
+    private Address address;  // Aggregation: Employee HAS-A Address
+
+    public Employee(int id, String name, Address address) {
+        this.id = id;
+        this.name = name;
+        this.address = address;  // Reference to independent object
+    }
+
+    // Getter/Setters...
+}</code></pre>
+      <p style="color:var(--muted);"><strong>Usage:</strong></p>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">Address addr = new Address("New York", "5th Ave");  // Address exists independently
+Employee emp1 = new Employee(1, "John", addr);
+Employee emp2 = new Employee(2, "Jane", addr);     // Same Address shared (possible in aggregation)</code></pre>
+
+      <h3 class="sub-h"><span class="idx">3</span>Key characteristics</h3>
+      <ul class="list">
+        <li>No ownership: destroying the container (Employee) does <strong>not</strong> destroy the part (Address).</li>
+        <li>Parts can be shared among multiple containers.</li>
+        <li>Typically implemented via reference fields (not mandatory to nullify on container destruction).</li>
+        <li>Promotes reusability and loose coupling.</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">4</span>Aggregation vs composition code difference</h3>
+      <p style="color:var(--muted);"><strong>Aggregation</strong> (loose coupling):</p>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">class Department {
+    private List<Employee> employees;  // Employees can belong to multiple depts or exist alone
+}</code></pre>
+      <p style="color:var(--muted);"><strong>Composition</strong> (tight coupling):</p>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">class Car {
+    private Engine engine;  // Engine created and managed by Car
+
+    public Car() {
+        this.engine = new Engine();  // Engine created inside Car
+    }
+    // When Car is garbage collected, Engine has no other references → destroyed
+}</code></pre>
+
+      <h3 class="sub-h"><span class="idx">5</span>Class diagram representation</h3>
+      <span class="code-label">uml</span>
+      <div class="diagram-box">          +-----------------+
+          |    Employee     |
+          +-----------------+
+          | - id: int       |
+          | - name: String  |
+          | - address: Address
+          +-----------------+
+                   ◇──────────► +-----------------+
+                               |    Address      |
+                               +-----------------+
+                               | + city: String  |
+                               | + street: String|
+                               +-----------------+</div>
+      <div class="quote"><strong>Note:</strong> the hollow diamond (◇) indicates aggregation.</div>
+
+      <h3 class="sub-h"><span class="idx">6</span>Common interview questions</h3>
+      <div class="card accent-peri">
+        <h4>Q: What is the difference between aggregation and composition?</h4>
+        <p>Aggregation = weak HAS-A (independent lifecycle, hollow diamond); Composition = strong HAS-A (dependent lifecycle, filled diamond).</p>
+        <h4>Q: Can aggregation have multiplicity?</h4>
+        <p>Yes (e.g., 1 Department → * Employees).</p>
+        <h4>Q: Is aggregation a type of association?</h4>
+        <p>Yes — aggregation is a specialized form of association indicating whole-part.</p>
+        <h4>Q: When to use aggregation over composition?</h4>
+        <p>When the part can exist independently or be shared (e.g., Student-Course, Library-Book).</p>
+        <h4>Q: In code, how do you distinguish aggregation from composition?</h4>
+        <p>Purely by design intent and lifecycle management. Java has no keyword — it's a modeling concept. Composition usually creates the part internally.</p>
+        <h4>Q: Can a class have both aggregation and composition?</h4>
+        <p>Yes (e.g., University HAS-A Departments (aggregation) and HAS-A CampusBuilding (composition)).</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">7</span>Quick summary</h3>
+      <ul class="checklist">
+        <li><strong>HAS-A</strong> relationship.</li>
+        <li><strong>Weak</strong> association → independent existence.</li>
+        <li><strong>Hollow diamond</strong> in UML.</li>
+        <li>No automatic lifecycle management.</li>
+        <li>Used for reusable, shareable components.</li>
+      </ul>
+    </section>
+
+    <section class="block" id="interfaces">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--periwinkle);">03 · OOP &amp; Interfaces</span>
+        <h2>Interfaces</h2>
+        <p>Contracts, evolution, marker &amp; functional interfaces, and abstract classes.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">1</span>What is an interface?</h3>
+      <ul class="list">
+        <li>An interface is a <strong>blueprint</strong> of a class that defines <strong>what</strong> a class must do (methods) but not <strong>how</strong>.</li>
+        <li>It is a contract: any class implementing it must provide implementations for its methods.</li>
+        <li>Supports <strong>abstraction</strong> and <strong>multiple inheritance</strong> (a class can implement multiple interfaces).</li>
+        <li>Declared using the <code>interface</code> keyword.</li>
+      </ul>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">public interface Drawable {
+    void draw();  // implicitly public and abstract
+}</code></pre>
+
+      <h3 class="sub-h"><span class="idx">2</span>Key features</h3>
+      <ul class="list">
+        <li>All methods are <strong>public abstract</strong> by default (pre-Java 8).</li>
+        <li>All variables are <strong>public static final</strong> (constants).</li>
+        <li>Cannot have constructors.</li>
+        <li>Cannot be instantiated directly.</li>
+        <li>A class <strong>implements</strong> an interface using <code>implements</code>.</li>
+        <li>An interface can <strong>extend</strong> one or more interfaces.</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">3</span>Evolution of interfaces</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Java Version</th><th>New Features</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td>Pre-Java 8</td><td>Only abstract methods</td><td><code>void method();</code></td></tr>
+            <tr><td>Java 8</td><td><strong>Default methods</strong> (with body)<br><strong>Static methods</strong></td><td><code>default void show() { ... }</code><br><code>static void util() { ... }</code></td></tr>
+            <tr><td>Java 9</td><td><strong>Private methods</strong> (for code reuse in default methods)</td><td><code>private void helper() { ... }</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">4</span>Implementation example</h3>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">interface Animal {
+    void eat();  // abstract
+
+    default void sleep() {  // Java 8+
+        System.out.println("Sleeping...");
+    }
+
+    static void info() {    // Java 8+
+        System.out.println("This is an Animal interface");
+    }
+}
+
+class Dog implements Animal {
+    public void eat() {     // Must be public
+        System.out.println("Dog eats bones");
+    }
+    // sleep() inherited as-is
+}</code></pre>
+
+      <h3 class="sub-h"><span class="idx">5</span>Interface vs abstract class (most asked)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Feature</th><th>Interface</th><th>Abstract Class</th></tr></thead>
+          <tbody>
+            <tr><td>Methods</td><td>Mostly abstract; default/static/private (Java 8+)</td><td>Abstract or concrete</td></tr>
+            <tr><td>Variables</td><td>Only <code>public static final</code></td><td>Any (instance, static)</td></tr>
+            <tr><td>Constructors</td><td>No</td><td>Yes</td></tr>
+            <tr><td>Inheritance</td><td>Multiple (<code>implements</code> multiple)</td><td>Single only</td></tr>
+            <tr><td>Access Modifiers</td><td>Methods implicitly public</td><td>Any (public, protected, etc.)</td></tr>
+            <tr><td>Extends/Implements</td><td>Can extend multiple interfaces</td><td>Can extend one class only</td></tr>
+            <tr><td>Use Case</td><td>Define contract (e.g., Comparable, Runnable)</td><td>Share code among related classes</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">6</span>Marker interface</h3>
+      <ul class="list">
+        <li>An interface with <strong>no methods</strong> or constants.</li>
+        <li>Used to tag a class (conveys metadata to the JVM or frameworks).</li>
+        <li>Examples: <code>Serializable</code>, <code>Cloneable</code>, <code>Remote</code>.</li>
+      </ul>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">interface MyMarker { }  // No members
+
+class MyClass implements MyMarker { }</code></pre>
+
+      <h3 class="sub-h"><span class="idx">7</span>Functional interface (Java 8+)</h3>
+      <ul class="list">
+        <li>An interface with <strong>exactly one abstract method</strong>.</li>
+        <li>Can have default/static methods.</li>
+        <li>Annotated with <code>@FunctionalInterface</code> (optional but recommended — compile check).</li>
+        <li>Used with <strong>Lambda expressions</strong>.</li>
+      </ul>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">@FunctionalInterface
+interface Calculator {
+    int calculate(int a, int b);  // Only one abstract method
+
+    default void log() { }       // Allowed
+}</code></pre>
+      <p style="color:var(--muted);">Usage with Lambda:</p>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">Calculator add = (a, b) -> a + b;
+System.out.println(add.calculate(5, 3));  // 8</code></pre>
+      <p style="color:var(--muted);">Common built-in functional interfaces: <code>Runnable</code>, <code>Callable</code>, <code>Comparator</code>, <code>Predicate</code>, <code>Function</code>, <code>Consumer</code>, etc.</p>
+
+      <h3 class="sub-h"><span class="idx">8</span>Common interview questions</h3>
+      <div class="card accent-peri">
+        <h4>Q: Why were default methods introduced in Java 8?</h4>
+        <p>To add new methods to existing interfaces (e.g., <code>List.sort()</code>) without breaking implementing classes (backward compatibility — Lambda and Stream API support).</p>
+        <h4>Q: Can we override a default method?</h4>
+        <p>Yes, in an implementing class.</p>
+        <h4>Q: What happens if two interfaces have the same default method?</h4>
+        <p>The implementing class must <strong>explicitly override</strong> it (class wins over interface).</p>
+        <pre><code class="language-java">class MyClass implements Interface1, Interface2 {
+    public void method() { Interface1.super.method(); }  // Resolve conflict
+}</code></pre>
+        <h4>Q: Can an interface have private methods?</h4>
+        <p>Yes (Java 9+), only for code reuse inside default methods.</p>
+        <h4>Q: Can an interface be final?</h4>
+        <p>No — interfaces are meant to be implemented.</p>
+        <h4>Q: Can a class implement two interfaces with the same method signature?</h4>
+        <p>Yes — one implementation satisfies both.</p>
+        <h4>Q: Difference between interface and abstract class?</h4>
+        <p>See the table above.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">9</span>Quick summary</h3>
+      <ul class="checklist">
+        <li>Contract with <strong>public abstract</strong> methods.</li>
+        <li>Supports <strong>multiple inheritance</strong>.</li>
+        <li>Java 8+: default, static methods.</li>
+        <li>Java 9+: private methods.</li>
+        <li><code>@FunctionalInterface</code> for lambdas.</li>
+        <li>Prefer interfaces for defining APIs/types.</li>
+      </ul>
+    </section>
+
+    <section class="block" id="final-keyword">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--periwinkle);">03 · OOP &amp; Interfaces</span>
+        <h2>The <code>final</code> keyword</h2>
+        <p>Restricting modification across variables, methods, and classes.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">1</span>What is 'final'?</h3>
+      <ul class="list">
+        <li><code>final</code> is a non-access modifier that restricts further modification.</li>
+        <li>Can be applied to <strong>variables</strong>, <strong>methods</strong>, <strong>classes</strong>, and <strong>method parameters</strong>.</li>
+        <li>Once declared final, the value/behavior cannot be changed.</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">2</span>Usage of final</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Applied To</th><th>Effect</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td>Variable</td><td>Becomes a constant — value cannot be reassigned after initialization</td><td><code>final int MAX = 100;</code></td></tr>
+            <tr><td>Instance Variable</td><td>Must be initialized in the constructor or at declaration</td><td><code>final String name;</code> (initialized in ctor)</td></tr>
+            <tr><td>Static Variable</td><td>Class-level constant (often with <code>static</code>)</td><td><code>public static final double PI = 3.14159;</code></td></tr>
+            <tr><td>Method Parameter</td><td>Parameter value cannot be changed inside the method</td><td><code>void process(final int x)</code></td></tr>
+            <tr><td>Method</td><td>Cannot be overridden in a subclass</td><td><code>final void calculate()</code></td></tr>
+            <tr><td>Class</td><td>Cannot be extended (no subclass allowed)</td><td><code>final class String</code> (real example)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">3</span>final variable rules</h3>
+      <ul class="list">
+        <li><strong>Local variable</strong>: must be initialized before use.</li>
+        <li><strong>Instance/static variable</strong>: can be initialized at declaration, in an instance/static block, or in a constructor (for instance) / static block (for static).</li>
+        <li>Once initialized, cannot be reassigned.</li>
+        <li><strong>Blank final variable</strong>: declared final but not initialized at declaration — must be initialized in the constructor.</li>
+      </ul>
+      <span class="code-label">java — example</span>
+      <pre><code class="language-java">class Example {
+    final int instanceFinal;          // Blank final
+    static final int STATIC_FINAL;    // Blank static final
+
+    static {
+        STATIC_FINAL = 100;           // Initialized in static block
+    }
+
+    Example() {
+        instanceFinal = 200;          // Initialized in constructor
+    }
+}</code></pre>
+
+      <h3 class="sub-h"><span class="idx">4</span>final method</h3>
+      <ul class="list">
+        <li>Prevents overriding in subclasses.</li>
+        <li>Useful for security, design (template methods), or performance (inlining possible).</li>
+      </ul>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">class Parent {
+    final void doNotOverride() {
+        System.out.println("Cannot override");
+    }
+}
+
+class Child extends Parent {
+    // void doNotOverride() { }  // Compile error
+}</code></pre>
+
+      <h3 class="sub-h"><span class="idx">5</span>final class</h3>
+      <ul class="list">
+        <li>Cannot be subclassed.</li>
+        <li>Examples in the JDK: <code>String</code>, <code>Integer</code>, <code>Double</code>, <code>System</code>, <code>Math</code> (some methods final).</li>
+      </ul>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">final class MyFinalClass { }
+// class Sub extends MyFinalClass { }  // Compile error</code></pre>
+
+      <h3 class="sub-h"><span class="idx">6</span>Common interview questions</h3>
+      <div class="card accent-peri">
+        <h4>Q: Can a final variable be reassigned?</h4>
+        <p>No, once initialized.</p>
+        <h4>Q: What is the difference between final, finally, and finalize()?</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Keyword</th><th>Purpose</th><th>Context</th></tr></thead>
+            <tbody>
+              <tr><td>final</td><td>Makes variable/method/class immutable/unextendable</td><td>Compile-time restriction</td></tr>
+              <tr><td>finally</td><td>Block that always executes after try-catch</td><td>Exception handling</td></tr>
+              <tr><td>finalize()</td><td>Deprecated method called before GC</td><td>Object cleanup (avoid using)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h4>Q: Can we declare a constructor as final?</h4>
+        <p>No — constructors cannot be final, static, or abstract.</p>
+        <h4>Q: Can a final method be overloaded?</h4>
+        <p>Yes (overloading is same class, different parameters).</p>
+        <h4>Q: What happens if a blank final variable is not initialized?</h4>
+        <p>Compile error.</p>
+        <h4>Q: Why is the String class final?</h4>
+        <p>For <strong>immutability</strong>, <strong>security</strong> (used in class loading, permissions), <strong>thread-safety</strong>, and <strong>string pool optimization</strong>.</p>
+        <h4>Q: Can we change the value of a final object reference?</h4>
+        <p>No — the reference cannot point to another object, but the <strong>object's internal state can change</strong> if it is not immutable.</p>
+        <pre><code class="language-java">final List<String> list = new ArrayList<>();
+list.add("New");        // Allowed – object state changes
+// list = new ArrayList<>();  // Compile error</code></pre>
+        <h4>Q: Performance benefit of final?</h4>
+        <p>The JVM can inline final methods/variables — a slight optimization.</p>
+        <h4>Q: Can local variables be declared final?</h4>
+        <p>Yes — useful in anonymous inner classes (pre-Java 8 for effective final).</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">7</span>Best practices</h3>
+      <ul class="list">
+        <li>Use <code>final</code> for constants: <code>public static final</code>.</li>
+        <li>Make classes final if not designed for inheritance.</li>
+        <li>Make methods final if not intended for overriding.</li>
+        <li>Prefer immutability (combine with private fields).</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">8</span>Quick summary table</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Target</th><th>Can Change?</th><th>Effect of final</th></tr></thead>
+          <tbody>
+            <tr><td>Variable</td><td>No</td><td>Constant after initialization</td></tr>
+            <tr><td>Method</td><td>N/A</td><td>Cannot override</td></tr>
+            <tr><td>Class</td><td>N/A</td><td>Cannot extend</td></tr>
+            <tr><td>Object reference</td><td>No</td><td>Cannot reassign reference</td></tr>
+            <tr><td>Object internal state</td><td>Yes</td><td>Mutable fields can change</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block" id="wrapper-classes">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--periwinkle);">03 · OOP &amp; Interfaces</span>
+        <h2>Objects and wrapper classes</h2>
+        <p>Primitives as objects, autoboxing, caching, and the == vs equals() gotcha.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">1</span>Everything is NOT an object</h3>
+      <ul class="list">
+        <li>Java is <strong>not purely object-oriented</strong> because primitives (int, boolean, etc.) are not objects.</li>
+        <li>Primitives are stored directly in memory (stack) for performance.</li>
+        <li>To treat primitives as objects, Java provides <strong>Wrapper Classes</strong>.</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">2</span>Wrapper classes</h3>
+      <ul class="list">
+        <li>Wrapper classes provide an <strong>object representation</strong> of primitive data types.</li>
+        <li>Located in the <code>java.lang</code> package (auto-imported).</li>
+        <li>All are <strong>final</strong> and <strong>immutable</strong>.</li>
+      </ul>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Primitive Type</th><th>Wrapper Class</th><th>Default Value (as Object)</th></tr></thead>
+          <tbody>
+            <tr><td>byte</td><td>Byte</td><td>null</td></tr>
+            <tr><td>short</td><td>Short</td><td>null</td></tr>
+            <tr><td>int</td><td>Integer</td><td>null</td></tr>
+            <tr><td>long</td><td>Long</td><td>null</td></tr>
+            <tr><td>float</td><td>Float</td><td>null</td></tr>
+            <tr><td>double</td><td>Double</td><td>null</td></tr>
+            <tr><td>char</td><td>Character</td><td>null</td></tr>
+            <tr><td>boolean</td><td>Boolean</td><td>null</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">3</span>Key features</h3>
+      <ul class="list">
+        <li><strong>Immutable</strong>: once created, the value cannot be changed.</li>
+        <li><strong>Useful for</strong>:
+          <ul class="list">
+            <li>Collections (<code>List&lt;Integer&gt;</code>, <code>Map&lt;String, Integer&gt;</code> — cannot store primitives).</li>
+            <li>Generics.</li>
+            <li>Methods that require objects (e.g., <code>Object</code> as a parameter).</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">4</span>Autoboxing and unboxing (Java 5+)</h3>
+      <ul class="list">
+        <li><strong>Autoboxing</strong>: automatic conversion from primitive → wrapper object.</li>
+        <li><strong>Unboxing</strong>: automatic conversion from wrapper object → primitive.</li>
+      </ul>
+      <span class="code-label">java — examples</span>
+      <pre><code class="language-java">Integer obj = 10;              // Autoboxing (int → Integer)
+int num = obj;                 // Unboxing (Integer → int)
+
+List<Integer> list = new ArrayList<>();
+list.add(5);                   // Autoboxing: 5 → new Integer(5)
+
+int sum = obj + 20;            // Unboxing: obj → int, then add</code></pre>
+
+      <h3 class="sub-h"><span class="idx">5</span>Common methods (Integer as an example)</h3>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">Integer.parseInt("123");       // String → int
+Integer.valueOf("123");        // String → Integer (preferred, cached)
+Integer.toString(123);         // int → String
+Integer.compare(10, 20);       // Returns -1, 0, 1
+Integer.MAX_VALUE              // 2147483647
+Integer.MIN_VALUE              // -2147483648</code></pre>
+
+      <h3 class="sub-h"><span class="idx">6</span>Caching in wrapper classes (important for interviews)</h3>
+      <ul class="list">
+        <li><strong>Integer</strong>: caches values from -128 to 127 (default range).</li>
+      </ul>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">Integer a = 100;
+Integer b = 100;
+System.out.println(a == b);  // true (same cached object)
+
+Integer c = 200;
+Integer d = 200;
+System.out.println(c == d);  // false (new objects created)</code></pre>
+      <ul class="list">
+        <li>Can be changed with the JVM option: <code>XX:AutoBoxCacheMax=&lt;size&gt;</code></li>
+        <li><strong>Other wrappers</strong>:
+          <ul class="list">
+            <li>Byte, Short, Long: -128 to 127</li>
+            <li>Character: 0 to 127</li>
+            <li>Boolean: true/false always cached</li>
+            <li>Float/Double: no caching</li>
+          </ul>
+        </li>
+      </ul>
+      <p style="color:var(--muted);"><strong>Interview gotcha:</strong></p>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">Integer x = 400;
+Integer y = 400;
+System.out.println(x == y);     // false (no caching beyond 127)
+System.out.println(x.equals(y)); // true (value comparison)</code></pre>
+
+      <h3 class="sub-h"><span class="idx">7</span>Common interview questions</h3>
+      <div class="card accent-peri">
+        <h4>Q: Why do we need wrapper classes?</h4>
+        <p>To use primitives in collections, generics, and methods expecting <code>Object</code>.</p>
+        <h4>Q: Difference between == and equals() in wrapper classes?</h4>
+        <p><code>==</code> → compares object references (same object?). <code>equals()</code> → compares actual values.</p>
+        <h4>Q: What is autoboxing/unboxing? Give the performance impact.</h4>
+        <p>Convenient but creates temporary objects → slight performance overhead (avoid in tight loops).</p>
+        <h4>Q: Can we extend wrapper classes?</h4>
+        <p>No — all are <code>final</code>.</p>
+        <h4>Q: When does Integer caching apply?</h4>
+        <p>Only -128 to 127 by default, and only with autoboxing (not with <code>new Integer()</code>).</p>
+        <h4>Q: Why a null pointer exception in unboxing?</h4>
+        <pre><code class="language-java">Integer obj = null;
+int value = obj;  // NullPointerException (auto-unboxing null)</code></pre>
+        <h4>Q: Best way to convert String to int?</h4>
+        <p><code>Integer.parseInt(str)</code> (returns primitive) or <code>Integer.valueOf(str)</code> (returns Integer, better caching).</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">8</span>Quick summary table</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Operation</th><th>Code Example</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Primitive → Wrapper</td><td><code>Integer i = 10;</code></td><td>Autoboxing</td></tr>
+            <tr><td>Wrapper → Primitive</td><td><code>int x = i;</code></td><td>Unboxing</td></tr>
+            <tr><td>String → int</td><td><code>int x = Integer.parseInt("123");</code></td><td>Throws NumberFormatException</td></tr>
+            <tr><td>String → Integer</td><td><code>Integer i = Integer.valueOf("123");</code></td><td>Preferred (caching possible)</td></tr>
+            <tr><td>int → String</td><td><code>String s = String.valueOf(123);</code></td><td>Multiple ways</td></tr>
+            <tr><td>Compare values</td><td><code>Integer.compare(a, b)</code></td><td>Safe, null-friendly</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ SECTION 04 : RUNTIME & MEMORY ============ -->
+    <section class="block" id="memory-management" style="background:linear-gradient(180deg, rgba(255,107,107,0.03), transparent 200px);">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--coral);">04 · Runtime &amp; Memory</span>
+        <h2>Memory management</h2>
+        <p>JVM memory areas, stack vs heap, garbage collection, and memory leaks.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">1</span>Java memory areas</h3>
+      <p style="color:var(--muted);">The JVM divides memory into several regions:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Area</th><th>Purpose</th><th>Stored Content</th><th>Thread Safety</th><th>Lifetime</th></tr></thead>
+          <tbody>
+            <tr><td>Heap</td><td>Stores all objects and arrays</td><td>Object instances, arrays</td><td>Shared</td><td>Until GC collects</td></tr>
+            <tr><td>Method Area</td><td>Stores class-level data (part of Permanent Generation in older JVMs)</td><td>Class metadata, static variables, method bytecode</td><td>Shared</td><td>Application lifetime</td></tr>
+            <tr><td>Stack</td><td>Stores local variables, method parameters, and call frames</td><td>Primitive locals, object references</td><td>Per-thread</td><td>Until method completes</td></tr>
+            <tr><td>PC Register</td><td>Holds the address of the current executing instruction</td><td>JVM instruction address</td><td>Per-thread</td><td>During execution</td></tr>
+            <tr><td>Native Method Stack</td><td>For native methods (C/C++ code)</td><td>Native method info</td><td>Per-thread</td><td>During native call</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="list">
+        <li><strong>Heap</strong> is the primary focus for memory management.</li>
+        <li><strong>Stack</strong> is fast, automatic, and per-thread.</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">2</span>Stack vs heap</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Feature</th><th>Stack</th><th>Heap</th></tr></thead>
+          <tbody>
+            <tr><td>Storage</td><td>Local primitives &amp; object references</td><td>Objects &amp; instance variables</td></tr>
+            <tr><td>Lifetime</td><td>Method scope</td><td>Until garbage collected</td></tr>
+            <tr><td>Access Speed</td><td>Faster</td><td>Slower</td></tr>
+            <tr><td>Management</td><td>Automatic (LIFO)</td><td>Managed by Garbage Collector</td></tr>
+            <tr><td>Size</td><td>Smaller (default ~1MB per thread)</td><td>Larger (limited by system memory)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="quote"><strong>Interview tip:</strong> object references are stored on the stack; actual objects are always on the heap.</div>
+
+      <h3 class="sub-h"><span class="idx">3</span>Garbage collection (GC)</h3>
+      <ul class="list">
+        <li>Automatic memory reclamation of objects no longer referenced.</li>
+        <li><strong>Eligibility</strong>: an object has no active references (null or out of scope).</li>
+        <li><strong>How GC works</strong>:
+          <ol class="list">
+            <li><strong>Mark Phase</strong>: identifies reachable (live) objects from roots (stack, static vars, etc.).</li>
+            <li><strong>Sweep/Compact Phase</strong>: reclaims memory of unmarked objects; may compact to reduce fragmentation.</li>
+          </ol>
+        </li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">4</span>Types of garbage collectors (HotSpot JVM)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>GC Type</th><th>Key Features</th><th>Use Case</th><th>Parallel/Concurrent</th></tr></thead>
+          <tbody>
+            <tr><td>Serial GC</td><td>Single-threaded, freezes all threads</td><td>Small apps, limited CPU</td><td>—</td></tr>
+            <tr><td>Parallel GC</td><td>Multi-threaded (default in many JDKs)</td><td>Throughput-focused</td><td>Parallel</td></tr>
+            <tr><td>G1 GC</td><td>Region-based, low pause times (default Java 9+)</td><td>Large heaps, predictable pauses</td><td>Parallel + Concurrent</td></tr>
+            <tr><td>ZGC</td><td>Low-latency (&lt;10ms pauses), handles TB heaps</td><td>Latency-critical apps</td><td>Concurrent</td></tr>
+            <tr><td>Shenandoah</td><td>Ultra-low pause times</td><td>Similar to ZGC</td><td>Concurrent</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="list">
+        <li><strong>Command-line flags</strong> (common interview ask): <code>-XX:+UseG1GC</code>, <code>-XX:+UseZGC</code>, etc.</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">5</span>Object lifecycle &amp; GC roots</h3>
+      <ul class="list">
+        <li><strong>Roots</strong>: stack variables, static references, JNI references, active threads.</li>
+        <li>Unreachable objects → eligible for GC.</li>
+        <li><strong>finalize() method</strong> (deprecated since Java 9, removed in later versions): called before GC (unreliable, avoid).</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">6</span>Memory leaks in Java</h3>
+      <ul class="list">
+        <li>Even with GC, leaks are possible due to unintended references.</li>
+        <li><strong>Common causes</strong>:
+          <ul class="list">
+            <li>Static collections holding objects.</li>
+            <li>Unclosed resources (streams, connections).</li>
+            <li>Listeners/observers not deregistered.</li>
+            <li>Improper equals()/hashCode() in HashMap/HashSet.</li>
+          </ul>
+        </li>
+      </ul>
+      <p style="color:var(--muted);"><strong>Example leak:</strong></p>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">static List<Object> list = new ArrayList<>();
+// Adding large objects without clearing → leak</code></pre>
+
+      <h3 class="sub-h"><span class="idx">7</span>Common interview questions</h3>
+      <div class="card accent-coral">
+        <h4>Q: How does GC know an object is garbage?</h4>
+        <p>No references from GC roots (reachability analysis).</p>
+        <h4>Q: Can we force garbage collection?</h4>
+        <p>No guarantee. <code>System.gc()</code> is just a hint.</p>
+        <h4>Q: Difference between stack and heap memory?</h4>
+        <p>Stack: fast, thread-local, primitives + refs; Heap: shared, objects, GC-managed.</p>
+        <h4>Q: What is a memory leak in Java?</h4>
+        <p>Objects remain reachable but are no longer needed, preventing GC.</p>
+        <h4>Q: When is an object eligible for GC?</h4>
+        <p>When no strong references point to it.</p>
+        <h4>Q: What are weak, soft, and phantom references?</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Type</th><th>Cleared By GC?</th><th>Use Case</th></tr></thead>
+            <tbody>
+              <tr><td>Strong</td><td>No</td><td>Normal reference</td></tr>
+              <tr><td>Soft</td><td>Yes (low memory)</td><td>Cache (retain until memory pressure)</td></tr>
+              <tr><td>Weak</td><td>Yes</td><td>Canonicalizing mappings (WeakHashMap)</td></tr>
+              <tr><td>Phantom</td><td>Yes</td><td>Post-finalization cleanup</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h4>Q: What happens in OutOfMemoryError?</h4>
+        <p>Heap space exhausted → "Java heap space"; Metaspace → "Metaspace" (class metadata).</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">8</span>Quick revision points</h3>
+      <ul class="list">
+        <li>Heap: objects → GC managed.</li>
+        <li>Stack: local vars/refs → automatic.</li>
+        <li>GC: automatic, generational (Young: Eden + Survivors; Old).</li>
+        <li>Young Gen: Minor GC (fast); Old Gen: Major/Full GC (slow).</li>
+        <li>Tools: jvisualvm, jmap, jstat, VisualVM, JConsole.</li>
+        <li>Best practice: set initial/max heap (<code>Xms</code>, <code>Xmx</code>), choose the right GC.</li>
+      </ul>
+    </section>
+
+    <section class="block" id="class-diagrams">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--coral);">04 · Runtime &amp; Memory</span>
+        <h2>Class diagrams in Java OOP</h2>
+        <p>UML notation for classes, relationships, and interview practice.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">1</span>What is a class diagram?</h3>
+      <ul class="list">
+        <li>A <strong>UML (Unified Modeling Language)</strong> diagram that visually represents the <strong>static structure</strong> of a system.</li>
+        <li>Shows classes, their attributes, methods, relationships (inheritance, association, etc.), and access modifiers.</li>
+        <li>Commonly asked in interviews to test your ability to design or explain OOP concepts visually/textually.</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">2</span>Standard notation in a class diagram</h3>
+      <p style="color:var(--muted);">A class is represented as a rectangle divided into <strong>3 compartments</strong>:</p>
+      <span class="code-label">class box anatomy</span>
+      <div class="diagram-box">+-----------------------------+
+|         ClassName           |   ← Top: Class name (bold, centered)
+|                             |
++-----------------------------+
+| - privateField: type        |   ← Middle: Attributes/Fields
+| # protectedField: type      |       (+ public, - private, # protected, ~ package-private)
+| ~ packageField: type        |
+| + publicField: type         |
++-----------------------------+
+| + publicMethod(): returnType|   ← Bottom: Methods/Operations
+| - privateMethod(param): void|       (Same visibility symbols)
+| # protectedMethod(): String |
+| + staticMethod(): void      |   ← Underlined for static methods
++-----------------------------+</div>
+      <ul class="list">
+        <li><strong>Visibility symbols</strong>:
+          <ul class="list">
+            <li><code>+</code> → public</li>
+            <li><code>-</code> → private</li>
+            <li><code>#</code> → protected</li>
+            <li><code>~</code> → default (package-private)</li>
+          </ul>
+        </li>
+        <li><strong>Other notations</strong>:
+          <ul class="list">
+            <li>Underlined → static</li>
+            <li>Italic → abstract class/method</li>
+            <li><code>{abstract}</code> → abstract class</li>
+            <li><code>&lt;&lt;interface&gt;&gt;</code> → above interface name</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">3</span>Relationships in class diagrams</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Relationship</th><th>Notation</th><th>Meaning</th><th>Multiplicity Examples</th></tr></thead>
+          <tbody>
+            <tr><td>Inheritance</td><td>Solid line + hollow triangle arrow → parent</td><td>"is-a" relationship</td><td>1..1 (one parent)</td></tr>
+            <tr><td>Interface Realization</td><td>Dotted line + hollow triangle → interface</td><td>"implements"</td><td>—</td></tr>
+            <tr><td>Association</td><td>Solid line</td><td>"has-a" (objects know each other)</td><td>1, *, 0..*, 1..*</td></tr>
+            <tr><td>Aggregation</td><td>Solid line + hollow diamond at container</td><td>Whole-part (part can exist independently)</td><td>—</td></tr>
+            <tr><td>Composition</td><td>Solid line + filled diamond at container</td><td>Strong whole-part (part dies with whole)</td><td>—</td></tr>
+            <tr><td>Dependency</td><td>Dotted line + arrow</td><td>One class uses another temporarily</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">4</span>Example class diagram (textual representation)</h3>
+      <p style="color:var(--muted);">Scenario: a simple University system</p>
+      <span class="code-label">uml</span>
+      <div class="diagram-box">                  +-------------------+
+                  |     Person        |
+                  +-------------------+
+                  | - name: String    |
+                  | - age: int        |
+                  +-------------------+
+                  | + getName(): String|
+                  +-------------------+
+                           /_\
+                            |
+                            |
+          +-----------------+-----------------+
+          |                                     |
+  +-----------------+                  +-----------------+
+  |    Student      |                  |    Teacher      |
+  +-----------------+                  +-----------------+
+  | - studentId: int|                  | - employeeId: int|
+  | - courses: List<Course> *       |  | - department: String|
+  +-----------------+                  +-----------------+
+  | + enroll(Course)|                  | + teach(Course) |
+  +-----------------+                  +-----------------+
+
+  +-----------------+
+  |     Course      |◄--------------------► (Association: many-to-many)
+  +-----------------+
+  | - code: String   |
+  | - title: String  |
+  +-----------------+</div>
+
+      <h3 class="sub-h"><span class="idx">5</span>Common interview questions on class diagrams</h3>
+      <div class="card accent-coral">
+        <h4>Q: Draw a class diagram for the Singleton pattern.</h4>
+        <div class="diagram-box">+-------------------+
+|    Singleton      |
++-------------------+
+| - instance: Singleton (static)|
+| - Singleton() (private)       |
++-------------------+
+| + getInstance(): Singleton (static)|
++-------------------+</div>
+        <h4>Q: Difference between Aggregation and Composition?</h4>
+        <p>Aggregation (hollow diamond): weak relationship — the part can exist without the whole (e.g., University → Professor). Composition (filled diamond): strong — the part cannot exist without the whole (e.g., Room → Wall).</p>
+        <h4>Q: How to represent an abstract class and abstract method?</h4>
+        <p>Class name and abstract method in <em>italics</em>, or write <code>{abstract}</code>.</p>
+        <h4>Q: How to show interface implementation?</h4>
+        <p>Dotted line with a hollow triangle pointing to the interface, or use <code>&lt;&lt;interface&gt;&gt;</code>.</p>
+        <h4>Q: Can you represent static methods and fields?</h4>
+        <p>Yes — underline them.</p>
+        <h4>Q: What does multiplicity mean?</h4>
+        <p><code>1</code> → exactly one; <code>0..*</code> → zero or more; <code>1..*</code> → one or more.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">6</span>Quick tips for interviews</h3>
+      <ul class="checklist">
+        <li>Always label visibility (+, -, #, ~).</li>
+        <li>Show relationships clearly with arrows/diamonds.</li>
+        <li>Use proper multiplicity.</li>
+        <li>Keep it simple and readable.</li>
+        <li>Practice common design patterns: Singleton, Factory, Observer, MVC.</li>
+      </ul>
+    </section>
+
+    <!-- ============ SECTION 05 : TESTING & QUALITY ============ -->
+    <section class="block" id="testing-debugging" style="background:linear-gradient(180deg, rgba(126,231,135,0.03), transparent 200px);">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--green);">05 · Testing &amp; Quality</span>
+        <h2>Testing, debugging &amp; code analysis</h2>
+        <p>Testing types, JUnit 5, debugging techniques, and static analysis tools.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">1</span>Testing in Java</h3>
+      <h4 class="mini-h">A. Types of testing</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Type</th><th>Description</th><th>Tools/Frameworks</th></tr></thead>
+          <tbody>
+            <tr><td>Unit Testing</td><td>Test individual methods/classes</td><td>JUnit 4/5, TestNG</td></tr>
+            <tr><td>Integration Testing</td><td>Test interaction between components</td><td>JUnit + Spring Test, TestNG</td></tr>
+            <tr><td>System/End-to-End</td><td>Test the complete application</td><td>Selenium, RestAssured, Cucumber</td></tr>
+            <tr><td>Regression Testing</td><td>Ensure new changes don't break existing features</td><td>JUnit/TestNG suites</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4 class="mini-h">B. JUnit 5 (most commonly asked)</h4>
+      <ul class="list">
+        <li><strong>Key annotations:</strong></li>
+      </ul>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">@Test                   // Marks a test method
+@BeforeEach             // Runs before each test (setup)
+@AfterEach              // Runs after each test (teardown)
+@BeforeAll              // Runs once before all tests (static)
+@AfterAll               // Runs once after all tests (static)
+@Disabled               // Skip test
+@DisplayName("description") // Custom name
+@Tag("fast")            // For categorization</code></pre>
+      <ul class="list">
+        <li><strong>Assertions</strong> (<code>org.junit.jupiter.api.Assertions.*</code>):</li>
+      </ul>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">assertEquals(expected, actual);
+assertTrue(condition);
+assertFalse(condition);
+assertNull(object);
+assertNotNull(object);
+assertThrows(ExceptionClass.class, () -> method());
+assertAll("heading", () -> assertEquals(...), () -> assertTrue(...));</code></pre>
+      <ul class="list">
+        <li><strong>Parameterized tests</strong> (Java 8+):</li>
+      </ul>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">@ParameterizedTest
+@ValueSource(ints = {1, 2, 3})
+void testWithValues(int arg) {
+    assertTrue(arg > 0);
+}</code></pre>
+      <p style="color:var(--muted);"><strong>Interview questions:</strong></p>
+      <div class="card accent-green">
+        <h4>Q: Difference between @Before and @BeforeEach?</h4>
+        <p><code>@Before</code> (JUnit 4), <code>@BeforeEach</code> (JUnit 5). Same purpose.</p>
+        <h4>Q: How to test an exception?</h4>
+        <p><code>assertThrows()</code></p>
+        <h4>Q: What is assertAll?</h4>
+        <p>Groups assertions; fails only if any fails, and shows all failures.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">2</span>Debugging in Java</h3>
+      <h4 class="mini-h">A. Common debugging techniques</h4>
+      <ul class="list">
+        <li><strong>Using an IDE debugger</strong> (IntelliJ/Eclipse):
+          <ul class="list">
+            <li>Set breakpoints (line, conditional, exception).</li>
+            <li>Step Over (F8), Step Into (F7), Step Out (Shift+F8).</li>
+            <li>Inspect variables, evaluate expressions.</li>
+            <li>Watch window, call stack.</li>
+          </ul>
+        </li>
+        <li><strong>Logging</strong>: frameworks — SLF4J + Logback/Log4j2 (preferred over System.out).</li>
+      </ul>
+      <span class="code-label">java — logging</span>
+      <pre><code class="language-java">private static final Logger log = LoggerFactory.getLogger(ClassName.class);
+log.debug("Value: {}", value);
+log.info("Started");
+log.error("Exception", e);</code></pre>
+
+      <h4 class="mini-h">B. Key debug tools/commands</h4>
+      <ul class="list">
+        <li><code>jdb</code> → command-line Java debugger.</li>
+        <li><code>jstack</code> → thread dump (detect deadlocks).</li>
+        <li><code>jmap</code> → heap dump/analysis.</li>
+        <li><code>jvisualvm</code>, JConsole → monitoring tools.</li>
+      </ul>
+      <p style="color:var(--muted);"><strong>Interview questions:</strong></p>
+      <div class="card accent-green">
+        <h4>Q: How to debug a production issue without an IDE?</h4>
+        <p>Enable detailed logging, take thread/heap dumps (<code>jstack</code>, <code>jmap</code>), analyze with tools like VisualVM or Eclipse MAT.</p>
+        <h4>Q: Difference between Step Over and Step Into?</h4>
+        <p>Step Over → executes the method without entering; Step Into → enters the method.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">3</span>Code analysis &amp; static tools</h3>
+      <h4 class="mini-h">A. Static code analysis tools</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Tool</th><th>Purpose</th><th>Key Features</th></tr></thead>
+          <tbody>
+            <tr><td>SonarQube</td><td>Code quality, bugs, vulnerabilities</td><td>Rules, dashboards, integration</td></tr>
+            <tr><td>Checkstyle</td><td>Enforce coding standards</td><td>Google/Java conventions</td></tr>
+            <tr><td>PMD</td><td>Detect bad practices, unused code</td><td>Custom rules</td></tr>
+            <tr><td>SpotBugs (successor to FindBugs)</td><td>Find potential bugs statically</td><td>Bytecode analysis</td></tr>
+            <tr><td>Error Prone</td><td>Compile-time bug detection (Google)</td><td>Integrates with javac</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="mini-h">B. Common issues detected</h4>
+      <ul class="list">
+        <li>Null pointer risks</li>
+        <li>Resource leaks (unclosed streams)</li>
+        <li>Thread-safety issues</li>
+        <li>Performance anti-patterns (e.g., String concatenation in loops)</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">4</span>Common interview questions</h3>
+      <div class="card accent-green">
+        <h4>Q: Difference between JUnit and TestNG?</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Feature</th><th>JUnit 5</th><th>TestNG</th></tr></thead>
+            <tbody>
+              <tr><td>Parameterized Tests</td><td>Built-in</td><td>More flexible</td></tr>
+              <tr><td>Test Dependencies</td><td>Limited</td><td>Supports @DependsOnMethods</td></tr>
+              <tr><td>Parallel Execution</td><td>Yes</td><td>Better control</td></tr>
+              <tr><td>Suite Testing</td><td>Limited</td><td>Excellent</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h4>Q: What is TDD (Test-Driven Development)?</h4>
+        <p>Write tests first → write minimal code to pass → refactor.</p>
+        <h4>Q: How to mock objects in unit tests?</h4>
+        <p>Use <strong>Mockito</strong> (most popular):</p>
+        <pre><code class="language-java">@Mock
+private Service service;
+
+@InjectMocks
+private Controller controller;
+
+@Test
+void test() {
+    when(service.getData()).thenReturn("Mocked");
+    assertEquals("Mocked", controller.call());
+}</code></pre>
+        <h4>Q: What is the difference between assert and verify in testing?</h4>
+        <p>In Mockito: <code>assert</code> fails the test immediately; <code>verify</code> checks interactions.</p>
+        <h4>Q: Best practices for writing good unit tests?</h4>
+        <ul class="list" style="margin-left:0;">
+          <li>One assertion per test (or use <code>assertAll</code>)</li>
+          <li>Fast, independent, repeatable</li>
+          <li>Test edge cases, exceptions</li>
+          <li>Use descriptive method names (<code>shouldReturnTrueWhen...</code>)</li>
+        </ul>
+        <h4>Q: How to analyze a memory leak?</h4>
+        <p>Take a heap dump → use Eclipse MAT/VisualVM → find the dominator tree, leak suspects.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">5</span>Quick revision cheat sheet</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Concept</th><th>Tool/Keyword</th><th>Key Point</th></tr></thead>
+          <tbody>
+            <tr><td>Unit Testing</td><td>JUnit 5</td><td>@Test, assertThrows, @ParameterizedTest</td></tr>
+            <tr><td>Mocking</td><td>Mockito</td><td>@Mock, when(), verify()</td></tr>
+            <tr><td>Logging</td><td>SLF4J + Logback</td><td>Avoid System.out in production</td></tr>
+            <tr><td>Debugging</td><td>IDE Breakpoints, jstack</td><td>Conditional breakpoints useful</td></tr>
+            <tr><td>Static Analysis</td><td>SonarQube, SpotBugs</td><td>Integrate in CI/CD</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block" id="unit-testing">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--green);">05 · Testing &amp; Quality</span>
+        <h2>Unit testing and code coverage</h2>
+        <p>Frameworks, JUnit 5 essentials, mocking, coverage metrics, and best practices.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">1</span>Unit testing</h3>
+      <ul class="list">
+        <li><strong>Definition</strong>: testing the smallest testable part of an application (usually a method or class) in isolation from the rest of the system.</li>
+        <li><strong>Goal</strong>: verify that individual units work as expected.</li>
+        <li><strong>Characteristics</strong>:
+          <ul class="list">
+            <li>Fast, independent, repeatable.</li>
+            <li>No external dependencies (DB, network, file system).</li>
+            <li>Uses mocks/stubs for dependencies.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">2</span>Popular unit testing frameworks</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Framework</th><th>Key Features</th><th>Commonly Used In Interviews</th></tr></thead>
+          <tbody>
+            <tr><td>JUnit 5</td><td>Most popular, modular (Jupiter, Vintage, Platform)</td><td>Yes (industry standard)</td></tr>
+            <tr><td>TestNG</td><td>Better parameterization, parallel execution, dependencies</td><td>Less common now</td></tr>
+            <tr><td>Spock</td><td>Groovy-based, BDD-style, very readable</td><td>Rare in core Java interviews</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">3</span>JUnit 5 essentials</h3>
+      <p style="color:var(--muted);"><strong>Core annotations:</strong></p>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">@Test                        // Marks a test method
+@DisplayName("description") // Custom test name
+@Disabled("reason")          // Skip test
+@BeforeEach                  // Setup before each test
+@AfterEach                   // Teardown after each test
+@BeforeAll                   // Once before all tests (static)
+@AfterAll                    // Once after all tests (static)
+@Tag("smoke")                // Categorize tests</code></pre>
+      <p style="color:var(--muted);"><strong>Assertions:</strong></p>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">assertEquals(expected, actual);
+assertTrue(condition);
+assertFalse(condition);
+assertNull(obj);
+assertNotNull(obj);
+assertThrows(ExpectedException.class, () -> code());
+assertTimeout(Duration.ofMillis(100), () -> code());
+assertAll("group", () -> assertEquals(...), () -> assertTrue(...));</code></pre>
+      <p style="color:var(--muted);"><strong>Parameterized tests:</strong></p>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">@ParameterizedTest
+@ValueSource(strings = {"racecar", "radar"})
+void palindromes(String word) {
+    assertTrue(isPalindrome(word));
+}
+
+@CsvSource({"1,2,3", "4,5,9"})
+void sum(int a, int b, int expected) {
+    assertEquals(expected, calculator.add(a, b));
+}</code></pre>
+
+      <h3 class="sub-h"><span class="idx">4</span>Mocking frameworks (essential for unit testing)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Framework</th><th>Key Features</th><th>Usage Example</th></tr></thead>
+          <tbody>
+            <tr><td>Mockito</td><td>Most popular, clean syntax, BDD style</td><td>Primary choice</td></tr>
+            <tr><td>EasyMock</td><td>Older, more verbose</td><td>Rarely asked</td></tr>
+            <tr><td>PowerMock</td><td>Mocks static/final methods (use sparingly)</td><td>Advanced cases</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="color:var(--muted);"><strong>Mockito basics:</strong></p>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">@ExtendWith(MockitoExtension.class)  // JUnit 5
+class ServiceTest {
+    @Mock
+    private Repository repo;
+
+    @InjectMocks
+    private MyService service;
+
+    @Test
+    void test() {
+        when(repo.findById(1L)).thenReturn(Optional.of(new Entity()));
+        assertNotNull(service.get(1L));
+        verify(repo).findById(1L);  // Verify interaction
+    }
+}</code></pre>
+
+      <h3 class="sub-h"><span class="idx">5</span>Code coverage</h3>
+      <ul class="list">
+        <li><strong>Definition</strong>: a metric that measures the percentage of code executed by tests.</li>
+        <li><strong>Purpose</strong>: indicates how much of your code is tested (not the quality of tests).</li>
+        <li><strong>Common tools</strong>:
+          <ul class="list">
+            <li><strong>JaCoCo</strong> (Java Code Coverage) → most widely used, integrates with Maven/Gradle.</li>
+            <li><strong>Cobertura</strong> → older, less maintained.</li>
+            <li><strong>Eclipse/EClemma</strong> → built-in for Eclipse.</li>
+          </ul>
+        </li>
+      </ul>
+      <p style="color:var(--muted);"><strong>Coverage types:</strong></p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Type</th><th>Measures</th><th>Typical Threshold</th></tr></thead>
+          <tbody>
+            <tr><td>Line Coverage</td><td>% of code lines executed</td><td>80–90%</td></tr>
+            <tr><td>Branch Coverage</td><td>% of decision branches (if/else, switch) covered</td><td>80%+</td></tr>
+            <tr><td>Method Coverage</td><td>% of methods executed</td><td>Less strict</td></tr>
+            <tr><td>Class Coverage</td><td>% of classes with at least one line executed</td><td>High</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">6</span>Common interview questions</h3>
+      <div class="card accent-green">
+        <h4>Q: What is the difference between unit and integration testing?</h4>
+        <p>Unit: tests a single class/method in isolation (fast, mocks). Integration: tests interaction between components (slower, real dependencies).</p>
+        <h4>Q: What makes a good unit test?</h4>
+        <ul class="list" style="margin-left:0;">
+          <li><strong>FAST</strong>: quick execution.</li>
+          <li><strong>ISOLATED</strong>: no dependency on external systems.</li>
+          <li><strong>REPEATABLE</strong>: same result every time.</li>
+          <li><strong>READABLE</strong>: clear intent (good naming).</li>
+          <li>One assertion per test (or use <code>assertAll</code>).</li>
+        </ul>
+        <h4>Q: Is 100% code coverage good?</h4>
+        <p>No. 100% coverage doesn't mean bug-free. You can have 100% line coverage but miss edge cases, assertions, or logic errors. Focus on <strong>meaningful</strong> tests.</p>
+        <h4>Q: How to test private methods?</h4>
+        <p><strong>Don't</strong> test private methods directly. Test public behavior. If needed: use reflection (bad practice) or test via public methods.</p>
+        <h4>Q: What is BDD-style testing?</h4>
+        <p>Given-When-Then style (e.g., using Cucumber, Spock, or Mockito's BDD syntax):</p>
+        <pre><code class="language-java">// Mockito BDD
+given(repo.findById(1L)).willReturn(entity);
+when(service.get(1L));
+then(result).isNotNull();</code></pre>
+        <h4>Q: How to achieve high branch coverage?</h4>
+        <p>Test all paths: positive, negative, null, empty, boundary values, exceptions.</p>
+        <h4>Q: What is mutation testing?</h4>
+        <p>A tool (e.g., PITest) changes the code slightly (mutates) and checks if tests fail. It measures test quality (not just coverage).</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">7</span>Best practices</h3>
+      <ul class="checklist">
+        <li>Name tests clearly: <code>shouldReturnTrueWhenInputIsValid()</code></li>
+        <li>One behavior per test.</li>
+        <li>Use <code>@DisplayName</code> for readability.</li>
+        <li>Avoid logic in tests.</li>
+        <li>Keep tests in a separate source folder (<code>src/test/java</code>).</li>
+        <li>Aim for <strong>80–90%</strong> line/branch coverage.</li>
+        <li>Integrate JaCoCo in the build pipeline (CI/CD).</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">8</span>Quick cheat sheet</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Concept</th><th>Tool/Annotation</th><th>Key Point</th></tr></thead>
+          <tbody>
+            <tr><td>Test Method</td><td><code>@Test</code></td><td>Core unit test</td></tr>
+            <tr><td>Setup/Teardown</td><td><code>@BeforeEach</code>, <code>@AfterEach</code></td><td>Per test</td></tr>
+            <tr><td>Mocking</td><td>Mockito (<code>@Mock</code>, <code>when()</code>)</td><td>Isolate dependencies</td></tr>
+            <tr><td>Parameterized</td><td><code>@ParameterizedTest</code></td><td>Test multiple inputs</td></tr>
+            <tr><td>Code Coverage</td><td>JaCoCo</td><td>Line &amp; branch coverage</td></tr>
+            <tr><td>Verify Interaction</td><td><code>verify(mock).method()</code></td><td>Behavior verification</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ SECTION 06 : ALGORITHMS & TEXT ============ -->
+    <section class="block" id="recursion" style="background:linear-gradient(180deg, rgba(245,166,35,0.03), transparent 200px);">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">06 · Algorithms &amp; Text</span>
+        <h2>Recursion</h2>
+        <p>When a method calls itself — base cases, types, optimization, and iteration.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">1</span>What is recursion?</h3>
+      <ul class="list">
+        <li>Recursion is a process where a method <strong>calls itself</strong> to solve a problem.</li>
+        <li>Breaks down a complex problem into smaller, identical sub-problems.</li>
+        <li>Each recursive call works on a simpler version until a <strong>base case</strong> is reached.</li>
+        <li>Requires:
+          <ul class="list">
+            <li><strong>Base case</strong>: a condition to stop recursion (prevents infinite calls).</li>
+            <li><strong>Recursive case</strong>: a call to itself with modified parameters.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">2</span>How recursion works</h3>
+      <ul class="list">
+        <li>Each recursive call adds a new frame to the <strong>call stack</strong>.</li>
+        <li>When the base case is reached, stack frames unwind (return values).</li>
+        <li>Can lead to <code>StackOverflowError</code> if the base case is missing or not reachable.</li>
+      </ul>
+      <p style="color:var(--muted);"><strong>Example: Factorial</strong></p>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">public int factorial(int n) {
+    if (n == 0 || n == 1) {      // Base case
+        return 1;
+    }
+    return n * factorial(n - 1); // Recursive case
+}</code></pre>
+      <p style="color:var(--muted);"><strong>Execution (factorial(4)):</strong></p>
+      <span class="code-label">trace</span>
+      <div class="diagram-box">factorial(4) → 4 * factorial(3)
+               3 * factorial(2)
+                   2 * factorial(1) → return 1
+                   → return 2 * 1 = 2
+               → return 3 * 2 = 6
+           → return 4 * 6 = 24</div>
+
+      <h3 class="sub-h"><span class="idx">3</span>Types of recursion</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Type</th><th>Description</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td>Direct Recursion</td><td>Method calls itself directly</td><td><code>void m() { m(); }</code></td></tr>
+            <tr><td>Indirect Recursion</td><td>Method A calls B, B calls A (or a chain)</td><td>A → B → A</td></tr>
+            <tr><td>Tail Recursion</td><td>Recursive call is the last operation</td><td>The JVM does <strong>not</strong> optimize (unlike Scala)</td></tr>
+            <tr><td>Head Recursion</td><td>Recursive call first, then other operations</td><td>Common in most examples</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">4</span>Common recursive problems</h3>
+      <ul class="list">
+        <li>Factorial</li>
+        <li>Fibonacci</li>
+        <li>Tree traversals (preorder, inorder, postorder)</li>
+        <li>Tower of Hanoi</li>
+        <li>Merge Sort, Quick Sort</li>
+        <li>Backtracking (N-Queens, Sudoku)</li>
+      </ul>
+      <p style="color:var(--muted);"><strong>Fibonacci example:</strong></p>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">int fib(int n) {
+    if (n <= 1) return n;               // Base case
+    return fib(n-1) + fib(n-2);         // Two recursive calls → exponential time
+}</code></pre>
+      <ul class="list">
+        <li>Time: O(2^n) → very slow for large n.</li>
+        <li><strong>Optimization</strong>: use memoization or iteration.</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">5</span>Recursion vs iteration</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Feature</th><th>Recursion</th><th>Iteration</th></tr></thead>
+          <tbody>
+            <tr><td>Code Readability</td><td>Cleaner, closer to the mathematical definition</td><td>More verbose</td></tr>
+            <tr><td>Performance</td><td>Stack overhead, risk of StackOverflow</td><td>Faster, no stack overhead</td></tr>
+            <tr><td>Memory</td><td>High (stack frames)</td><td>Low (loop variables)</td></tr>
+            <tr><td>Infinite Risk</td><td>StackOverflowError</td><td>Infinite loop (CPU hang)</td></tr>
+            <tr><td>Best For</td><td>Tree/graph traversal, divide &amp; conquer</td><td>Simple repetition</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="quote"><strong>Interview tip:</strong> always mention that <strong>every recursive solution can be converted to iterative</strong> (using an explicit stack or loops).</div>
+
+      <h3 class="sub-h"><span class="idx">6</span>Tail call optimization (TCO)</h3>
+      <ul class="list">
+        <li>The JVM <strong>does not</strong> perform tail call optimization.</li>
+        <li>Even tail-recursive methods consume stack space.</li>
+        <li>Languages like Scala (on the JVM) support TCO via the <code>@tailrec</code> annotation.</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">7</span>Common interview questions</h3>
+      <div class="card accent-amber">
+        <h4>Q: What is the base case, and why is it important?</h4>
+        <p>It stops recursion. Without it → infinite recursion → <code>StackOverflowError</code>.</p>
+        <h4>Q: When to use recursion?</h4>
+        <p>When a problem has a recursive nature (trees, graphs, divide &amp; conquer). Prefer iteration for simple loops.</p>
+        <h4>Q: How to convert recursion to iteration?</h4>
+        <p>Use an explicit <strong>stack</strong> (for depth-first) or <strong>queue</strong> (breadth-first).</p>
+        <h4>Q: Why is recursive Fibonacci inefficient?</h4>
+        <p>Repeated calculations (exponential time). Fix with <strong>memoization</strong> (dynamic programming).</p>
+      </div>
+      <p style="color:var(--muted);"><strong>Memoized Fibonacci:</strong></p>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">Map<Integer, Integer> memo = new HashMap<>();
+
+int fib(int n) {
+    if (n <= 1) return n;
+    if (memo.containsKey(n)) return memo.get(n);
+    int result = fib(n-1) + fib(n-2);
+    memo.put(n, result);
+    return result;
+}</code></pre>
+      <div class="card accent-amber">
+        <h4>Q: Can recursion cause a memory leak?</h4>
+        <p>No, but deep recursion causes <code>StackOverflowError</code>.</p>
+        <h4>Q: What is indirect recursion?</h4>
+        <p>Two or more methods calling each other.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">8</span>Best practices</h3>
+      <ul class="checklist">
+        <li>Always define the <strong>base case</strong> first.</li>
+        <li>Ensure parameters progress toward the base case.</li>
+        <li>For large inputs, prefer iteration or memoization.</li>
+        <li>Use recursion for tree/graph problems (natural fit).</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">9</span>Quick summary</h3>
+      <ul class="list">
+        <li>Method calls itself.</li>
+        <li>Needs a <strong>base case</strong>.</li>
+        <li>Uses the call stack → risk of <code>StackOverflowError</code>.</li>
+        <li>Elegant but can be inefficient.</li>
+        <li>Prefer iteration for performance; recursion for clarity in recursive problems.</li>
+        <li>JVM: no tail call optimization.</li>
+      </ul>
+    </section>
+
+    <section class="block" id="regex">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">06 · Algorithms &amp; Text</span>
+        <h2>Regular expressions</h2>
+        <p>Matching, searching, and manipulating strings with <code>java.util.regex</code>.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">1</span>What is a regular expression (regex)?</h3>
+      <ul class="list">
+        <li>A <strong>pattern</strong> used to match, search, or manipulate character combinations in strings.</li>
+        <li>Java provides regex support via the <code>java.util.regex</code> package (since Java 1.4).</li>
+        <li>Key classes:
+          <ul class="list">
+            <li><strong>Pattern</strong>: compiled representation of a regex.</li>
+            <li><strong>Matcher</strong>: engine that performs match operations on a string.</li>
+            <li><strong>PatternSyntaxException</strong>: thrown for an invalid regex.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">2</span>Basic syntax and metacharacters</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Symbol</th><th>Meaning</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td>.</td><td>Any single character (except newline)</td><td><code>a.c</code> → matches "abc", "axc"</td></tr>
+            <tr><td>^</td><td>Start of string/line</td><td><code>^abc</code> → matches "abc..."</td></tr>
+            <tr><td>$</td><td>End of string/line</td><td><code>abc$</code> → matches "...abc"</td></tr>
+            <tr><td>*</td><td>0 or more occurrences</td><td><code>ab*</code> → "a", "ab", "abb"</td></tr>
+            <tr><td>+</td><td>1 or more occurrences</td><td><code>ab+</code> → "ab", "abb" (not "a")</td></tr>
+            <tr><td>?</td><td>0 or 1 occurrence</td><td><code>ab?</code> → "a", "ab"</td></tr>
+            <tr><td>{n}</td><td>Exactly n occurrences</td><td><code>a{3}</code> → "aaa"</td></tr>
+            <tr><td>{n,}</td><td>n or more</td><td><code>a{2,}</code> → "aa", "aaa"</td></tr>
+            <tr><td>{n,m}</td><td>Between n and m</td><td><code>a{2,4}</code> → "aa" to "aaaa"</td></tr>
+            <tr><td>[]</td><td>Character class</td><td><code>[abc]</code> → a, b, or c</td></tr>
+            <tr><td>[^]</td><td>Negated class</td><td><code>[^0-9]</code> → non-digit</td></tr>
+            <tr><td>|</td><td>OR (alternation)</td><td><code>a|b</code> → "a" or "b"</td></tr>
+            <tr><td>()</td><td>Grouping / capturing</td><td><code>(ab)+</code> → "ab", "abab"</td></tr>
+            <tr><td>\d</td><td>Digit [0-9]</td><td><code>\d{3}</code> → "123"</td></tr>
+            <tr><td>\D</td><td>Non-digit</td><td>—</td></tr>
+            <tr><td>\s</td><td>Whitespace</td><td>—</td></tr>
+            <tr><td>\S</td><td>Non-whitespace</td><td>—</td></tr>
+            <tr><td>\w</td><td>Word character [a-zA-Z0-9_]</td><td>—</td></tr>
+            <tr><td>\W</td><td>Non-word character</td><td>—</td></tr>
+            <tr><td>\b</td><td>Word boundary</td><td><code>\bcat\b</code> → "cat" as a whole word</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">3</span>Common methods</h3>
+      <h4 class="mini-h">A. Using the String class (convenient)</h4>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">"abc123".matches("\\d+");         // true if entire string matches
+"hello world".split("\\s+");      // ["hello", "world"]
+"abc".replaceAll("b", "x");       // "axc"
+"abc123def".replaceFirst("\\d+", "X");  // "abcXdef"</code></pre>
+      <h4 class="mini-h">B. Using Pattern and Matcher (more powerful)</h4>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">Pattern p = Pattern.compile("\\d+");  // Compile once
+Matcher m = p.matcher("abc123def456");
+
+m.find();      // true (finds first match)
+m.start();     // 3 (start index)
+m.end();       // 6 (end index)
+m.group();     // "123"
+
+while (m.find()) {
+    System.out.println(m.group());  // Prints all numbers
+}
+
+m.matches();   // true only if entire string matches
+m.lookingAt(); // true if starts with pattern
+m.reset();     // Reset matcher for new input</code></pre>
+
+      <h3 class="sub-h"><span class="idx">4</span>Flags (Pattern.compile options)</h3>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">Pattern.CASE_INSENSITIVE   // Ignore case
+Pattern.MULTILINE          // ^ and $ match line boundaries
+Pattern.DOTALL             // . matches newline too
+Pattern.UNICODE_CASE       // Unicode-aware case folding
+
+// Example
+Pattern p = Pattern.compile("abc", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);</code></pre>
+
+      <h3 class="sub-h"><span class="idx">5</span>Capturing groups</h3>
+      <ul class="list">
+        <li><code>( )</code> creates a capturing group.</li>
+        <li>Groups are numbered from 1 (0 is the whole match).</li>
+      </ul>
+      <span class="code-label">java</span>
+      <pre><code class="language-java">Pattern p = Pattern.compile("(\\d{3})-(\\d{2})");
+Matcher m = p.matcher("123-45");
+
+if (m.find()) {
+    m.group(0);  // "123-45" (whole)
+    m.group(1);  // "123"
+    m.group(2);  // "45"
+}</code></pre>
+
+      <h3 class="sub-h"><span class="idx">6</span>Common interview questions</h3>
+      <div class="card accent-amber">
+        <h4>Q: Difference between matches(), find(), and lookingAt()?</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Method</th><th>Requires full match?</th><th>Resets position?</th><th>Finds next?</th></tr></thead>
+            <tbody>
+              <tr><td>matches()</td><td>Yes</td><td>Yes</td><td>No</td></tr>
+              <tr><td>find()</td><td>No</td><td>Optional</td><td>Yes</td></tr>
+              <tr><td>lookingAt()</td><td>No (prefix only)</td><td>Yes</td><td>No</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h4>Q: How to validate an email using regex?</h4>
+        <p>Tricky — don't use regex for full validation. A simple pattern:</p>
+        <pre><code class="language-java">"^[\\w.-]+@[\\w.-]+\\.\\w+$"</code></pre>
+        <p>But real email validation is complex (RFC 5322) → better to use libraries.</p>
+        <h4>Q: Why compile a Pattern once?</h4>
+        <p>Compilation is expensive. Reuse the Pattern for multiple matches.</p>
+        <h4>Q: How to escape special characters?</h4>
+        <p>Use <code>Pattern.quote("string")</code> or double backslash <code>\\.</code> for a dot.</p>
+        <h4>Q: Greedy vs Reluctant vs Possessive quantifiers?</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Type</th><th>Quantifier</th><th>Behavior</th><th>Example</th></tr></thead>
+            <tbody>
+              <tr><td>Greedy</td><td>* + {n,}</td><td>Matches as much as possible</td><td><code>.*</code> in "ab" → "ab"</td></tr>
+              <tr><td>Reluctant</td><td>*? +? {n,}?</td><td>Matches as little as possible</td><td><code>.*?</code></td></tr>
+              <tr><td>Possessive</td><td>*+ ++ {n,}+</td><td>Greedy + no backtracking</td><td>Rarely used</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="color:var(--muted);">Example:</p>
+        <pre><code class="language-java">"&lt;tag&gt;text&lt;/tag&gt;".replaceAll("&lt;.*&gt;", "X");     // Greedy → "X" (whole string)
+"&lt;tag&gt;text&lt;/tag&gt;".replaceAll("&lt;.*?&gt;", "X");    // Reluctant → "XtextX"</code></pre>
+        <h4>Q: How to find all occurrences?</h4>
+        <p>Use a <code>while(m.find())</code> loop.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">7</span>Best practices</h3>
+      <ul class="list">
+        <li>Compile a <code>Pattern</code> once for repeated use.</li>
+        <li>Use <code>String.matches()</code> only for simple cases.</li>
+        <li>Prefer <code>find()</code> over <code>matches()</code> for substrings.</li>
+        <li>Avoid complex regex for validation (email, URL) → use libraries (Apache Commons Validator, JavaMail).</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">8</span>Quick cheat sheet</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Task</th><th>Code Snippet</th></tr></thead>
+          <tbody>
+            <tr><td>Check if matches</td><td><code>str.matches(regex)</code></td></tr>
+            <tr><td>Find all matches</td><td><code>while(m.find()) { m.group(); }</code></td></tr>
+            <tr><td>Replace all</td><td><code>str.replaceAll(regex, replacement)</code></td></tr>
+            <tr><td>Split string</td><td><code>str.split(regex)</code></td></tr>
+            <tr><td>Extract groups</td><td><code>m.group(n)</code></td></tr>
+            <tr><td>Case insensitive</td><td><code>Pattern.compile(regex, Pattern.CASE_INSENSITIVE)</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <a class="back-top" href="#top">↑ Back to top</a>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad:true,
+    theme:'base',
+    themeVariables:{
+      background:'#11151d',
+      primaryColor:'#161c27',
+      primaryTextColor:'#e8eaf0',
+      primaryBorderColor:'#232a38',
+      lineColor:'#5c6478',
+      secondaryColor:'#161c27',
+      tertiaryColor:'#161c27',
+      fontFamily:'JetBrains Mono, monospace',
+      fontSize:'13px'
+    },
+    flowchart:{curve:'basis'},
+    securityLevel:'loose'
+  });
+  hljs.highlightAll();
+
+  // mobile nav toggle
+  const sidebar = document.getElementById('sidebar');
+  const toggle = document.getElementById('menuToggle');
+  toggle.addEventListener('click', ()=> sidebar.classList.toggle('open'));
+  document.querySelectorAll('.navlink').forEach(l=>{
+    l.addEventListener('click', ()=> sidebar.classList.remove('open'));
+  });
+
+  // active link highlighting on scroll
+  const links = Array.from(document.querySelectorAll('.navlink[href^="#"]'));
+  const sections = links.map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
+  function onScroll(){
+    let current = sections[0];
+    const y = window.scrollY + 120;
+    for(const s of sections){
+      if(s.offsetTop <= y) current = s;
+    }
+    links.forEach(l=>l.classList.remove('active'));
+    if(current){
+      const active = links.find(l => l.getAttribute('href') === '#'+current.id);
+      if(active) active.classList.add('active');
+    }
+  }
+  window.addEventListener('scroll', onScroll);
+  onScroll();
+</script>
+</body>
+</html>
+</div>
+</body>
+</html>
