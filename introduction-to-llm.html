@@ -1,0 +1,2258 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introduction to LLM — Complete Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/nord.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js"></script>
+<style>
+:root {
+  --bg:            #0a0d13;
+  --panel:         #11151d;
+  --panel-2:       #161c27;
+  --border:        #232a38;
+  --border-bright: #2f3a4d;
+  --text:          #e8eaf0;
+  --text-soft:     #c6ccd9;
+  --muted:         #8b93a7;
+  --muted-2:       #5c6478;
+  --amber:         #f5a623;
+  --teal:          #4fd1c5;
+  --coral:         #ff6b6b;
+  --periwinkle:    #7c9cff;
+  --green:         #7ee787;
+  --mono:          'JetBrains Mono', monospace;
+  --display:       'Space Grotesk', sans-serif;
+  --body:          'Inter', sans-serif;
+  --code-bg:       #0d1117;
+  --grad-accent:   linear-gradient(135deg, #f5a623 0%, #e0527e 60%, #4fd1c5 100%);
+  --grad-flow:     linear-gradient(90deg, #f5a623, #4fd1c5, #7c9cff);
+  --shadow:        0 8px 28px rgba(0,0,0,0.45);
+  --shadow-sm:     0 4px 16px rgba(0,0,0,0.28);
+  --sidebar-w:     280px;
+  --radius:        12px;
+}
+
+/* ── Base ────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  line-height: 1.65;
+  font-size: 15.5px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* subtle grid texture */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 36px 36px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+::selection { background: rgba(245,166,35,0.3); }
+a { color: var(--periwinkle); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Keyframes ───────────────────────────────────────────── */
+@keyframes pulseFlow {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes signalPulse {
+  0%, 100% { opacity: 0.35; transform: scaleY(1); }
+  50%      { opacity: 0.90; transform: scaleY(1.06); }
+}
+@keyframes railIn {
+  from { opacity: 0; transform: translateX(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ===== Layout ===== */
+.shell { display: flex; min-height: 100vh; position: relative; z-index: 1; }
+
+.sidebar {
+  width: var(--sidebar-w); flex-shrink: 0;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  position: fixed; top: 0; left: 0; bottom: 0;
+  overflow-y: auto;
+  padding: 24px 0 40px;
+  z-index: 20;
+  transition: transform .25s ease;
+}
+.sidebar::-webkit-scrollbar { width: 6px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.brand { padding: 0 22px 20px; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
+.brand .tag {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .12em;
+  color: var(--amber); text-transform: uppercase; display: block; margin-bottom: 8px;
+}
+.brand h1 { font-family: var(--display); font-size: 18px; font-weight: 700; line-height: 1.3; color: var(--text); }
+.brand .sub { font-size: 12.5px; color: var(--muted); margin-top: 6px; }
+
+.navgroup { margin-bottom: 4px; }
+.navgroup > .glabel {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 22px 8px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .08em;
+  color: var(--muted-2); text-transform: uppercase;
+}
+.navgroup .glabel .idx { color: var(--teal); font-weight: 600; }
+.navlink {
+  display: block;
+  padding: 6px 22px 6px 34px;
+  font-size: 13.5px; color: var(--muted);
+  border-left: 2px solid transparent;
+}
+.navlink:hover { color: var(--text); text-decoration: none; background: rgba(255,255,255,0.02); }
+.navlink.active { color: var(--text); border-left-color: var(--amber); background: rgba(245,166,35,0.06); }
+
+.menu-toggle {
+  display: none; position: fixed; top: 16px; left: 16px; z-index: 30;
+  background: var(--panel-2); border: 1px solid var(--border); color: var(--text);
+  width: 40px; height: 40px; border-radius: 8px; font-size: 18px; cursor: pointer;
+}
+
+.main { margin-left: var(--sidebar-w); flex: 1; min-width: 0; }
+
+/* ===== Hero ===== */
+section.hero {
+  position: relative; overflow: hidden;
+  background: linear-gradient(180deg, var(--panel) 0%, color-mix(in srgb, var(--bg) 25%, var(--panel)) 100%);
+  border: 1px solid var(--border); border-radius: 16px;
+  padding: 40px 44px; margin: 40px 40px 56px; box-shadow: var(--shadow);
+}
+section.hero::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--grad-flow); background-size: 200% 200%;
+  animation: pulseFlow 4s ease infinite;
+}
+section.hero::after {
+  content: ''; position: absolute; top: -120px; right: -120px; width: 380px; height: 380px;
+  background: radial-gradient(circle, rgba(245,166,35,0.10), transparent 65%);
+  pointer-events: none;
+}
+.hero-grid { display: flex; gap: 40px; align-items: flex-start; position: relative; }
+.hero-copy { max-width: 640px; }
+section.hero .eyebrow {
+  font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--amber); display: block; margin-bottom: 16px;
+}
+section.hero h2 {
+  font-family: var(--display); margin: 0 0 14px;
+  font-size: 42px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.08;
+}
+section.hero h2 span { color: var(--amber); }
+section.hero p { margin: 0 0 22px; color: var(--muted); font-size: 15px; max-width: 560px; }
+section.hero .tags { display: flex; gap: 8px; flex-wrap: wrap; }
+section.hero .tag {
+  font-family: var(--mono); font-size: 11.5px; padding: 6px 13px; border-radius: 100px;
+  border: 1px solid var(--border); color: var(--muted); background: var(--panel);
+  letter-spacing: .03em; transition: border-color .15s, color .15s;
+}
+section.hero .tag:hover { border-color: var(--amber); color: var(--amber); }
+
+.hero-rail { flex: none; width: 190px; margin-left: auto; padding-top: 6px; }
+.rail-label {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--muted-2); display: block; margin-bottom: 12px;
+}
+.rail-step {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--mono); font-size: 12px; color: var(--muted);
+  padding: 10px 14px; margin-bottom: 9px;
+  border: 1px solid var(--border); border-radius: 10px; background: var(--panel);
+  animation: railIn .6s ease both;
+}
+.rail-step .rs { font-size: 10px; color: var(--teal); }
+.rail-step:nth-child(3) .rs { color: var(--amber); }
+.rail-step:nth-child(4) .rs { color: var(--periwinkle); }
+.rail-step:nth-child(5) .rs { color: var(--green); }
+@media (max-width: 1000px) { .hero-rail { display: none; } }
+
+/* ===== Lecture Sections ===== */
+section.lecture {
+  margin: 0 40px 60px; padding: 0 0 52px; position: relative;
+  border-bottom: 1px solid var(--border);
+  scroll-margin-top: 16px;
+}
+section.lecture:last-of-type { border-bottom: none; }
+section.lecture h2 {
+  display: flex; align-items: center; gap: 14px;
+  font-family: var(--display); font-size: 25px; font-weight: 700; letter-spacing: -0.015em;
+  margin: 0 0 8px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+  position: relative;
+}
+section.lecture h2::before {
+  content: ''; position: absolute; left: -30px; top: 4px;
+  width: 3px; height: calc(100% - 20px); border-radius: 2px;
+  background: var(--grad-accent); background-size: 100% 300%;
+  animation: signalPulse 2.8s ease-in-out infinite;
+}
+section.lecture h2 .lec-badge {
+  flex: none;
+  font-family: var(--mono); font-size: 10px; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--amber); background: var(--panel-2);
+  border: 1px solid var(--border); padding: 5px 11px; border-radius: 7px;
+}
+section.lecture .subtitle { color: var(--muted); font-size: 14px; font-style: italic; margin: 0 0 24px; }
+
+/* ===== Typography ===== */
+h3 { font-family: var(--display); font-size: 19px; font-weight: 600; letter-spacing: -0.01em; margin: 38px 0 12px; color: var(--text); }
+h3 strong { color: var(--amber); }
+h4 { font-family: var(--display); font-size: 15.5px; font-weight: 600; margin: 24px 0 8px; color: var(--text-soft); }
+p { margin: 10px 0; color: var(--text-soft); }
+ul, ol { margin: 10px 0; padding-left: 26px; color: var(--text-soft); }
+li { margin: 6px 0; line-height: 1.7; }
+strong { color: var(--text); font-weight: 600; }
+em { color: var(--text-soft); font-style: italic; }
+
+/* ===== Code ===== */
+code {
+  font-family: var(--mono);
+  background: var(--panel-2); border: 1px solid var(--border);
+  padding: 2px 6px; border-radius: 4px; font-size: .875em;
+  color: var(--teal);
+}
+pre {
+  background: var(--code-bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: 18px 20px; overflow-x: auto; margin: 16px 0; font-size: 13px; line-height: 1.7;
+  font-family: var(--mono); color: var(--text-soft);
+}
+pre code { background: none; border: none; padding: 0; color: inherit; }
+
+/* ===== Formulas ===== */
+.formula {
+  margin: 18px 0; padding: 16px 18px; overflow-x: auto;
+  background: var(--code-bg); border: 1px solid var(--border);
+  border-left: 3px solid var(--amber); border-radius: 10px;
+}
+.formula .katex-display { margin: .2em 0; }
+.formula .katex { color: var(--text); }
+
+/* ===== Tables ===== */
+table {
+  border-collapse: collapse; width: 100%; margin: 18px 0;
+  font-size: 13.5px; background: var(--panel);
+  border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+}
+thead th {
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--muted-2); text-align: left; padding: 10px 14px;
+  border-bottom: 1px solid var(--border); font-weight: 600;
+}
+tbody td { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--muted); vertical-align: top; }
+tbody td:first-child { color: var(--text); font-weight: 600; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: rgba(255,255,255,0.015); }
+
+table.heatmap { max-width: 480px; margin: 0 auto; font-size: 12.5px; }
+table.heatmap th { background: transparent; text-align: center; color: var(--text-soft); font-family: var(--mono); }
+table.heatmap td { text-align: center; min-width: 52px; color: var(--text); font-family: var(--mono); }
+table.heatmap td[rowspan] { writing-mode: vertical-rl; }
+
+/* ===== Callout Boxes ===== */
+.callout {
+  position: relative; margin: 20px 0; padding: 16px 18px 16px 46px;
+  border: 1px solid var(--border); border-left: 3px solid var(--teal); border-radius: 12px;
+  background: var(--panel);
+}
+.callout::before { content: attr(data-icon); position: absolute; left: 14px; top: 15px; font-size: 16px; line-height: 1; }
+.callout.good { border-left-color: var(--green); background: linear-gradient(180deg, rgba(126,231,135,0.05), transparent 140px), var(--panel); }
+.callout.warn { border-left-color: var(--amber); background: linear-gradient(180deg, rgba(245,166,35,0.05), transparent 140px), var(--panel); }
+.callout.note { border-left-color: var(--periwinkle); background: linear-gradient(180deg, rgba(124,156,255,0.05), transparent 140px), var(--panel); }
+.callout.tip  { border-left-color: var(--teal);     background: linear-gradient(180deg, rgba(79,209,197,0.05), transparent 140px), var(--panel); }
+.callout .callout-title { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--amber); margin-bottom: 6px; }
+.callout p, .callout ul, .callout ol { margin: 4px 0; font-size: 14px; }
+.callout p:first-child { margin-top: 0; }
+.callout ul, .callout ol { padding-left: 20px; }
+
+/* ===== Takeaways ===== */
+.takeaways-card {
+  background: var(--panel); border: 1px solid var(--border);
+  border-left: 4px solid var(--amber); border-radius: 10px;
+  padding: 16px 20px; margin: 18px 0 24px; box-shadow: var(--shadow-sm);
+}
+.takeaways-card .takeaways-title {
+  font-family: var(--display); font-size: 13px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--amber); display: flex; gap: 8px; margin-bottom: 8px;
+}
+.takeaways-card ul { margin: 4px 0 0; padding-left: 20px; }
+.takeaways-card li { margin: 4px 0; font-size: 13.5px; color: var(--text-soft); }
+
+/* ===== Diagrams ===== */
+.diagram {
+  margin: 22px 0; padding: 22px 22px 26px;
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 12px; position: relative; overflow: hidden;
+}
+.diagram::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--grad-flow);
+}
+.diagram .diagram-title {
+  font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: .16em;
+  color: var(--muted-2); margin-bottom: 14px; padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.diagram pre.mermaid { background: transparent; text-align: center; margin: 0; overflow-x: auto; }
+
+/* ===== Footer ===== */
+footer { margin: 0 40px; padding: 24px 0 60px; border-top: 1px solid var(--border); color: var(--muted-2); font-size: 12.5px; font-family: var(--mono); }
+footer a { color: var(--muted); }
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .menu-toggle { display: flex; align-items: center; justify-content: center; }
+  section.hero, section.lecture, footer { margin-left: 18px; margin-right: 18px; }
+  section.hero { padding: 28px 22px; }
+  section.hero h2 { font-size: 30px; }
+  section.lecture h2 { font-size: 21px; }
+  section.lecture h2::before { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.1ms !important;
+  }
+}
+
+@media print {
+  .sidebar, .menu-toggle { display: none !important; }
+  .main { margin-left: 0; }
+  body { background: #fff; color: #000; font-family: serif; }
+  section.lecture { page-break-inside: avoid; }
+  section.lecture h2::before { display: none; }
+  .diagram { page-break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+  a { color: #000; }
+  table { page-break-inside: avoid; }
+  .callout { background: #f3f4f6; border: 1px solid #ccc; }
+}
+</style>
+</head>
+<body>
+
+<button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">☰</button>
+
+<div class="shell">
+
+  <nav class="sidebar" id="sidebar">
+    <div class="brand">
+      <span class="tag">// Study Notes</span>
+      <h1>Introduction to LLM</h1>
+      <div class="sub">Course Notes &amp; Exam Study Guide</div>
+    </div>
+
+    <div class="navgroup">
+      <a class="navlink" href="#overview" style="padding-left:22px; font-weight:600; color:var(--text);">Overview</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">01</span> Statistical &amp; Deep Learning</div>
+      <a class="navlink" href="#lec-03">Lec 03 · Statistical LMs</a>
+      <a class="navlink" href="#lec-04">Lec 04 · Smoothing &amp; Evaluation</a>
+      <a class="navlink" href="#lec-05">Lec 05 · Deep Learning</a>
+      <a class="navlink" href="#lec-06">Lec 06 · PyTorch</a>
+      <a class="navlink" href="#lec-07">Lec 07 · Word2Vec &amp; fastText</a>
+      <a class="navlink" href="#lec-08">Lec 08 · GloVe</a>
+      <a class="navlink" href="#lec-09">Lec 09 · Tokenization</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">02</span> Neural Language Models</div>
+      <a class="navlink" href="#lec-10">Lec 10 · CNN &amp; RNN</a>
+      <a class="navlink" href="#lec-11">Lec 11 · LSTM &amp; GRU</a>
+      <a class="navlink" href="#lec-12">Lec 12 · Seq2Seq</a>
+      <a class="navlink" href="#lec-13">Lec 13 · Decoding Strategies</a>
+      <a class="navlink" href="#lec-14">Lec 14 · Attention</a>
+      <a class="navlink" href="#lec-15">Lec 15 · Transformers</a>
+      <a class="navlink" href="#lec-16">Lec 16 · Self &amp; Multi-Head Attention</a>
+      <a class="navlink" href="#lec-17">Lec 17 · Positional Encoding</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">03</span> Pre-training &amp; Adaptation</div>
+      <a class="navlink" href="#lec-18">Lec 18 · Pre-training: ELMo, BERT</a>
+      <a class="navlink" href="#lec-19">Lec 19 · Pre-training: Enc-Dec, Dec-only</a>
+      <a class="navlink" href="#lec-20">Lec 20 · HuggingFace</a>
+      <a class="navlink" href="#lec-21">Lec 21 · Instruction Tuning</a>
+      <a class="navlink" href="#lec-22">Lec 22 · Prompt-based Learning</a>
+      <a class="navlink" href="#lec-23">Lec 23 · Advanced Prompting</a>
+      <a class="navlink" href="#lec-24">Lec 24 · RLHF</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">04</span> RAG &amp; Knowledge Graphs</div>
+      <a class="navlink" href="#lec-25">Lec 25 · Retrieval-Augmented QA</a>
+      <a class="navlink" href="#lec-26">Lec 26 · Knowledge Graphs</a>
+    </div>
+
+    <div class="navgroup">
+      <a class="navlink" href="#marks" style="padding-left:22px; font-weight:600; color:var(--text);">Marks</a>
+    </div>
+  </nav>
+
+  <main class="main" id="top">
+
+    <section class="hero" id="overview">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow">// Introduction to Large Language Models</span>
+          <h2>LLMs don't memorize.<br>They <span>predict</span>, attend, and generate.</h2>
+          <p>Comprehensive lecture notes, interactive diagrams, formula breakdowns, and self-assessment quizzes on large language models.</p>
+          <div class="tags">
+            <span class="tag">Transformers</span>
+            <span class="tag">Self-Attention</span>
+            <span class="tag">Word Embeddings</span>
+            <span class="tag">LSTM / GRU</span>
+            <span class="tag">Fine-Tuning</span>
+          </div>
+        </div>
+        <div class="hero-rail" aria-hidden="true">
+          <span class="rail-label">pipeline</span>
+          <div class="rail-step"><span class="rs">01</span>tokenize</div>
+          <div class="rail-step"><span class="rs">02</span>embed</div>
+          <div class="rail-step"><span class="rs">03</span>attend</div>
+          <div class="rail-step"><span class="rs">04</span>generate</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LEC 03 ============ -->
+    <section class="lecture" id="lec-03">
+      <h2><span class="lec-badge">Lec 03</span> Introduction to Statistical Language Models</h2>
+      <p class="subtitle">Statistical n-gram language models: the chain rule, the Markov assumption, and their limitations.</p>
+
+      <h3>How Does It Work?</h3>
+      <p>Using the <strong>Chain Rule</strong>:</p>
+      <div class="formula">\[P(\text{I love ice cream}) = P(\text{I}) \times P(\text{love} \mid \text{I}) \times P(\text{ice} \mid \text{love}) \times P(\text{cream} \mid \text{ice})\]</div>
+      <ul><li>Learned from huge collections of text (a <em>corpus</em>).</li></ul>
+      <div class="diagram">
+        <div class="diagram-title">Chain Rule Decomposition</div>
+        <pre class="mermaid">
+flowchart LR
+    P["P(I love ice cream)"] --> P1["P(I)"]
+    P --> P2["P(love | I)"]
+    P --> P3["P(ice | love)"]
+    P --> P4["P(cream | ice)"]
+    P1 & P2 & P3 & P4 --> M["Chain Rule<br/>multiply all probabilities"]
+        </pre>
+      </div>
+
+      <h3>The Big Trick: Markov Assumption</h3>
+      <p><strong>Next word depends only on the last few words.</strong></p>
+      <table>
+        <thead><tr><th>Type</th><th>Looks at how many previous words?</th><th>Example Prediction</th><th>Good for?</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Unigram</strong> (1 word)</td><td>None</td><td>"pizza" is common anywhere</td><td>Very basic</td></tr>
+          <tr><td><strong>Bigram</strong> (2 words)</td><td>Last 1 word</td><td>After "pizza" → "with"</td><td>Everyday phrases</td></tr>
+          <tr><td><strong>Trigram</strong> (3 words)</td><td>Last 2 words</td><td>After "lots of" → "cheese"</td><td>Better grammar</td></tr>
+        </tbody>
+      </table>
+      <div class="diagram">
+        <div class="diagram-title">Markov Assumption — n-gram Comparison</div>
+        <pre class="mermaid">
+flowchart TB
+    N["n-gram model"] --> U["Unigram<br/>0 previous words<br/>'pizza' common anywhere"]
+    N --> B["Bigram<br/>last 1 word<br/>after 'pizza' to 'with'"]
+    N --> T["Trigram<br/>last 2 words<br/>after 'lots of' to 'cheese'"]
+    U --> L1["Very basic"]
+    B --> L2["Everyday phrases"]
+    T --> L3["Better grammar"]
+        </pre>
+      </div>
+
+      <h3>Building a Model</h3>
+      <ol>
+        <li>Count words in a big text collection.</li>
+        <li>Make a probability table: <code>P = Count("I love") / Count("I")</code></li>
+        <li><strong>Problem:</strong> Sparsity — most combinations never appear → Probability = 0!</li>
+      </ol>
+
+      <h3>Fixing the Problems</h3>
+      <ul>
+        <li><strong>OOV words:</strong> Replace rare words with <code>&lt;UNK&gt;</code>.</li>
+        <li><strong>Smoothing:</strong> "Add a little fake count."</li>
+        <li><strong>Add-One (Laplace):</strong> Add 1 to every count.</li>
+        <li><strong>Backoff:</strong> If trigram fails, fall back to bigram, then unigram.</li>
+        <li><strong>Interpolation:</strong> Mix all levels with weights.</li>
+      </ul>
+
+      <h3>Why It's Still Limited</h3>
+      <div class="callout warn" data-icon="⚠️">
+        <ul>
+          <li>Only remembers a few previous words.</li>
+          <li>Needs tons of data.</li>
+          <li>Doesn't truly "understand" meaning — just patterns.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ LEC 04 ============ -->
+    <section class="lecture" id="lec-04">
+      <h2><span class="lec-badge">Lec 04</span> Statistical LM: Advanced Smoothing and Evaluation</h2>
+      <p class="subtitle">How to make statistical models smarter with new/rare word combinations and how to evaluate them.</p>
+
+      <h3>Main Problems Fixed</h3>
+      <ol>
+        <li><strong>Add-One/Laplace smoothing</strong> is too simple — over-boosts rare words.</li>
+        <li>Need better ways to handle unseen/rare pairs.</li>
+      </ol>
+
+      <h3>Advanced Smoothing Techniques</h3>
+      <ul>
+        <li><strong>Good-Turing Smoothing:</strong> Uses "frequency of frequencies" (N<sub>c</sub>) to estimate probability of unseen items.</li>
+        <li><strong>Absolute Discounting + Interpolation:</strong> Subtract a fixed discount D (e.g., 0.75) from seen pairs, redistribute to unseen; mix with simpler models.</li>
+        <li><strong>Kneser-Ney Smoothing:</strong> Uses <strong>continuation probability</strong> — how many different contexts a word appears in (e.g., "coffee" has high continuation vs. "Los" which mostly precedes "Angeles").</li>
+      </ul>
+      <div class="diagram">
+        <div class="diagram-title">Choosing a Smoothing Technique</div>
+        <pre class="mermaid">
+flowchart TB
+    S["Handle unseen / rare n-grams"] --> Q{"Simple +1 enough?"}
+    Q -->|"No, over-boosts<br/>rare words"| GT["Good-Turing Smoothing<br/>frequency of frequencies N_c"]
+    Q -->|"Need smarter<br/>discounting"| AD["Absolute Discounting<br/>subtract fixed D, redistribute"]
+    GT --> KN["Kneser-Ney<br/>continuation probability"]
+    AD --> KN
+    S --> B["Backoff<br/>trigram to bigram to unigram"]
+    S --> I["Interpolation<br/>mix all levels with weights"]
+        </pre>
+      </div>
+
+      <h3>Evaluation</h3>
+      <ol>
+        <li><strong>Extrinsic Evaluation:</strong> Use the model in a real task (e.g., translation, measured by BLEU). Practical but slow/expensive.</li>
+        <li><strong>Intrinsic Evaluation → Perplexity (PP):</strong>
+          <ul>
+            <li>Measures how "surprised" the model is by new sentences.</li>
+            <li>PP = 2 raised to (average surprise per word).</li>
+            <li>Lower PP = better model.</li>
+            <li>Connected to <strong>entropy</strong>.</li>
+          </ul>
+        </li>
+      </ol>
+      <div class="diagram">
+        <div class="diagram-title">Evaluation Paths</div>
+        <pre class="mermaid">
+flowchart LR
+    E["Evaluate language model"] --> X["Extrinsic<br/>real task (e.g. BLEU)<br/>practical but slow"]
+    E --> I2["Intrinsic<br/>Perplexity (PP)<br/>lower = better<br/>connected to entropy"]
+        </pre>
+      </div>
+
+      <h3>Quick Summary</h3>
+      <div class="callout good" data-icon="✅">
+        <ul>
+          <li>Statistical LMs = big tables of word-pair probabilities + smoothing tricks.</li>
+          <li>Good-Turing, Kneser-Ney → smarter than simple +1.</li>
+          <li>Perplexity = "How confused is my model?" Lower = smarter.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ LEC 05 ============ -->
+    <section class="lecture" id="lec-05">
+      <h2><span class="lec-badge">Lec 05</span> Introduction to Deep Learning</h2>
+      <p class="subtitle">Deep Learning (neural networks) — the engine behind modern LLMs.</p>
+
+      <h3>History Timeline</h3>
+      <div class="diagram">
+        <div class="diagram-title">Deep Learning History (1943–1989)</div>
+        <pre class="mermaid">
+flowchart LR
+    A["1943<br/>McCulloch-Pitts Neuron<br/>first artificial brain cell<br/>inputs 0/1, threshold firing"] --> B["1957<br/>Perceptron (Rosenblatt)<br/>real inputs, weights, bias<br/>learns AND/OR"]
+    B --> C["1969<br/>Minsky &amp; Papert<br/>can't solve XOR<br/>AI Winter"]
+    C --> D["1986<br/>Backpropagation<br/>error sent backward<br/>trains multi-layer nets"]
+    D --> E["1989<br/>Universal Approximation<br/>1 hidden layer + neurons<br/>any smooth function"]
+        </pre>
+      </div>
+
+      <h3>How a Basic Neural Network Works</h3>
+      <ol>
+        <li><strong>Single Neuron (Perceptron):</strong> inputs × weights + bias → activation function → output.</li>
+        <li><strong>Problem with Single Layer:</strong> only draws straight lines — can't handle XOR.</li>
+        <li><strong>Multi-Layer Perceptron (MLP):</strong> Input → Hidden layers → Output. Hidden layers add non-linearity.</li>
+      </ol>
+      <div class="diagram">
+        <div class="diagram-title">Neuron → MLP</div>
+        <pre class="mermaid">
+flowchart LR
+    subgraph NEURON["Single Neuron"]
+        X["x1, x2, ..., xn<br/>inputs"] --> W["weights &amp; bias<br/>sum(w.x) + b"]
+        W --> A["activation<br/>sigmoid / tanh / ReLU"]
+        A --> Y["output"]
+    end
+    subgraph MLP["Multi-Layer Perceptron"]
+        IN["Input Layer"] --> H1["Hidden 1<br/>adds non-linearity"]
+        H1 --> H2["Hidden 2"]
+        H2 --> OUT["Output Layer"]
+    end
+        </pre>
+      </div>
+
+      <h3>Activation Functions</h3>
+      <table>
+        <thead><tr><th>Function</th><th>What it does</th><th>Good points</th><th>Bad points</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Sigmoid</strong></td><td>Squashes to 0–1</td><td>Smooth, probability-like</td><td>Vanishing gradient</td></tr>
+          <tr><td><strong>Tanh</strong></td><td>Squashes to -1 to +1</td><td>Zero-centered, symmetric</td><td>Same vanishing issue</td></tr>
+          <tr><td><strong>ReLU</strong></td><td>x if &gt;0, else 0</td><td>Fast, no vanishing for positive</td><td>Dead neurons</td></tr>
+          <tr><td><strong>Leaky ReLU</strong></td><td>Small negative slope if &lt;0</td><td>Fixes dead neurons a bit</td><td>Still not perfect</td></tr>
+          <tr><td><strong>Swish</strong></td><td>x × sigmoid</td><td>Often better than ReLU</td><td>Slower to compute</td></tr>
+          <tr><td><strong>GLU</strong></td><td>Gating: controls info flow</td><td>Used in transformers</td><td>Needs extra math</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Training: Backpropagation</h3>
+      <div class="diagram">
+        <div class="diagram-title">Backpropagation Flow</div>
+        <pre class="mermaid">
+flowchart LR
+    IN["Input x"] --> FW["Forward pass<br/>compute output"] --> LOSS["Loss L<br/>(prediction vs truth)"]
+    LOSS --> BW["Backward pass<br/>chain rule"] --> G["Compute gradients<br/>dL/dW, dL/db"]
+    G --> U["Update weights<br/>W = W - eta.dL/dW"]
+    U -.->|"repeat"| FW
+        </pre>
+      </div>
+      <ul>
+        <li><strong>Forward pass:</strong> Input → compute output.</li>
+        <li><strong>Backward pass:</strong> Calculate error → chain rule to update weights backward.</li>
+        <li><strong>Learning rate (η):</strong> step size.</li>
+        <li><strong>Problems:</strong> Vanishing Gradient, Dead ReLUs.</li>
+        <li><strong>Fixes:</strong> Better activations, Dropout, L2 regularization, Early stopping.</li>
+      </ul>
+    </section>
+
+    <!-- ============ LEC 06 ============ -->
+    <section class="lecture" id="lec-06">
+      <h2><span class="lec-badge">Lec 06</span> Introduction to PyTorch</h2>
+      <p class="subtitle">PyTorch is the main library used to build and train neural networks — the "toolbox" for LLMs.</p>
+
+      <h3>Core Concepts</h3>
+      <ol>
+        <li><strong>Tensors:</strong> The main data type (scalars, vectors, matrices, higher dimensions). Key properties: shape, dimension, dtype, device (CPU/GPU). Operations: element-wise math, indexing/slicing, reshape, view.</li>
+        <li><strong>Autograd:</strong> Automatic gradient computation.
+          <ul>
+            <li><code>requires_grad=True</code> on trainable tensors.</li>
+            <li>Builds a computation graph automatically.</li>
+            <li><code>.backward()</code> computes gradients; <code>.grad</code> shows them.</li>
+            <li><code>torch.no_grad()</code> disables tracking (for inference).</li>
+          </ul>
+        </li>
+        <li><strong>Full Training Pipeline:</strong>
+          <ol>
+            <li>Forward pass: Input → model → prediction.</li>
+            <li>Compute loss (MSE, Cross-Entropy).</li>
+            <li>Backward pass: <code>.backward()</code>.</li>
+            <li>Update weights: Optimizer (SGD, Adam): <code>weight -= learning_rate * gradient</code>.</li>
+          </ol>
+        </li>
+        <li><strong>Real Example: MNIST Classifier</strong> — <code>torchvision</code>, <code>DataLoader</code>, <code>nn.Module</code>, train loop with epochs, Adam optimizer, Cross-Entropy loss → ~97% accuracy.</li>
+      </ol>
+      <div class="diagram">
+        <div class="diagram-title">PyTorch Training Loop</div>
+        <pre class="mermaid">
+flowchart LR
+    A["1. Forward pass<br/>Input to model to prediction"] --> B["2. Compute loss<br/>MSE / Cross-Entropy"]
+    B --> C["3. Backward pass<br/>.backward() gives gradients"]
+    C --> D["4. Update weights<br/>optimizer<br/>weight -= eta.gradient"]
+    D -->|"repeat for epochs"| A
+        </pre>
+      </div>
+
+      <h3>Summary</h3>
+      <div class="callout good" data-icon="✅">
+        <ul>
+          <li>PyTorch = Python + Neural Nets.</li>
+          <li>Tensors → Data; Autograd → gradient calculator; <code>nn.Module</code> → model blueprint.</li>
+          <li>Training = Forward → Loss → Backward → Update (repeat).</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ LEC 07 ============ -->
+    <section class="lecture" id="lec-07">
+      <h2><span class="lec-badge">Lec 07</span> Word Representation: Word2Vec &amp; fastText</h2>
+
+      <h3>1. Why Do We Need Word Representation?</h3>
+      <p>Computers understand numbers, not words. Simple flawed solutions:</p>
+      <ul>
+        <li><strong>ASCII Values:</strong> variable length, no semantics.</li>
+        <li><strong>One-Hot Encoding:</strong> no similarity (dot product always 0), curse of dimensionality, sparsity.</li>
+      </ul>
+
+      <h3>2. WordNet (Traditional Semantic Resource)</h3>
+      <ul>
+        <li>Manually created ontology with <strong>Synsets</strong> (synonym sets) and <strong>Glosses</strong> (definitions), linked via hypernymy, hyponymy, meronymy, etc.</li>
+        <li><strong>Problems:</strong> incomplete, subjective/labor-intensive, limited coverage, discrete (not continuous vectors).</li>
+      </ul>
+
+      <h3>3. Distributional Semantics</h3>
+      <div class="callout note" data-icon="💡">
+        <div class="callout-title">Core Philosophy</div>
+        <p>"You shall know a word by the company it keeps." (J.R. Firth, 1957) — Words in similar contexts have similar meanings.</p>
+      </div>
+
+      <h3>4. Count-Based Methods</h3>
+      <h4>4.1 Term-Context Matrix</h4>
+      <p>Rows = target words, columns = context words, cell = co-occurrence count. Problem: high-dimensional, sparse; stop words dominate.</p>
+      <h4>4.2 TF-IDF</h4>
+      <div class="formula">\[\begin{aligned} \text{TF}(t,d) &= \log(\text{count}(t,d) + 1) \\ \text{IDF}(t) &= \log(N / \text{DF}(t)) \\ \text{TF-IDF}(t,d) &= \text{TF}(t,d) \times \text{IDF}(t) \end{aligned}\]</div>
+      <p>Still: sparse, no word order, needs matrix rebuild for new words.</p>
+
+      <h3>5. Prediction-Based Methods: Word2Vec (Mikolov et al., 2013)</h3>
+      <p>Train a simple neural network to predict co-occurrences → dense, low-dimensional embeddings.</p>
+
+      <h4>Two Architectures</h4>
+      <div class="diagram">
+        <div class="diagram-title">CBOW vs Skip-gram</div>
+        <pre class="mermaid">
+flowchart LR
+    subgraph CBOW["CBOW: predict target from context"]
+        C1["context: 'the ___ sat'"] --> CT["target: 'cat'"]
+    end
+    subgraph SG["Skip-gram: predict context from target"]
+        ST["target: 'cat'"] --> S1["context: 'the'"]
+        ST --> S2["context: 'sat'"]
+    end
+        </pre>
+      </div>
+
+      <h4>Skip-gram with Negative Sampling</h4>
+      <ol>
+        <li>Sliding window creates positive pairs <code>(w, c_pos)</code>; random negative sampling creates <code>(w, c_neg)</code>.</li>
+        <li>Maintain target matrix and context matrix (size <code>|V| x d</code>).</li>
+        <li>\(P(\text{positive}|w,c) = \sigma(c\cdot w) = \dfrac{1}{1+e^{-c\cdot w}}\).</li>
+      </ol>
+      <div class="formula">\[L = -\left[\log\sigma(c_{\text{pos}}\cdot w) + \sum_i \log\sigma(-c_{\text{neg},i}\cdot w)\right]\]</div>
+      <ol start="4">
+        <li>Gradient descent moves positive pairs closer, negative pairs farther apart.</li>
+        <li>Final embedding = sum of target + context vectors.</li>
+      </ol>
+      <div class="diagram">
+        <div class="diagram-title">Skip-gram with Negative Sampling</div>
+        <pre class="mermaid">
+flowchart TB
+    A["Sliding window<br/>positive pairs (w, c_pos)"] --> B["Random negative sampling<br/>pairs (w, c_neg)"]
+    B --> M["Target matrix |V|x d<br/>Context matrix |V|x d"]
+    M --> P["P(positive|w,c) = sigma(c.w)"]
+    P --> L["Loss<br/>-[log sigma(c_pos.w) + sum log sigma(-c_neg.w)]"]
+    L --> G["Gradient descent<br/>positives closer<br/>negatives farther apart"]
+    G --> E["Final embedding =<br/>target + context vectors"]
+        </pre>
+      </div>
+
+      <h4>Tricks</h4>
+      <ul>
+        <li>Negative sampling distribution: \(P(w) = \dfrac{\text{count}(w)^{0.75}}{\sum_w \text{count}(w)^{0.75}}\)</li>
+        <li>Subsampling frequent words: \(P(\text{keep}(w)) \approx \sqrt{t/f(w)}\)</li>
+      </ul>
+
+      <h4>Properties &amp; Limitations</h4>
+      <div class="callout good" data-icon="✅">
+        <p><strong>Properties:</strong> Dense, low-dimensional; semantic regularity (<code>king - man + woman ≈ queen</code>).</p>
+      </div>
+      <div class="callout warn" data-icon="⚠️">
+        <p><strong>Limitations:</strong> Static embeddings (one vector per word regardless of context), OOV problem.</p>
+      </div>
+
+      <h3>6. fastText (Facebook)</h3>
+      <ul>
+        <li>Extension of Skip-gram; represents a word as a <strong>bag of character n-grams</strong>.</li>
+        <li>Example: "where" (n=3) → <code>&lt;wh, whe, her, ere, re&gt;</code> plus <code>&lt;where&gt;</code>.</li>
+        <li>Final embedding = sum of vectors of all n-grams.</li>
+        <li><strong>Advantages:</strong> Handles OOV words, captures morphology.</li>
+      </ul>
+
+      <h3>7. Summary Table</h3>
+      <table>
+        <thead><tr><th>Method</th><th>Type</th><th>Representation</th><th>Handles OOV?</th><th>Captures Morphology?</th></tr></thead>
+        <tbody>
+          <tr><td>One-Hot</td><td>Discrete</td><td>Sparse, high-D</td><td>No</td><td>No</td></tr>
+          <tr><td>WordNet</td><td>Ontological</td><td>Discrete concepts</td><td>No</td><td>No</td></tr>
+          <tr><td>TF-IDF</td><td>Count-Based</td><td>Sparse, high-D</td><td>No</td><td>No</td></tr>
+          <tr><td>Word2Vec</td><td>Prediction-Based</td><td>Dense, low-D</td><td>No</td><td>No</td></tr>
+          <tr><td>fastText</td><td>Prediction-Based</td><td>Dense, low-D</td><td>Yes</td><td>Yes</td></tr>
+        </tbody>
+      </table>
+      <div class="diagram">
+        <div class="diagram-title">Word Representation Methods</div>
+        <pre class="mermaid">
+flowchart TB
+    WR["Represent words as numbers"] --> D["Discrete"]
+    D --> OH["One-Hot<br/>sparse, no similarity"]
+    D --> WN["WordNet<br/>synsets / glosses<br/>ontological"]
+    WR --> C["Count-Based"]
+    C --> TC["Term-Context Matrix<br/>co-occurrence counts"]
+    C --> TF["TF-IDF<br/>TF x IDF"]
+    WR --> P["Prediction-Based"]
+    P --> W2V["Word2Vec<br/>CBOW / Skip-gram"]
+    W2V --> FT["fastText<br/>bag of character n-grams"]
+        </pre>
+      </div>
+    </section>
+
+    <!-- ============ LEC 08 ============ -->
+    <section class="lecture" id="lec-08">
+      <h2><span class="lec-badge">Lec 08</span> Word Representation: GloVe</h2>
+
+      <h3>What is GloVe?</h3>
+      <p><strong>GloVe</strong> = Global Vectors for Word Representation. Unsupervised algorithm from Stanford (2014), combining strengths of count-based and prediction-based methods.</p>
+
+      <h3>Core Idea</h3>
+      <div class="callout note" data-icon="💡">
+        <p><strong>Ratios of word-word co-occurrence probabilities encode meaning</strong> better than raw probabilities.</p>
+      </div>
+      <p>Example ("ice" vs "steam"):</p>
+      <table>
+        <thead><tr><th>Probability</th><th>solid</th><th>gas</th><th>water</th><th>fashion</th></tr></thead>
+        <tbody>
+          <tr><td>P(k|ice)</td><td>0.00019</td><td>0.000066</td><td>0.003</td><td>0.000017</td></tr>
+          <tr><td>P(k|steam)</td><td>0.000022</td><td>0.00078</td><td>0.0022</td><td>0.000018</td></tr>
+          <tr><td><strong>Ratio</strong></td><td>8.9</td><td>0.085</td><td>1.36</td><td>0.96</td></tr>
+        </tbody>
+      </table>
+      <ul>
+        <li>Ratio &gt; 1 → related to "ice"; Ratio &lt; 1 → related to "steam"; Ratio ≈ 1 → related to both/neither.</li>
+      </ul>
+
+      <h3>How GloVe Works</h3>
+      <ol>
+        <li><strong>Co-occurrence Matrix X:</strong> <code>X_ij</code> = how often word j appears in context of word i (with distance-based weighting).</li>
+        <li><strong>Training Objective:</strong> \(w_i^\top \tilde{w}_j + b_i + \tilde{b}_j = \log(X_{ij})\)</li>
+        <li><strong>Loss Function:</strong> \(J = \sum_{ij} f(X_{ij})\big(w_i^\top \tilde{w}_j + b_i + \tilde{b}_j - \log X_{ij}\big)^2\) — with \(f(x) = (x/100)^{0.75}\) if \(x&lt;100\), else 1. Non-decreasing, capped, zero for \(X_{ij}=0\).</li>
+        <li><strong>Final Vector</strong> = sum of center and context vectors.</li>
+      </ol>
+      <div class="diagram">
+        <div class="diagram-title">GloVe Training Flow</div>
+        <pre class="mermaid">
+flowchart LR
+    A["Co-occurrence Matrix X<br/>X_ij with distance weighting"] --> B["Training Objective<br/>w_i^T w~_j + b_i + b~_j = log X_ij"]
+    B --> C["Loss<br/>J = sum f(X_ij)(... - log X_ij)^2"]
+    C --> D["Final vector =<br/>center + context vectors"]
+        </pre>
+      </div>
+
+      <h3>GloVe vs Word2Vec</h3>
+      <table>
+        <thead><tr><th>Aspect</th><th>Word2Vec</th><th>GloVe</th></tr></thead>
+        <tbody>
+          <tr><td>Core Approach</td><td>Prediction-based</td><td>Count-based + Matrix Factorization</td></tr>
+          <tr><td>Training Data</td><td>Local context windows</td><td>Global co-occurrence statistics</td></tr>
+          <tr><td>Objective</td><td>Maximize probability of context words</td><td>Minimize dot product vs log co-occurrence difference</td></tr>
+          <tr><td>Result</td><td>Dense vectors</td><td>Dense vectors, excellent linear structure</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Advantages</h3>
+      <div class="callout good" data-icon="✅">
+        <ul>
+          <li>Linear substructures (analogy tasks): <code>king - man + woman ≈ queen</code>.</li>
+          <li>Efficient training (uses only non-zero entries).</li>
+          <li>Captures global statistics.</li>
+        </ul>
+      </div>
+
+      <h3>Limitations</h3>
+      <div class="callout warn" data-icon="⚠️">
+        <ul>
+          <li>Static embeddings (one vector per word).</li>
+          <li>OOV words unrepresented.</li>
+          <li>Computational cost for co-occurrence matrix.</li>
+        </ul>
+      </div>
+
+      <h3>Recent Updates (2024–2025)</h3>
+      <p>Stanford released updated 2024 GloVe vectors (July 2025) trained on Wikipedia (2024), Gigaword 5, Dolma subset (220B tokens) — includes newer vocabulary like "covid."</p>
+
+      <h3>When to Use GloVe</h3>
+      <p>Low-resource settings, interpretability-focused applications, baselines, quick prototyping.</p>
+    </section>
+
+    <!-- ============ LEC 09 ============ -->
+    <section class="lecture" id="lec-09">
+      <h2><span class="lec-badge">Lec 09</span> Tokenization Strategies</h2>
+
+      <h3>1. Why Tokenization Matters</h3>
+      <p>Models take sequences of <strong>tokens</strong> as input. Question: what constitutes a "token"?</p>
+
+      <h3>2. Three Levels of Tokenization</h3>
+      <table>
+        <thead><tr><th>Level</th><th>Description</th><th>Problems</th></tr></thead>
+        <tbody>
+          <tr><td>Word-Level</td><td>Split by delimiters</td><td>Huge vocab, can't handle unknown words</td></tr>
+          <tr><td>Character-Level</td><td>Each character as token</td><td>Very long sequences, loses meaning</td></tr>
+          <tr><td>Subword-Level</td><td>Split into meaningful sub-units</td><td>Best of both worlds</td></tr>
+        </tbody>
+      </table>
+      <div class="diagram">
+        <div class="diagram-title">Three Levels of Tokenization</div>
+        <pre class="mermaid">
+flowchart TB
+    T["Tokenization"] --> W["Word-Level<br/>split by delimiters<br/>huge vocab, unknown words"]
+    T --> C["Character-Level<br/>each char a token<br/>very long sequences"]
+    T --> S["Subword-Level<br/>meaningful sub-units<br/>best of both worlds"]
+        </pre>
+      </div>
+      <p>Two components: <strong>Token Learner</strong> (training time, builds vocabulary) and <strong>Token Segmenter</strong> (test time, splits new text).</p>
+
+      <h3>3. Byte Pair Encoding (BPE)</h3>
+      <p>Used in: GPT, GPT-2, RoBERTa, BART. Originally a compression algorithm (1990s), adapted for NLP in 2016.</p>
+      <p><strong>Core Philosophy:</strong> Start with base vocabulary (characters), iteratively merge most frequent adjacent pair, increasing vocab size.</p>
+      <ul>
+        <li><strong>Token Learner Steps:</strong>
+          <ol>
+            <li>Pre-tokenization: clean &amp; split corpus into words, record frequencies.</li>
+            <li>Base vocabulary: all unique characters.</li>
+            <li>Iterative merging: count adjacent pair frequencies, merge highest-frequency pair, record merge rule, repeat until target vocab size.</li>
+          </ol>
+        </li>
+        <li><strong>Token Segmenter:</strong> Split word into characters, apply merge rules in learned order. Unknown characters → <code>&lt;unk&gt;</code>. (Modern BPE, e.g. GPT-2, uses bytes as base vocabulary to avoid <code>&lt;unk&gt;</code>.)</li>
+      </ul>
+      <div class="diagram">
+        <div class="diagram-title">BPE Merge Process</div>
+        <pre class="mermaid">
+flowchart TB
+    A["Base vocabulary<br/>all unique characters"] --> B["Count adjacent pairs<br/>in the corpus"]
+    B --> C["Merge highest-frequency pair<br/>record merge rule"]
+    C --> D{"Reached target<br/>vocab size?"}
+    D -->|"No"| B
+    D -->|"Yes"| E["Segmenter<br/>split to chars, then apply<br/>merge rules in order"]
+        </pre>
+      </div>
+
+      <h3>4. WordPiece</h3>
+      <p>Used in: BERT, DistilBERT, MobileBERT, MPNet.</p>
+      <ul>
+        <li>Similar to BPE but merges based on a <strong>likelihood score</strong>: <code>Score = freq(pair) / (freq(first) × freq(second))</code> (PMI-like).</li>
+        <li>Uses <code>##</code> prefix to indicate non-start-of-word tokens (e.g., "hello" → <code>h, ##e, ##l, ##l, ##o</code>).</li>
+        <li><strong>Token Segmenter:</strong> Greedy Longest-Match-First — no merge rules stored, only final vocabulary.</li>
+        <li>Unknown handling: if any character is missing from vocab, the <strong>entire word</strong> becomes <code>&lt;unk&gt;</code>.</li>
+      </ul>
+
+      <h3>5. Unigram Language Model Tokenization (SentencePiece)</h3>
+      <p>Used in: T5, ALBERT, XLNet.</p>
+      <ul>
+        <li>Opposite direction: start with a <strong>huge</strong> vocabulary, iteratively <strong>prune</strong> least useful tokens.</li>
+        <li>Based on Unigram LM: <code>P(sequence) = P(t1) × P(t2) × ... × P(tn)</code>.</li>
+        <li>Uses Expectation-Maximization (EM) and Viterbi algorithm to find best segmentation.</li>
+        <li><strong>Token Learner:</strong> build huge initial vocab → estimate probabilities → find best segmentation per word → calculate corpus loss → test removing each token (least loss-increasing tokens are pruned) → repeat until target size.</li>
+        <li><strong>Token Segmenter:</strong> finds most probable segmentation via Viterbi.</li>
+      </ul>
+
+      <h3>6. Summary Comparison</h3>
+      <table>
+        <thead><tr><th>Feature</th><th>BPE</th><th>WordPiece</th><th>Unigram LM</th></tr></thead>
+        <tbody>
+          <tr><td>Direction</td><td>Build up (merge)</td><td>Build up (merge)</td><td>Prune down (remove)</td></tr>
+          <tr><td>Criterion</td><td>Highest frequency</td><td>Highest score (freq ratio)</td><td>Least loss increase on removal</td></tr>
+          <tr><td>Stores Rules?</td><td>Yes</td><td>No (vocab only)</td><td>No (vocab only)</td></tr>
+          <tr><td>Segmentation</td><td>Apply rules in order</td><td>Greedy longest-match</td><td>Most probable (Viterbi)</td></tr>
+          <tr><td>Handles OOV</td><td><code>&lt;unk&gt;</code> per char</td><td><code>&lt;unk&gt;</code> for whole word</td><td>Best subword combination</td></tr>
+          <tr><td>Used In</td><td>GPT, GPT-2, RoBERTa, BART</td><td>BERT, DistilBERT, MPNet</td><td>T5, ALBERT, XLNet</td></tr>
+        </tbody>
+      </table>
+      <div class="diagram">
+        <div class="diagram-title">How Tokenizers Build Vocabulary</div>
+        <pre class="mermaid">
+flowchart TB
+    subgraph BPE2["BPE"]
+        B1["merge most frequent<br/>adjacent pairs"] --> B2["store merge rules"]
+    end
+    subgraph WP["WordPiece"]
+        W1["merge by likelihood score<br/>freq(pair)/(freq.freq)"] --> W2["store vocabulary only"]
+    end
+    subgraph UNI["Unigram LM (SentencePiece)"]
+        U1["start huge, prune least<br/>useful tokens"] --> U2["store vocabulary only"]
+    end
+        </pre>
+      </div>
+
+      <h3>7. Why Tokenization Matters for Low-Resource Languages</h3>
+      <p>Subword tokenization helps because character n-grams may overlap across related languages, even without direct training data.</p>
+
+      <h3>8. Key Takeaways</h3>
+      <div class="callout good" data-icon="✅">
+        <ol>
+          <li>Tokenization is the first step in any NLP pipeline.</li>
+          <li>Subword tokenization is the standard approach.</li>
+          <li>BPE = frequency-based; WordPiece = likelihood-score-based; Unigram LM = probability-based pruning.</li>
+          <li>Tokenizer choice affects performance on rare words and morphologically rich languages.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============ LEC 10 ============ -->
+    <section class="lecture" id="lec-10">
+      <h2><span class="lec-badge">Lec 10</span> Neural Language Models: CNN &amp; RNN</h2>
+
+      <h3>1. Recap: Statistical LM Problems</h3>
+      <p>Unknown words, sparsity, no generalization.</p>
+
+      <h3>2. Introduction to Neural Language Models</h3>
+      <ul>
+        <li>Pioneer: Yoshua Bengio (2001–2002) — first neural LM using distributed representations.</li>
+        <li>Advantages: no sparse matrices, generalizes via embeddings, can handle unknown words (with subwords).</li>
+      </ul>
+
+      <h3>3. CNN-Based Neural Language Model</h3>
+      <p><strong>From 2D images to 1D text:</strong> window of words → concatenate embeddings → linear layer → hidden state → linear layer → vocab-size logits → softmax.</p>
+      <p><strong>Detailed walkthrough</strong> (window=4): <code>h = σ(W · concat(x1,x2,x3,x4) + b)</code>, <code>z = U·h</code>, <code>P(w_next|context) = softmax(z)</code>.</p>
+      <div class="diagram">
+        <div class="diagram-title">CNN Language Model (fixed window)</div>
+        <pre class="mermaid">
+flowchart LR
+    W1["x1"] & W2["x2"] & W3["x3"] & W4["x4"] --> E["Embeddings<br/>concat(x1,x2,x3,x4)"]
+    E --> L["Linear layer<br/>h = sigma(W.concat + b)"]
+    L --> Z["Vocab-size logits<br/>z = U.h"]
+    Z --> S["softmax<br/>P(next word | context)"]
+        </pre>
+      </div>
+      <h4>Problems with CNN approach:</h4>
+      <table>
+        <thead><tr><th>#</th><th>Problem</th><th>Explanation</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Fixed window size</td><td>Misses long-range dependencies</td></tr>
+          <tr><td>2</td><td>Parameters grow with window size</td><td>Larger W needs more data/memory</td></tr>
+          <tr><td>3</td><td>No message passing between positions</td><td>Each embedding processed independently before combination</td></tr>
+        </tbody>
+      </table>
+
+      <h3>4. Recurrent Neural Networks (RNN)</h3>
+      <p>Maintains a hidden state updated sequentially: \(h_t = \sigma(W_{hh}\, h_{t-1} + W_{xh}\, x_t + b)\)</p>
+      <div class="diagram">
+        <div class="diagram-title">RNN Recurrence</div>
+        <pre class="mermaid">
+flowchart LR
+    HPREV["h(t-1)<br/>previous hidden state"] --> H["h(t) = sigma(W_hh.h(t-1) + W_xh.x(t) + b)"]
+    X["x(t)<br/>current input"] --> H
+    H --> HNEXT["h(t+1)<br/>next hidden state"]
+    H --> O["output prediction"]
+        </pre>
+      </div>
+      <h4>Solves:</h4>
+      <ol>
+        <li>Variable-length context (theoretically retains all history).</li>
+        <li>No fixed window size.</li>
+        <li>Shared parameters (constant parameter count regardless of sequence length).</li>
+        <li>Message passing through hidden state recurrence.</li>
+      </ol>
+      <p><strong>Training:</strong> predict x_t given x1...x_{t-1}; loss = sum of cross-entropy at each step; Backpropagation Through Time (BPTT).</p>
+
+      <h3>5. CNN vs RNN Comparison</h3>
+      <table>
+        <thead><tr><th>Aspect</th><th>CNN</th><th>RNN</th></tr></thead>
+        <tbody>
+          <tr><td>Context length</td><td>Fixed window</td><td>Potentially unlimited</td></tr>
+          <tr><td>Parameter count</td><td>Grows with window</td><td>Fixed</td></tr>
+          <tr><td>Parallelization</td><td>High</td><td>Sequential</td></tr>
+          <tr><td>Long-range dependencies</td><td>Limited</td><td>Possible but vanishing gradients</td></tr>
+          <tr><td>Position interaction</td><td>Limited</td><td>Strong</td></tr>
+        </tbody>
+      </table>
+      <div class="diagram">
+        <div class="diagram-title">CNN vs RNN Trade-offs</div>
+        <pre class="mermaid">
+flowchart LR
+    subgraph CNN2["CNN"]
+        C1["fixed window context"]
+        C2["parameters grow with window"]
+        C3["high parallelization"]
+    end
+    subgraph RNN2["RNN"]
+        R1["unlimited context"]
+        R2["fixed parameter count"]
+        R3["sequential processing"]
+        R4["vanishing gradients possible"]
+    end
+        </pre>
+      </div>
+
+      <h3>Key Takeaways</h3>
+      <div class="callout good" data-icon="✅">
+        <ol>
+          <li>Neural LMs replace sparse count matrices with dense embeddings + trainable weights.</li>
+          <li>CNN-based LM: fixed window, limited interaction, parameter growth.</li>
+          <li>RNN: hidden state carries info across time, shared parameters.</li>
+          <li>Sets up next topic: LSTM/GRU, vanishing gradients.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============ LEC 11 ============ -->
+    <section class="lecture" id="lec-11">
+      <h2><span class="lec-badge">Lec 11</span> Neural Language Models: LSTM &amp; GRU</h2>
+
+      <h3>The Core Problem — "Telephone Game" Analogy</h3>
+      <p>Vanilla RNN = telephone game: each step distorts information; after many steps, the original message is lost (vanishing gradient).</p>
+      <p>LSTM = each step writes to a <strong>whiteboard</strong> (cell state) carried forward — can erase (forget gate), add (input gate), read (output gate).</p>
+
+      <h3>LSTM (Long Short-Term Memory)</h3>
+      <p>At each timestep <code>t</code>, LSTM maintains <strong>two states</strong>:</p>
+      <table>
+        <thead><tr><th>State</th><th>Symbol</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>Hidden State</td><td>h(t)</td><td>Output at this timestep</td></tr>
+          <tr><td>Cell State</td><td>c(t)</td><td>Long-term memory ("conveyor belt")</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Three Gates</strong> (vectors of values between 0 and 1):</p>
+      <table>
+        <thead><tr><th>Gate</th><th>Symbol</th><th>Function</th></tr></thead>
+        <tbody>
+          <tr><td>Forget Gate</td><td>f(t)</td><td>What to erase from memory</td></tr>
+          <tr><td>Input Gate</td><td>i(t)</td><td>What new info to add</td></tr>
+          <tr><td>Output Gate</td><td>o(t)</td><td>What to output</td></tr>
+        </tbody>
+      </table>
+      <div class="diagram">
+        <div class="diagram-title">LSTM Cell Flow (timestep t)</div>
+        <pre class="mermaid">
+flowchart LR
+    F["STEP 1 - Forget<br/>f(t) = sigmoid(W_f.[h(t-1),x(t)]+b_f)<br/>c(t-1) x f(t)"] --> C["STEP 3 - Update<br/>c(t) = f(t).c(t-1) + i(t).c~"]
+    I["STEP 2 - Add<br/>c~ = tanh(W_c.[h(t-1),x(t)]+b_c)<br/>i(t) = sigmoid(W_i.[...]+b_i)<br/>i(t) x c~"] --> C
+    C --> O["STEP 4 - Output<br/>o(t) = sigmoid(W_o.[...]+b_o)<br/>h(t) = o(t).tanh(c(t))"]
+        </pre>
+      </div>
+      <p><strong>Why LSTM solves vanishing gradient:</strong> \(\partial c_t / \partial c_{t-1} = f_t\). If \(f_t = 1\), gradient doesn't shrink — acts as a "highway" for gradients across hundreds of timesteps.</p>
+      <div class="diagram">
+        <div class="diagram-title">Gradient Highway</div>
+        <pre class="mermaid">
+flowchart LR
+    C1["c(t-1)"] -->|"dc(t)/dc(t-1) = f(t)"| C2["c(t)"]
+    C2 -->|"f(t) = 1: gradient<br/>doesn't shrink"| C3["c(t+1)"]
+    C3 -->|"gradient highway across<br/>hundreds of timesteps"| C4["..."]
+        </pre>
+      </div>
+
+      <h3>GRU (Gated Recurrent Unit) — Simpler Cousin</h3>
+      <table>
+        <thead><tr><th>Feature</th><th>LSTM</th><th>GRU</th></tr></thead>
+        <tbody>
+          <tr><td>States</td><td>2 (h, c)</td><td>1 (h only)</td></tr>
+          <tr><td>Gates</td><td>3 (f, i, o)</td><td>2 (update, reset)</td></tr>
+          <tr><td>Parameters</td><td>More</td><td>Fewer</td></tr>
+          <tr><td>Speed</td><td>Slower</td><td>~30% faster</td></tr>
+          <tr><td>When to use</td><td>More data</td><td>Less data</td></tr>
+        </tbody>
+      </table>
+      <p><strong>GRU Gates:</strong></p>
+      <ul>
+        <li><strong>Reset Gate (r(t)):</strong> how much of past to ignore.</li>
+        <li><strong>Update Gate (z(t)):</strong> how much of past to keep vs. add new.</li>
+      </ul>
+      <div class="formula">\[\begin{aligned} z_t &= \sigma(W_z \cdot [h_{t-1}, x_t]) & \text{(update gate)}\\ r_t &= \sigma(W_r \cdot [h_{t-1}, x_t]) & \text{(reset gate)}\\ \tilde{h}_t &= \tanh(W_h \cdot [r_t \times h_{t-1}, x_t])\\ h_t &= (1-z_t) \times h_{t-1} + z_t \times \tilde{h}_t \end{aligned}\]</div>
+      <div class="diagram">
+        <div class="diagram-title">GRU Gates</div>
+        <pre class="mermaid">
+flowchart LR
+    R["Reset Gate r(t)<br/>how much of past to ignore"] --> G["h~(t) = tanh(W_h.[r(t)xh(t-1), x(t)])"]
+    Z["Update Gate z(t)<br/>keep past vs add new"] --> GRU2["h(t) = (1-z(t)).h(t-1) + z(t).h~(t)"]
+    G --> GRU2
+        </pre>
+      </div>
+      <div class="callout tip" data-icon="🎯">
+        <div class="callout-title">Rule of thumb</div>
+        <p>Start with LSTM (more data) → switch to GRU for efficiency/less data.</p>
+      </div>
+
+      <h3>Related Concepts</h3>
+      <ul>
+        <li><strong>Bidirectional RNN:</strong> Two RNNs in opposite directions, concatenated — used when full sequence is available (not for generation).</li>
+        <li><strong>Residual/Skip Connections:</strong> \(\text{output} = f(x) + x\) — keeps original info alive in deep networks.</li>
+        <li><strong>Stacked (Multi-layer) RNNs:</strong> each layer's input is the previous layer's hidden state.</li>
+      </ul>
+
+      <h3>Common Misconceptions</h3>
+      <div class="callout warn" data-icon="⚠️">
+        <ul>
+          <li>Gates are NOT binary — they're continuous (0 to 1).</li>
+          <li>LSTM only <em>reduces</em> vanishing gradient, doesn't completely solve it.</li>
+          <li>GRU isn't always worse — often comparable and faster.</li>
+          <li>Cell state ≠ hidden state (cell = memory, hidden = output).</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ LEC 12 ============ -->
+    <section class="lecture" id="lec-12">
+      <h2><span class="lec-badge">Lec 12</span> Sequence-to-Sequence Models</h2>
+
+      <h3>1. Introduction to Seq2Seq</h3>
+      <ul>
+        <li>Input sequence → output sequence.</li>
+        <li>Applications: Machine Translation, Summarization, Dialogue Systems, Image Captioning.</li>
+        <li>Uses two RNNs: <strong>Encoder</strong> (processes input) and <strong>Decoder</strong> (generates output).</li>
+      </ul>
+      <div class="diagram">
+        <div class="diagram-title">Encoder-Decoder Architecture</div>
+        <pre class="mermaid">
+flowchart LR
+    subgraph ENC["Encoder RNN"]
+        E1["x1"] --> E2["x2"]
+        E2 --> E3["x3"]
+        E3 --> EH["final hidden state"]
+    end
+    EH --> D1["y1"]
+    subgraph DEC["Decoder RNN"]
+        D1 --> D2["y2"]
+        D2 --> D3["y3"]
+    end
+        </pre>
+      </div>
+
+      <h3>2. Encoder-Decoder Architecture</h3>
+      <ol>
+        <li>Encoder reads input sequence.</li>
+        <li>Final hidden state passed to decoder.</li>
+        <li>Decoder generates output token by token.</li>
+      </ol>
+      <p><strong>Training:</strong> Loss at each decoder timestep, summed/normalized; Backpropagation Through Time updates both encoder and decoder.</p>
+
+      <h3>3. Teacher Forcing</h3>
+      <p>Feed the <em>actual</em> ground-truth token (not the model's own prediction) into the decoder during training — makes training more stable. During inference, model must use its own predictions.</p>
+      <div class="diagram">
+        <div class="diagram-title">Teacher Forcing</div>
+        <pre class="mermaid">
+flowchart LR
+    subgraph TRAIN["Training"]
+        T1["Feed ground-truth token<br/>(not the model's prediction)"] --> T2["more stable training"]
+    end
+    subgraph INFER["Inference"]
+        I1["Model uses its own<br/>predictions (autoregressive)"] --> I2["possible error accumulation"]
+    end
+        </pre>
+      </div>
+
+      <h3>4. Seq2Seq as Conditional Language Model</h3>
+      <div class="formula">\[P(Y|X) = P(y_1|X) \times P(y_2|X,y_1) \times \cdots \times P(y_T|X,y_1,\dots,y_{T-1})\]</div>
+
+      <h3>5. Decoding Strategies (Inference)</h3>
+      <ul>
+        <li><strong>A. Greedy Decoding:</strong> pick highest-probability token each step. No backtracking.</li>
+        <li><strong>B. Exhaustive Search:</strong> consider all tokens at each step — <code>V^T</code> complexity, infeasible.</li>
+        <li><strong>C. Beam Search:</strong> keep top K hypotheses at each step. Score = sum of log probabilities; normalize by sequence length to avoid bias toward shorter sequences.</li>
+      </ul>
+      <div class="diagram">
+        <div class="diagram-title">Beam Search (top-K)</div>
+        <pre class="mermaid">
+flowchart TB
+    START["Token 1<br/>keep top K hypotheses"] --> H1["hypothesis 1<br/>score = sum log P"]
+    START --> H2["hypothesis 2"]
+    START --> HK["hypothesis K"]
+    H1 & H2 & HK --> NEXT["Token 2<br/>expand each, keep top K again"]
+    NEXT --> END["Normalize by length<br/>pick best hypothesis"]
+        </pre>
+      </div>
+
+      <h3>6. Key Terminology</h3>
+      <ul>
+        <li><strong>Hypothesis:</strong> each potential translation path in beam search.</li>
+        <li><strong>End-to-End Training:</strong> backpropagate through entire network.</li>
+        <li>Encoder has <code>W_h</code>, <code>W_e</code> (no output matrix U); Decoder additionally has <code>U</code> for vocab projection.</li>
+      </ul>
+    </section>
+
+    <!-- ============ LEC 13 ============ -->
+    <section class="lecture" id="lec-13">
+      <h2><span class="lec-badge">Lec 13</span> Decoding Strategies</h2>
+
+      <h3>1. Introduction</h3>
+      <p>Decoding strategy determines which token to select at each step. Trade-off: <strong>Quality</strong> vs. <strong>Diversity</strong>. Deterministic (same output every time) vs. Stochastic (randomness for diversity).</p>
+      <div class="diagram">
+        <div class="diagram-title">Decoding Strategy Taxonomy</div>
+        <pre class="mermaid">
+flowchart TB
+    DEC["Decoding strategy"] --> DET["Deterministic<br/>same output each time"]
+    DET --> G["Greedy<br/>argmax each step"]
+    DET --> B["Beam Search<br/>top K hypotheses"]
+    DEC --> STO["Stochastic<br/>randomness for diversity"]
+    STO --> R["Random Sampling<br/>full distribution"]
+    STO --> K["Top-K Sampling<br/>renormalized top K"]
+    STO --> P["Top-P (Nucleus)<br/>cumulative prob >= P"]
+    STO --> T["Temperature<br/>scale logits by tau"]
+        </pre>
+      </div>
+
+      <h3>2. Deterministic Strategies</h3>
+      <table>
+        <thead><tr><th>Strategy</th><th>Method</th><th>Advantage</th><th>Disadvantage</th></tr></thead>
+        <tbody>
+          <tr><td>Greedy</td><td>argmax each step</td><td>Simple, fast</td><td>No diversity, no recovery from mistakes</td></tr>
+          <tr><td>Exhaustive Search</td><td>All tokens, V^T branches</td><td>Global optimum</td><td>Computationally impossible</td></tr>
+          <tr><td>Beam Search</td><td>Top K hypotheses</td><td>Balances quality/cost</td><td>Still deterministic</td></tr>
+        </tbody>
+      </table>
+
+      <h3>3. Stochastic Strategies</h3>
+      <ul>
+        <li><strong>A. Random Sampling:</strong> sample from full distribution — too noisy, unreliable.</li>
+        <li><strong>B. Top-K Sampling:</strong> select top K tokens, renormalize, sample. Limitation: optimal K varies by distribution shape.</li>
+        <li><strong>C. Top-P (Nucleus) Sampling:</strong> select smallest set of tokens whose cumulative probability ≥ threshold P, renormalize, sample. Adapts dynamically to distribution shape.</li>
+        <li><strong>D. Temperature Sampling:</strong> adjusts distribution sharpness via τ before sampling.</li>
+      </ul>
+      <div class="formula">\[P(w_i) = \frac{\exp(\text{logit}_i / \tau)}{\sum_j \exp(\text{logit}_j / \tau)}\]</div>
+      <ul>
+        <li>Low τ (e.g. 0.1): peaked, deterministic, repetitive.</li>
+        <li>High τ (e.g. 10): more uniform, creative, diverse.</li>
+        <li>τ=1: standard softmax.</li>
+      </ul>
+      <div class="diagram">
+        <div class="diagram-title">Temperature Effect on Distribution</div>
+        <pre class="mermaid">
+flowchart TB
+    LOGITS["logits z_i"] --> LOW["Low tau (0.1)<br/>peaked, deterministic, repetitive"]
+    LOGITS --> MID["tau = 1<br/>standard softmax"]
+    LOGITS --> HIGH["High tau (10)<br/>uniform, creative, diverse"]
+    LOW & MID & HIGH --> P1["P(w_i) = exp(z_i/tau) / sum exp(z_j/tau)"]
+        </pre>
+      </div>
+
+      <h3>4. Summary Table</h3>
+      <table>
+        <thead><tr><th>Strategy</th><th>Type</th><th>Key Mechanism</th><th>Best For</th></tr></thead>
+        <tbody>
+          <tr><td>Greedy</td><td>Deterministic</td><td>Highest probability</td><td>Single correct answer tasks</td></tr>
+          <tr><td>Beam Search</td><td>Deterministic</td><td>Top K hypotheses</td><td>Translation, summarization</td></tr>
+          <tr><td>Random Sampling</td><td>Stochastic</td><td>Full distribution sample</td><td>Not recommended</td></tr>
+          <tr><td>Top-K</td><td>Stochastic</td><td>Renormalized top K</td><td>Quality-diversity balance</td></tr>
+          <tr><td>Top-P (Nucleus)</td><td>Stochastic</td><td>Dynamic probability-mass set</td><td>Adapting to distribution shape</td></tr>
+          <tr><td>Temperature</td><td>Stochastic</td><td>Scales logits</td><td>Tuning determinism vs creativity</td></tr>
+        </tbody>
+      </table>
+
+      <h3>5. Key Takeaway</h3>
+      <div class="callout note" data-icon="💡">
+        <p>Deterministic strategies prioritize quality/consistency; stochastic strategies prioritize diversity/creativity.</p>
+      </div>
+    </section>
+
+    <!-- ============ LEC 14 ============ -->
+    <section class="lecture" id="lec-14">
+      <h2><span class="lec-badge">Lec 14</span> Attention in Sequence-to-Sequence Models</h2>
+
+      <h3>1. Limitations of Basic Seq2Seq</h3>
+      <ol>
+        <li><strong>No Parallelization:</strong> RNNs process sequentially.</li>
+        <li><strong>Linear Interaction Distance:</strong> hard to capture long-range dependencies.</li>
+        <li><strong>The Bottleneck Problem:</strong> entire input compressed into a single final hidden-state vector.</li>
+      </ol>
+
+      <h3>2. Core Idea of Attention</h3>
+      <p>Direct connection from decoder to <strong>all</strong> encoder hidden states — decoder "attends to" the most relevant input parts, creating a shortcut for information flow.</p>
+
+      <h3>3. How Attention Works (Vanilla Dot-Product Attention)</h3>
+      <ul>
+        <li><strong>Query (Q):</strong> current decoder hidden state (s(t)).</li>
+        <li><strong>Keys (K) / Values (V):</strong> encoder hidden states (h1...hn).</li>
+      </ul>
+      <div class="diagram">
+        <div class="diagram-title">Attention Mechanism</div>
+        <pre class="mermaid">
+flowchart LR
+    Q["Query s(t)<br/>decoder hidden state"] --> S["Attention Scores<br/>Score(s(t),h(i)) = s(t).h(i)"]
+    K["Keys/Values h1..hn<br/>encoder hidden states"] --> S
+    S --> W["Attention Weights<br/>softmax gives alpha(t,i)"]
+    W --> C["Context Vector<br/>a(t) = sum alpha(t,i).h(i)"]
+    C --> O["Combine &amp; generate<br/>concat(s(t), a(t)) to linear<br/>to output token"]
+        </pre>
+      </div>
+      <ol>
+        <li><strong>Attention Scores:</strong> \(\text{Score}(s_t,h_i) = s_t \cdot h_i\) (dot product).</li>
+        <li><strong>Attention Weights:</strong> softmax over scores → \(\alpha_{t,i}\).</li>
+        <li><strong>Context Vector:</strong> \(a_t = \sum_i \alpha_{t,i}\, h_i\) (weighted sum).</li>
+        <li><strong>Combine &amp; Generate:</strong> concatenate s(t) and a(t), pass through linear layer to produce output token.</li>
+      </ol>
+
+      <h3>4. Advantages</h3>
+      <table>
+        <thead><tr><th>Advantage</th><th>Explanation</th></tr></thead>
+        <tbody>
+          <tr><td>Solves Bottleneck</td><td>Decoder accesses all encoder states, not just the final one</td></tr>
+          <tr><td>Mitigates Vanishing Gradient</td><td>Shortcut path for gradients (like skip connections)</td></tr>
+          <tr><td>Interpretability</td><td>Attention weights show input-output alignment</td></tr>
+          <tr><td>No Additional Parameters</td><td>Vanilla form adds no new trainable parameters</td></tr>
+        </tbody>
+      </table>
+
+      <h3>5. Attention as a General Concept</h3>
+      <p>Query, Keys, Values → summary vector; squashes variable-length sequence into fixed-length context vector.</p>
+
+      <h3>6. Variations of Attention</h3>
+      <table>
+        <thead><tr><th>Variation</th><th>Formula</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Dot-Product</td><td>\(\text{score} = Q \cdot K\)</td><td>No parameters</td></tr>
+          <tr><td>Multiplicative (Bilinear)</td><td>\(\text{score} = Q^\top W K\)</td><td>Learnable projection matrix W</td></tr>
+          <tr><td>Additive (Concatenation)</td><td>\(\text{score} = v^\top \tanh(W[Q;K])\)</td><td>More computationally expensive</td></tr>
+          <tr><td>Scaled Dot-Product</td><td>\(\text{score} = Q \cdot K / \sqrt{d_k}\)</td><td>Used in Transformer, prevents vanishing gradients in softmax</td></tr>
+        </tbody>
+      </table>
+
+      <h3>7. Key Takeaways</h3>
+      <div class="callout good" data-icon="✅">
+        <ul>
+          <li>Attention solves the bottleneck problem in Seq2Seq.</li>
+          <li>Creates a shortcut connection from every decoder step to every encoder state.</li>
+          <li>Provides interpretability via alignment.</li>
+          <li>General mechanism (Q, K, V) applicable beyond Seq2Seq.</li>
+          <li>Leads into: Self-Attention and the Transformer model.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ LEC 15 ============ -->
+    <section class="lecture" id="lec-15">
+      <h2><span class="lec-badge">Lec 15</span> Introduction to Transformers</h2>
+      <p class="subtitle">Week 6 — The architecture behind modern LLMs. <em>(Supplemented from the course syllabus; not in the original notes.)</em></p>
+
+      <h3>Motivation: Why Not RNNs?</h3>
+      <ul>
+        <li>RNNs process tokens <strong>sequentially</strong> — one step must finish before the next starts. No parallelization across positions.</li>
+        <li>Long-range dependencies are hard to capture (vanishing gradients; even LSTM only reduces the problem).</li>
+        <li>Seq2Seq models compress the whole input into a fixed vector (the bottleneck problem).</li>
+      </ul>
+
+      <h3>The Transformer Architecture (Vaswani et al., 2017)</h3>
+      <ul>
+        <li>Replaces recurrence with <strong>self-attention</strong>: every token attends to every other token, all positions processed <strong>in parallel</strong>.</li>
+        <li>Core blocks: <strong>Multi-Head Self-Attention</strong> → <strong>Feed-Forward Network</strong>, wrapped with <strong>residual connections</strong> and <strong>layer normalization</strong>.</li>
+        <li><strong>Positional encoding</strong> is added because self-attention has no built-in notion of order.</li>
+        <li>Two stacks: an <strong>encoder</strong> (bidirectional context) and a <strong>decoder</strong> (masked self-attention + cross-attention to the encoder).</li>
+        <li>The decoder-only variant (GPT-style) uses only the decoder stack with causal masking.</li>
+      </ul>
+
+      <div class="diagram">
+        <div class="diagram-title">Transformer Block</div>
+        <pre class="mermaid">
+flowchart TB
+    IN["Input tokens +<br/>positional encoding"] --> AT["Multi-Head<br/>Self-Attention"]
+    AT --> AD["Add &amp; Norm<br/>(residual + layer norm)"]
+    AD --> FF["Feed-Forward<br/>Network (MLP)"]
+    FF --> FD["Add &amp; Norm<br/>(residual + layer norm)"]
+    FD --> OUT["Output to next block"]
+    IN -.->|"residual"| AD
+    AD -.->|"residual"| FD
+        </pre>
+      </div>
+
+      <h3>Why It Wins</h3>
+      <table>
+        <thead><tr><th>Property</th><th>RNN</th><th>Transformer</th></tr></thead>
+        <tbody>
+          <tr><td>Parallelization</td><td>Sequential</td><td>Full parallel</td></tr>
+          <tr><td>Interaction distance</td><td>O(length) steps apart</td><td>O(1) — direct attention</td></tr>
+          <tr><td>Training speed</td><td>Slow</td><td>Much faster (GPU-friendly)</td></tr>
+          <tr><td>Long-range context</td><td>Vanishing gradient</td><td>Direct, but O(n²) compute</td></tr>
+        </tbody>
+      </table>
+      <div class="callout warn" data-icon="⚠️">
+        <p><strong>Cost:</strong> self-attention is O(n²) in sequence length — quadratic memory/compute, motivating later efficiency research.</p>
+      </div>
+    </section>
+
+    <!-- ============ LEC 16 ============ -->
+    <section class="lecture" id="lec-16">
+      <h2><span class="lec-badge">Lec 16</span> Self and Multi-Head Attention</h2>
+      <p class="subtitle">Week 6 — How attention becomes self-attention, and why multiple heads help. <em>(Supplemented from the course syllabus.)</em></p>
+
+      <h3>1. From Seq2Seq Attention to Self-Attention</h3>
+      <ul>
+        <li>In Seq2Seq, the <strong>decoder query</strong> attends to <strong>encoder keys/values</strong> (cross-attention).</li>
+        <li>In <strong>self-attention</strong>, the query, key, and value all come from the <strong>same sequence</strong> — every token attends to every other token (including itself).</li>
+        <li>Each token's representation becomes a <strong>contextualized mix</strong> of the whole sequence.</li>
+      </ul>
+
+      <h3>2. Scaled Dot-Product Attention</h3>
+      <div class="formula">\[\text{Attention}(Q, K, V) = \text{softmax}\!\left(\frac{Q K^\top}{\sqrt{d_k}}\right) V\]</div>
+      <div class="diagram">
+        <div class="diagram-title">Scaled Dot-Product Attention</div>
+        <pre class="mermaid">
+flowchart LR
+    Q["Q (query)<br/>n x d_k"] --> S["Q x K^T<br/>scoring"]
+    K["K (key)<br/>m x d_k"] --> S
+    S --> SC["divide by sqrt(d_k)<br/>prevents softmax saturation"]
+    SC --> SM["softmax<br/>attention weights"]
+    SM --> C["x V<br/>weighted sum"]
+    V["V (value)<br/>m x d_v"] --> C
+    C --> OUT["Context vectors<br/>n x d_v"]
+        </pre>
+      </div>
+      <ul>
+        <li><strong>Why scale by √dₖ:</strong> dot products grow large with dₖ, pushing softmax into flat gradients (vanishing). Dividing keeps gradients healthy.</li>
+        <li><strong>Interpretation:</strong> rows of the softmax matrix = how much each token attends to each other token.</li>
+      </ul>
+
+      <h3>3. Multi-Head Attention</h3>
+      <p>Instead of one attention operation, run <strong>h parallel attention "heads"</strong> on projected Q/K/V, then concatenate the outputs.</p>
+      <ul>
+        <li>Each head learns to attend to <strong>different relationship types</strong> (syntax, co-reference, positions, etc.).</li>
+        <li>Mathematically: \(\text{MultiHead}(Q,K,V) = \text{Concat}(\text{head}_1,\dots,\text{head}_h) \cdot W^O\), where each \(\text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)\).</li>
+        <li>BERT-Base: 12 heads; BERT-Large: 16 heads.</li>
+      </ul>
+      <div class="diagram">
+        <div class="diagram-title">Multi-Head Attention</div>
+        <pre class="mermaid">
+flowchart TB
+    X["Sequence<br/>X"] --> P["Project to Q, K, V"]
+    P --> H1["Head 1<br/>Attention(Q1,K1,V1)"]
+    P --> H2["Head 2<br/>Attention(Q2,K2,V2)"]
+    P --> HN["Head h<br/>Attention(Qh,Kh,Vh)"]
+    H1 & H2 & HN --> CAT["Concat heads"]
+    CAT --> O["Final projection W^O"]
+    O --> Y["Output"]
+        </pre>
+      </div>
+      <div class="callout tip" data-icon="🎯">
+        <p><strong>Takeaway:</strong> attention = content-based routing; multiple heads = multiple simultaneous views of the same sequence.</p>
+      </div>
+
+      <h4>Attention Heatmap (Illustrative)</h4>
+      <p>Reading across a row shows how much each token attends to each other token. Darker = stronger attention. This is how attention gives interpretability.</p>
+      <div class="diagram">
+        <div class="diagram-title">Sample Attention Matrix — "the cat sat on the mat"</div>
+        <table class="heatmap" aria-label="Attention weight heatmap">
+          <thead>
+            <tr><th></th><th>the</th><th>cat</th><th>sat</th><th>on</th><th>the</th><th>mat</th></tr>
+          </thead>
+          <tbody>
+            <tr><th>the</th><td style="background:rgba(79,209,197,0.10)">.10</td><td style="background:rgba(79,209,197,0.25)">.25</td><td style="background:rgba(79,209,197,0.18)">.18</td><td style="background:rgba(79,209,197,0.14)">.14</td><td style="background:rgba(79,209,197,0.10)">.10</td><td style="background:rgba(79,209,197,0.23)">.23</td></tr>
+            <tr><th>cat</th><td style="background:rgba(79,209,197,0.22)">.22</td><td style="background:rgba(79,209,197,0.30)">.30</td><td style="background:rgba(79,209,197,0.26)">.26</td><td style="background:rgba(79,209,197,0.08)">.08</td><td style="background:rgba(79,209,197,0.06)">.06</td><td style="background:rgba(79,209,197,0.08)">.08</td></tr>
+            <tr><th>sat</th><td style="background:rgba(79,209,197,0.18)">.18</td><td style="background:rgba(79,209,197,0.28)">.28</td><td style="background:rgba(79,209,197,0.20)">.20</td><td style="background:rgba(79,209,197,0.12)">.12</td><td style="background:rgba(79,209,197,0.08)">.08</td><td style="background:rgba(79,209,197,0.14)">.14</td></tr>
+            <tr><th>on</th><td style="background:rgba(79,209,197,0.10)">.10</td><td style="background:rgba(79,209,197,0.10)">.10</td><td style="background:rgba(79,209,197,0.14)">.14</td><td style="background:rgba(79,209,197,0.34)">.34</td><td style="background:rgba(79,209,197,0.12)">.12</td><td style="background:rgba(79,209,197,0.20)">.20</td></tr>
+            <tr><th>the</th><td style="background:rgba(79,209,197,0.12)">.12</td><td style="background:rgba(79,209,197,0.10)">.10</td><td style="background:rgba(79,209,197,0.10)">.10</td><td style="background:rgba(79,209,197,0.16)">.16</td><td style="background:rgba(79,209,197,0.28)">.28</td><td style="background:rgba(79,209,197,0.24)">.24</td></tr>
+            <tr><th>mat</th><td style="background:rgba(79,209,197,0.20)">.20</td><td style="background:rgba(79,209,197,0.12)">.12</td><td style="background:rgba(79,209,197,0.18)">.18</td><td style="background:rgba(79,209,197,0.16)">.16</td><td style="background:rgba(79,209,197,0.22)">.22</td><td style="background:rgba(79,209,197,0.12)">.12</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ LEC 17 ============ -->
+    <section class="lecture" id="lec-17">
+      <h2><span class="lec-badge">Lec 17</span> Positional Encoding and Layer Normalization</h2>
+      <p class="subtitle">Week 6 — Giving order to a permutation-invariant mechanism. <em>(Supplemented from the course syllabus.)</em></p>
+
+      <h3>1. Why Position Matters</h3>
+      <p>Self-attention is <strong>permutation-invariant</strong>: shuffle the input tokens and attention produces the same result. Word order is essential to meaning ("dog bites man" ≠ "man bites dog"), so we must inject position information.</p>
+
+      <h3>2. Sinusoidal Positional Encoding</h3>
+      <div class="formula">\[\begin{aligned} \text{PE}(pos, 2i) &= \sin\!\left(pos / 10000^{2i/d}\right) \\ \text{PE}(pos, 2i+1) &= \cos\!\left(pos / 10000^{2i/d}\right) \end{aligned}\]</div>
+      <ul>
+        <li>Each dimension of the position vector oscillates at a different frequency.</li>
+        <li><strong>Advantages:</strong> no learned parameters, can extrapolate to unseen lengths, and relative offsets are expressible via linear combinations of sines/cosines.</li>
+        <li>Added to the token embeddings before the first block.</li>
+      </ul>
+      <div class="diagram">
+        <div class="diagram-title">Adding Positional Encoding</div>
+        <pre class="mermaid">
+flowchart LR
+    E["Token embeddings"] --> SUM["+"]
+    P["Positional encoding<br/>sin / cos waves"] --> SUM
+    SUM --> IN["Input to first<br/>Transformer block"]
+        </pre>
+      </div>
+
+      <h3>3. Alternatives</h3>
+      <table>
+        <thead><tr><th>Method</th><th>Used in</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Sinusoidal (fixed)</td><td>Original Transformer</td><td>No parameters, extrapolates</td></tr>
+          <tr><td>Learned embeddings</td><td>BERT, GPT</td><td>Learned per absolute position</td></tr>
+          <tr><td>RoPE (Rotary)</td><td>LLaMA, GPT-NeoX</td><td>Rotates pairs of features; relative positions via rotation</td></tr>
+          <tr><td>ALiBi</td><td>BLOOM, MPT</td><td>Adds a bias scaled by distance</td></tr>
+        </tbody>
+      </table>
+
+      <h3>4. Layer Normalization</h3>
+      <ul>
+        <li><strong>Normalizes across features for each token</strong> (mean 0, variance 1), then applies learned scale γ and shift β.</li>
+        <li>Unlike BatchNorm, it does not depend on batch statistics — works for variable-length sequences and during inference.</li>
+        <li>Placed around sub-layers (pre-norm: before attention/FFN; post-norm: after, as in original paper).</li>
+        <li>Together with <strong>residual connections</strong> (<code>output = f(x) + x</code>), it stabilizes deep transformer training.</li>
+      </ul>
+      <div class="callout good" data-icon="✅">
+        <p><strong>Recipe for training deep transformers:</strong> self-attention + feed-forward, each wrapped in residual connection and layer norm, repeated L times.</p>
+      </div>
+    </section>
+
+    <!-- ============ LEC 18 ============ -->
+    <section class="lecture" id="lec-18">
+      <h2><span class="lec-badge">Lec 18</span> Pre-Training Strategies: ELMo, BERT</h2>
+
+      <h3>Motivation for Contextualized Embeddings</h3>
+      <p>Traditional embeddings (Word2Vec, GloVe) are static/context-independent — a word like "bat" gets the same vector regardless of usage. Modern strategies make embeddings dynamic based on context.</p>
+
+      <h3>ELMo (Embeddings from Language Models, 2018)</h3>
+      <p>Non-transformer approach creating deeply contextualized representations.</p>
+      <ul>
+        <li><strong>Architecture:</strong> Stacked bidirectional RNN (LSTM/GRU) — left-to-right + right-to-left, two layers each.</li>
+        <li><strong>Embeddings as Hidden States:</strong> top-layer representations from forward and backward RNNs concatenated.</li>
+        <li><strong>Pre-training Objective:</strong> language modeling (predict next word).</li>
+        <li><strong>Tokenization:</strong> character-level CNN representations (solves OOV problem).</li>
+        <li><strong>Task Adaptation:</strong> task-specific parameters (gamma) combine pre-trained hidden states.</li>
+      </ul>
+
+      <h3>The Paradigm Shift in Pre-Training</h3>
+      <p>Shift from pre-trained <em>word vectors</em> (only input embeddings pre-trained/frozen) to pre-trained <em>models</em> (all internal parameters pre-trained then fine-tuned).</p>
+      <p><strong>Three categories of Transformer pre-training:</strong></p>
+      <ol>
+        <li><strong>Decoder-only:</strong> GPT series.</li>
+        <li><strong>Encoder-only:</strong> BERT, ALBERT, RoBERTa.</li>
+        <li><strong>Encoder-Decoder:</strong> T5, BART.</li>
+      </ol>
+      <div class="diagram">
+        <div class="diagram-title">ELMo vs BERT Architectures</div>
+        <pre class="mermaid">
+flowchart LR
+    subgraph ELMO["ELMo (2018)"]
+        E1["Stacked bidirectional<br/>LSTM/GRU<br/>left-to-right + right-to-left"] --> E2["character-level CNN input<br/>solves OOV"]
+    end
+    subgraph BERT["BERT (2018)"]
+        B1["Encoder-only Transformer<br/>bidirectional<br/>no masked self-attention"] --> B2["MLM + NSP objectives<br/>[CLS] and [SEP] tokens"]
+    end
+        </pre>
+      </div>
+
+      <h3>BERT (Bidirectional Encoder Representations from Transformers)</h3>
+      <p>Google's encoder-only transformer — bidirectional (no masked self-attention).</p>
+
+      <h4>1. Pre-Training Objectives</h4>
+      <div class="diagram">
+        <div class="diagram-title">BERT Pre-training Objectives</div>
+        <pre class="mermaid">
+flowchart LR
+    subgraph MLM["Masked Language Model"]
+        M1["15% of tokens selected"] --> M2["80% to [MASK]<br/>10% to random word<br/>10% unchanged"]
+    end
+    subgraph NSP["Next Sentence Prediction"]
+        N1["Two sentences consecutive?"] --> N2["50% positive<br/>50% negative (shuffled)"]
+    end
+        </pre>
+      </div>
+      <ul>
+        <li><strong>Masked Language Model (MLM):</strong> 15% of tokens selected; 80% → <code>[MASK]</code>, 10% → random word, 10% → unchanged.</li>
+        <li><strong>Next Sentence Prediction (NSP):</strong> predicts if two sentences are consecutive (50% positive/50% negative shuffled samples).</li>
+      </ul>
+
+      <h4>2. Special Tokens</h4>
+      <ul>
+        <li><code>[SEP]</code>: separates two sequences.</li>
+        <li><code>[CLS]</code>: prepended to sequence start, aggregates whole-input meaning for classification (unbiased toward specific tokens, fewer parameters needed).</li>
+        <li>Input = token encoding + position encoding + segment encoding.</li>
+      </ul>
+
+      <h4>3. Training Details</h4>
+      <ul>
+        <li>Trained on 2.5B word Wikipedia + 800M word Book corpus.</li>
+        <li><strong>BERT-Base:</strong> 12 encoder layers, 12 attention heads.</li>
+        <li><strong>BERT-Large:</strong> 24 encoder layers, 16 attention heads.</li>
+      </ul>
+
+      <h3>Fine-Tuning BERT (e.g., closed-book QA / SQuAD)</h3>
+      <p>Question + passage fed together separated by <code>[SEP]</code>. Two classification heads predict start/end probability of the answer span per token. Inference finds <code>(i,j)</code> maximizing <code>P_beginning × P_end</code> where <code>j ≥ i</code>.</p>
+
+      <h3>Legacy and Impact</h3>
+      <div class="callout good" data-icon="✅">
+        <p>BERT outperformed GPT-1, remained SOTA benchmark until 2020. Sparked TinyBERT, D-BERT (compressed) and RoBERTa (showed original BERT was undertrained).</p>
+      </div>
+    </section>
+
+    <!-- ============ LEC 19 ============ -->
+    <section class="lecture" id="lec-19">
+      <h2><span class="lec-badge">Lec 19</span> Pre-Training Strategies: Encoder-Decoder and Decoder-only Models</h2>
+
+      <h3>Overview of the Paradigm Shift</h3>
+      <p>Encoder-only models (BERT/MLM) aren't ideal for generative tasks, which need autoregressive generation. Field shifted to <strong>Encoder-Decoder models</strong> (BART, T5) and <strong>Decoder-only models</strong> (GPT series, LLaMA).</p>
+      <div class="diagram">
+        <div class="diagram-title">Encoder-Decoder vs Decoder-only</div>
+        <pre class="mermaid">
+flowchart TB
+    subgraph ED["Encoder-Decoder<br/>BART, T5<br/>2x parameters"]
+        ENC1["Bidirectional encoder"] --> DEC1["Autoregressive decoder"]
+        DEC1 --> O1["generated text"]
+    end
+    subgraph DO["Decoder-only<br/>GPT, LLaMA<br/>parameter-efficient"]
+        DEC2["Autoregressive decoder<br/>predict next token"] --> O2["generated text"]
+    end
+        </pre>
+      </div>
+
+      <h3>1. Encoder-Decoder Models</h3>
+      <p>Bidirectional encoder + autoregressive decoder. Drawback: double the parameters vs. single-stack models.</p>
+
+      <h4>BART (Bidirectional and AutoRegressive Transformer)</h4>
+      <ul>
+        <li>Pre-trained by injecting noise into text, decoder predicts original clean sequence.</li>
+        <li><strong>Corruption Techniques:</strong> Token Masking, Token Deletion, Permutation (ABCDE→DEABC), Rotation (CDEAB), Span Masking.</li>
+        <li><strong>Key Difference from BERT:</strong> BART reconstructs the <strong>entire original sequence</strong>, not just masked tokens.</li>
+      </ul>
+      <div class="diagram">
+        <div class="diagram-title">BART Corruption Techniques</div>
+        <pre class="mermaid">
+flowchart LR
+    B["Corrupt input"] --> M["Token Masking<br/>[MASK]"]
+    B --> D2["Token Deletion<br/>remove tokens"]
+    B --> P["Permutation<br/>ABCDE to DEABC"]
+    B --> R["Rotation<br/>to CDEAB"]
+    B --> S["Span Masking"]
+    M & D2 & P & R & S --> DEC["Decoder reconstructs<br/>entire original sequence"]
+        </pre>
+      </div>
+
+      <h4>T5 (Text-to-Text Transfer Transformer)</h4>
+      <ul>
+        <li>Maps every NLP problem to text-to-text using task prefixes, e.g., <code>"translate English to German: [sentence]"</code>, <code>"summarize: [document]"</code>.</li>
+        <li><strong>Pre-training:</strong> corrupts inputs with span replacement using <strong>Sentinel tokens</strong> (<code>&lt;X&gt;</code>, <code>&lt;Y&gt;</code>).</li>
+        <li><strong>Key Difference from BART:</strong> decoder only outputs the masked spans, not the entire sequence.</li>
+        <li><strong>C4 Dataset:</strong> 745GB Colossal Clean Crawled Corpus, filtered from 6TB raw web data (removes HTML, JS, non-English, duplicates). Clean data &gt; raw data for training quality.</li>
+      </ul>
+
+      <h3>2. Decoder-Only Models</h3>
+      <p>No encoder — parameter-efficient (half the params of encoder-decoder), suited for generation.</p>
+      <ul>
+        <li><strong>Pre-training:</strong> autoregressive LM objective — predict next token.</li>
+      </ul>
+
+      <h4>Evolution of GPT Series</h4>
+      <div class="diagram">
+        <div class="diagram-title">GPT Evolution</div>
+        <pre class="mermaid">
+flowchart LR
+    G1["GPT-1 (2018)<br/>12 layers, 117M params<br/>512-token context<br/>Book corpus"] --> G2["GPT-2 (2019)<br/>1.5B params, 1024 context<br/>layer norm between blocks<br/>zero-shot learning"]
+    G2 --> G3["GPT-3 (2020)<br/>175B params (100x GPT-2)<br/>96 layers<br/>emergent in-context learning"]
+    G3 --> G4["GPT-4 (2023)<br/>black box<br/>undisclosed architecture<br/>instruction tuning + RLHF"]
+        </pre>
+      </div>
+      <ul>
+        <li><strong>GPT-1 (2018):</strong> 12 layers, 117M params, 512-token context, trained on Book corpus.</li>
+        <li><strong>GPT-2 (2019):</strong> 1.5B params, 1024 context, layer norm between sub-blocks, trained on Common Crawl. Demonstrated zero-shot learning.</li>
+        <li><strong>GPT-3 (2020):</strong> 175B params (100x GPT-2), 96 layers. Emergent <strong>in-context learning</strong> — no fine-tuning needed, just examples in prompt.</li>
+        <li><strong>GPT-4 (2023):</strong> "Black box" — undisclosed architecture/params. Relies on <strong>Instruction Fine-Tuning</strong> and <strong>RLHF</strong> for alignment.</li>
+      </ul>
+
+      <h4>LLaMA (Meta)</h4>
+      <p>Open-source alternative (LLaMA 1, 2, 3). Uses Byte-Pair Encoding and Rotary Positional Encoding (RoPE); trained on Common Crawl, Wikipedia, GitHub, books.</p>
+    </section>
+
+    <!-- ============ LEC 20 ============ -->
+    <section class="lecture" id="lec-20">
+      <h2><span class="lec-badge">Lec 20</span> Introduction to HuggingFace</h2>
+      <p class="subtitle">Week 7 — The standard toolbox for using and fine-tuning pretrained models. <em>(Supplemented from the course syllabus.)</em></p>
+
+      <h3>1. Why HuggingFace?</h3>
+      <ul>
+        <li>One library to load, use, and fine-tune thousands of pretrained transformers — <strong>Transformers</strong> (<code>pip install transformers</code>).</li>
+        <li>Companion libraries: <strong>Tokenizers</strong> (fast tokenization), <strong>Datasets</strong> (large-scale data loading), <strong>Accelerate</strong> (multi-GPU/TPU training), <strong>PEFT</strong> (parameter-efficient fine-tuning).</li>
+        <li>The <strong>Model Hub</strong> hosts community-shared model weights and tokenizers (e.g., <code>bert-base-uncased</code>, <code>llama-3</code>).</li>
+      </ul>
+
+      <h3>2. Core Workflow</h3>
+      <ol>
+        <li><strong>Load a pretrained model + tokenizer:</strong> <code>AutoModelForSequenceClassification.from_pretrained(...)</code> and <code>AutoTokenizer.from_pretrained(...)</code>.</li>
+        <li><strong>Tokenize:</strong> text → input IDs, attention masks, token type IDs.</li>
+        <li><strong>Forward pass:</strong> model returns logits (or hidden states).</li>
+        <li><strong>Decode/interpret:</strong> map logits to labels (via <code>id2label</code>) or detokenize generated text.</li>
+        <li><strong>Trainer:</strong> the <code>Trainer</code> API wraps training loops, evaluation, and checkpoints.</li>
+      </ol>
+      <div class="diagram">
+        <div class="diagram-title">HuggingFace Workflow</div>
+        <pre class="mermaid">
+flowchart LR
+    M["AutoModel.from_pretrained"] --> T["AutoTokenizer.from_pretrained"]
+    T --> TOK["tokenize text<br/>input_ids + attention_mask"]
+    TOK --> FWD["model forward<br/>logits / hidden states"]
+    FWD --> OUT["interpret output<br/>id2label / generate"]
+        </pre>
+      </div>
+
+      <h3>3. Key APIs</h3>
+      <table>
+        <thead><tr><th>API</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>pipeline("sentiment-analysis")</code></td><td>One-line task inference</td></tr>
+          <tr><td><code>AutoTokenizer</code></td><td>Auto-selects correct tokenizer for any model</td></tr>
+          <tr><td><code>Trainer</code> + <code>TrainingArguments</code></td><td>Standard fine-tuning loop</td></tr>
+          <tr><td><code>DataCollatorWithPadding</code></td><td>Pads batches to equal length</td></tr>
+          <tr><td><code>model.push_to_hub()</code></td><td>Share your fine-tuned model</td></tr>
+        </tbody>
+      </table>
+      <div class="callout tip" data-icon="🎯">
+        <p><strong>Concept:</strong> HuggingFace operationalizes the <em>pretrain-then-fine-tune</em> paradigm — you download a pretrained model and adapt it to your task in a few lines.</p>
+      </div>
+    </section>
+
+    <!-- ============ LEC 21 ============ -->
+    <section class="lecture" id="lec-21">
+      <h2><span class="lec-badge">Lec 21</span> Instruction Tuning</h2>
+      <p class="subtitle">Source: <a href="https://www.youtube.com/watch?v=TPDiqPnJDTs">YouTube — Lec 21 | Instruction Tuning</a></p>
+
+      <h3>1. Background: Pre-trained Language Models (Base Models)</h3>
+      <ul>
+        <li>Base models are trained via next-word prediction on vast internet text.</li>
+        <li>They encode world knowledge but often just <strong>continue</strong> a prompt rather than answering it (e.g., asked "What is the national flower of India?" might generate "What is the national animal of India?" since such question lists are common online).</li>
+        <li>Next-word prediction alone doesn't ensure instruction-following.</li>
+      </ul>
+
+      <h3>2. Problem with Classical Multitask Learning</h3>
+      <ul>
+        <li>Model trained on multiple tasks via input-output examples but with no explicit task description.</li>
+        <li>Fails to generalize to brand-new tasks at inference time.</li>
+      </ul>
+
+      <h3>3. What is Instruction Tuning?</h3>
+      <ul>
+        <li>Fine-tuning technique to teach models to understand, reason, and follow natural language instructions.</li>
+        <li>Explicit task descriptions (e.g., "predict the sentiment," "translate to Hindi") connect commands to outcomes.</li>
+        <li>Boosts generalization to unseen tasks.</li>
+        <li><strong>Distinct from Prompting:</strong> instruction tuning updates model weights; prompting/in-context learning does not.</li>
+      </ul>
+      <div class="diagram">
+        <div class="diagram-title">Instruction Tuning Flow</div>
+        <pre class="mermaid">
+flowchart LR
+    A["Pre-trained base model<br/>next-word prediction"] --> B["Instruction tuning<br/>task descriptions + examples<br/>updates model weights"]
+    B --> C["Understands &amp; follows<br/>natural language instructions"]
+    C --> D["Generalizes to<br/>unseen tasks"]
+        </pre>
+      </div>
+
+      <h3>4. Training Mechanics</h3>
+      <ul>
+        <li><strong>Objective:</strong> instruction + input + prior generated words → predict next word; cross-entropy loss, maximize log-likelihood.</li>
+        <li><strong>Teacher Forcing:</strong> actual target outputs fed during training.</li>
+        <li><strong>Architectural Differences:</strong>
+          <ul>
+            <li>Decoder-only: instruction, input, target output all fed to decoder.</li>
+            <li>Encoder-Decoder: instruction+input → encoder; target output → decoder (teacher forcing).</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3>5. Scaling and Instruction Diversity</h3>
+      <ul>
+        <li><strong>Diverse Templates:</strong> rephrasing instructions multiple ways improves generalization.</li>
+        <li><strong>Task Generation:</strong> e.g., SQuAD can be adapted to query-generation and context-generation tasks.</li>
+        <li><strong>Scaling Up:</strong> larger model size + more fine-tuning tasks → better performance.</li>
+        <li><strong>Low Compute Cost:</strong> instruction fine-tuning costs only 0.2%–1.6% of pre-training compute.</li>
+        <li><strong>Generalizability:</strong> gains hold across decoder-only and encoder-decoder architectures.</li>
+      </ul>
+
+      <h3>6. Automated Data Generation (Self-Instruct)</h3>
+      <p>Pipeline to auto-generate instruction datasets using an LLM (e.g., GPT-3):</p>
+      <div class="diagram">
+        <div class="diagram-title">Self-Instruct Pipeline</div>
+        <pre class="mermaid">
+flowchart TB
+    A["175 human-written<br/>seed tasks"] --> B["Instruction Generation<br/>sample 8 as few-shot<br/>to generate new instructions"]
+    B --> C["Task Classification<br/>classification vs<br/>non-classification"]
+    C --> D{"Classification task?"}
+    D -->|"Yes"| E["Output-first approach<br/>label to input<br/>balances dataset"]
+    D -->|"No"| F["Input-then-output<br/>generation"]
+    E --> G["Filtering<br/>ROUGE-L sim &lt;= 0.7<br/>drop unsupported keywords<br/>dedupe instances"]
+    F --> G
+    G --> H["Final instruction dataset"]
+        </pre>
+      </div>
+      <ul>
+        <li><strong>Instruction Generation:</strong> starts from 175 human-written seed tasks; 8 sampled as few-shot examples to generate new instructions.</li>
+        <li><strong>Task Classification:</strong> LLM predicts classification vs. non-classification task via few-shot prompting.</li>
+        <li><strong>Instance Generation:</strong>
+          <ul>
+            <li>Classification tasks: <strong>output-first approach</strong> (given a label, generate matching input) to balance dataset.</li>
+            <li>Non-classification tasks: standard input-then-output generation.</li>
+          </ul>
+        </li>
+        <li><strong>Filtering:</strong> removes near-duplicate instructions (ROUGE-L similarity ≤ 0.7), unsupported keywords (e.g., "image," "graph"), duplicate instances, and length-heuristic failures.</li>
+      </ul>
+
+      <h3>7. Future Directions</h3>
+      <ul>
+        <li><strong>RLHF (Reinforcement Learning from Human Feedback):</strong> further aligns models with human preferences beyond instruction tuning.</li>
+        <li><strong>Parameter-efficient fine-tuning:</strong> alternatives to full fine-tuning, which is memory-intensive.</li>
+      </ul>
+    </section>
+
+    <!-- ============ LEC 22 ============ -->
+    <section class="lecture" id="lec-22">
+      <h2><span class="lec-badge">Lec 22</span> Prompt-based Learning</h2>
+      <p class="subtitle">Week 8 — Using prompts to make frozen models perform tasks. <em>(Supplemented from the course syllabus.)</em></p>
+
+      <h3>1. The Core Idea</h3>
+      <ul>
+        <li>Instead of fine-tuning the model, <strong>reformulate the task as a text completion</strong> the pretrained model already knows how to produce.</li>
+        <li>The model stays <strong>frozen</strong> — only the prompt changes. No weight updates.</li>
+        <li>Distinct from instruction tuning: prompting adapts the <em>input</em>; instruction tuning adapts the <em>weights</em>.</li>
+      </ul>
+
+      <h3>2. Prompt Formats</h3>
+      <table>
+        <thead><tr><th>Type</th><th>Description</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Zero-shot</strong></td><td>Task described, no examples</td><td>"Sentiment: 'The film was great' → Positive"</td></tr>
+          <tr><td><strong>Few-shot / In-Context Learning</strong></td><td>Task + a few examples</td><td>3 labeled examples + new input</td></tr>
+          <tr><td><strong>Cloze / Fill-in-the-blank</strong></td><td>Blank to complete</td><td>"France's capital is [MASK]."</td></tr>
+          <tr><td><strong>Hard prompt</strong></td><td>Fixed discrete text tokens</td><td>Hand-written template</td></tr>
+          <tr><td><strong>Soft prompt</strong></td><td>Learnable continuous vectors</td><td>Prefix tuning / prompt tuning</td></tr>
+        </tbody>
+      </table>
+
+      <h3>3. Prompt Sensitivity</h3>
+      <div class="callout warn" data-icon="⚠️">
+        <p>Small wording changes — order of examples, exact phrasing, punctuation — can produce <strong>very different outputs</strong>. This makes prompt design more art than science and motivates systematic search.</p>
+      </div>
+      <div class="diagram">
+        <div class="diagram-title">Prompt-based Learning</div>
+        <pre class="mermaid">
+flowchart TB
+    P["Prompt template"] --> M["Frozen pretrained<br/>language model"]
+    M --> O["Predicted text"]
+    T["Task description"] -.-> P
+    E["Optional few-shot examples"] -.-> P
+        </pre>
+      </div>
+      <div class="callout tip" data-icon="🎯">
+        <p><strong>Trade-off:</strong> prompting is cheap (no training) but fragile and task-coupling is weak; fine-tuning is expensive but robust.</p>
+      </div>
+    </section>
+
+    <!-- ============ LEC 23 ============ -->
+    <section class="lecture" id="lec-23">
+      <h2><span class="lec-badge">Lec 23</span> Advanced Prompting Techniques</h2>
+      <p class="subtitle">Week 8 — Beyond a single prompt. <em>(Supplemented from the course syllabus.)</em></p>
+
+      <h3>1. Chain-of-Thought (CoT)</h3>
+      <ul>
+        <li>Prompt the model to <strong>reason step-by-step</strong> before giving the final answer ("Let's think step by step").</li>
+        <li>Works because LLMs are better at generation than recall — intermediate reasoning steps help them arrive at correct conclusions.</li>
+        <li><strong>Zero-shot CoT:</strong> just append the reasoning trigger to a zero-shot prompt.</li>
+        <li><strong>Few-shot CoT:</strong> include a few examples that demonstrate step-by-step reasoning.</li>
+      </ul>
+      <div class="diagram">
+        <div class="diagram-title">Chain-of-Thought Prompting</div>
+        <pre class="mermaid">
+flowchart TB
+    Q["Question"] --> COT["'Let's think step by step'<br/>generate reasoning"]
+    COT --> S1["Step 1<br/>break down the problem"]
+    S1 --> S2["Step 2<br/>reason about each part"]
+    S2 --> S3["Step 3<br/>combine findings"]
+    S3 --> A["Final answer"]
+        </pre>
+      </div>
+
+      <h3>2. Self-Consistency</h3>
+      <p>Sample <strong>multiple reasoning paths</strong> (via temperature), then take a <strong>majority vote</strong> on the final answers — improves reliability over a single greedy path.</p>
+
+      <h3>3. Tree / Graph of Thoughts</h3>
+      <ul>
+        <li><strong>Tree of Thoughts:</strong> explore multiple reasoning branches, evaluate/backtrack — a search over thoughts, not tokens.</li>
+        <li><strong>Graph of Thoughts:</strong> thoughts can combine, split, and merge (a DAG) — more expressive than linear or tree structures.</li>
+      </ul>
+
+      <h3>4. Prompt Chaining</h3>
+      <p>Decompose a complex task into a sequence of simpler prompts, where each prompt's output feeds the next — improves correctness on multi-step tasks.</p>
+
+      <h3>5. Retrieval-Augmented Prompting</h3>
+      <p>Fetch relevant documents and inject them into the prompt (RAG, covered in Lec 25) — grounds the model in external knowledge and reduces hallucination.</p>
+
+      <div class="callout good" data-icon="✅">
+        <p><strong>Takeaway:</strong> advanced prompting trades more tokens/compute for higher accuracy by eliciting structured reasoning.</p>
+      </div>
+    </section>
+
+    <!-- ============ LEC 24 ============ -->
+    <section class="lecture" id="lec-24">
+      <h2><span class="lec-badge">Lec 24</span> Alignment of LLMs with Human Feedback (RLHF)</h2>
+      <p class="subtitle">Week 8 — Teaching models to be helpful, honest, and harmless. <em>(Supplemented from the course syllabus.)</em></p>
+
+      <h3>1. Why Alignment?</h3>
+      <p>Next-word prediction produces a model that can <em>continue text</em> but may be unhelpful, toxic, or evasive. Alignment steers the model toward <strong>human preferences</strong>.</p>
+
+      <h3>2. The RLHF Pipeline (three stages)</h3>
+      <div class="diagram">
+        <div class="diagram-title">RLHF Pipeline</div>
+        <pre class="mermaid">
+flowchart TB
+    A["Stage 1: Supervised Fine-Tuning (SFT)<br/>human demonstrations<br/>predict the desired response"] --> B["Stage 2: Reward Model (RM)<br/>humans rank model outputs<br/>reward = predict preference"]
+    B --> C["Stage 3: RL (PPO)<br/>policy = SFT model<br/>optimize reward<br/>+ KL penalty to SFT"]
+    C --> D["Aligned LLM"]
+    D --> E["Deployment + more preference data"] -.-> B
+        </pre>
+      </div>
+
+      <h3>3. The Three Stages in Detail</h3>
+      <ul>
+        <li><strong>Stage 1 — SFT:</strong> fine-tune the pretrained model on curated human-written demonstrations of good responses (behavior cloning).</li>
+        <li><strong>Stage 2 — Reward Model:</strong> humans rank model outputs; train a separate model to predict the preference score (e.g., Bradley–Terry).</li>
+        <li><strong>Stage 3 — PPO:</strong> treat the SFT model as a policy; reward it with the RM's score while adding a <strong>KL penalty</strong> to keep it close to the SFT model (prevent reward hacking).</li>
+      </ul>
+
+      <h3>4. Variants and Notes</h3>
+      <table>
+        <thead><tr><th>Approach</th><th>Key idea</th></tr></thead>
+        <tbody>
+          <tr><td><strong>RLHF</strong></td><td>Human preferences → reward model → RL (PPO)</td></tr>
+          <tr><td><strong>RLAIF</strong></td><td>AI (a strong LLM) generates the preference labels instead of humans — cheaper, scalable</td></tr>
+          <tr><td><strong>DPO</strong></td><td>Direct Preference Optimization — skip the reward model; optimize policy directly on preferences</td></tr>
+          <tr><td><strong>Constitutional AI</strong></td><td>Model critiques and revises its own outputs against a set of principles</td></tr>
+        </tbody>
+      </table>
+      <div class="callout warn" data-icon="⚠️">
+        <p><strong>Risk:</strong> RLHF can over-optimize (reward hacking), reduce diversity, or introduce new biases — alignment is an ongoing research area.</p>
+      </div>
+    </section>
+
+    <!-- ============ LEC 25 ============ -->
+    <section class="lecture" id="lec-25">
+      <h2><span class="lec-badge">Lec 25</span> Retrieval-Augmented Generation (RAG)</h2>
+      <p class="subtitle">Week 9 — Open-book QA: retrieving knowledge instead of memorizing it. <em>(Supplemented from the course syllabus.)</em></p>
+
+      <h3>1. Closed-Book vs Open-Book</h3>
+      <ul>
+        <li><strong>Closed-book:</strong> answer from parameters only (parametric memory). Risk of hallucination, hard to update.</li>
+        <li><strong>Open-book:</strong> retrieve evidence from a <strong>non-parametric</strong> external store (documents, knowledge base, web), then answer with the evidence in context.</li>
+        <li>Benefits: up-to-date knowledge, citations, less hallucination, modular (swap the corpus without retraining).</li>
+      </ul>
+
+      <h3>2. The RAG Recipe</h3>
+      <div class="diagram">
+        <div class="diagram-title">Retrieval-Augmented Generation</div>
+        <pre class="mermaid">
+flowchart LR
+    Q["Query / Question"] --> R["Retriever<br/>dense or sparse search"]
+    DB["Document store<br/>(chunked, embedded)"] --> R
+    R --> C["Top-k passages<br/>added to prompt"]
+    C --> G["Generator (LLM)<br/>produces grounded answer"]
+    G --> A["Answer with citations"]
+        </pre>
+      </div>
+      <ol>
+        <li><strong>Index:</strong> split documents into chunks, embed them into vectors.</li>
+        <li><strong>Retrieve:</strong> embed the query, find the k nearest vectors (e.g., dot product / cosine).</li>
+        <li><strong>Generate:</strong> put the retrieved passages into the prompt; the LLM answers using them.</li>
+      </ol>
+
+      <h3>3. Notable Methods</h3>
+      <table>
+        <thead><tr><th>Method</th><th>Key idea</th></tr></thead>
+        <tbody>
+          <tr><td><strong>REALM</strong></td><td>Jointly pretrain retriever + reader with a masked-language-model objective over a corpus</td></tr>
+          <tr><td><strong>RAG</strong> (Lewis et al.)</td><td>Retriever + Seq2Seq generator; passages condition the generation</td></tr>
+          <tr><td><strong>FiD</strong> (Fusion-in-Decoder)</td><td>Encode each passage separately, fuse at the decoder — scales to many passages</td></tr>
+          <tr><td><strong>Unlimiformer</strong></td><td>K-nearest-neighbor attention over a long memory, key-value memory networks for QA</td></tr>
+          <tr><td><strong>KGQA (EmbedKGQA, GrailQA)</strong></td><td>Retrieve from a knowledge graph via embedding-based or graph-based reasoning</td></tr>
+        </tbody>
+      </table>
+
+      <h3>4. When to Use RAG</h3>
+      <div class="callout tip" data-icon="🎯">
+        <ul>
+          <li>Frequently changing knowledge (news, docs, private data)</li>
+          <li>Need verifiable citations / grounded answers</li>
+          <li>Long-tail factual questions the model can't memorize</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ LEC 26 ============ -->
+    <section class="lecture" id="lec-26">
+      <h2><span class="lec-badge">Lec 26</span> Knowledge and Retrieval: Knowledge Graph</h2>
+      <p class="subtitle">Reference video: <a href="https://www.youtube.com/watch?v=tuAhkRhQq6A">Lec 26 | Knowledge and Retrieval: Knowledge Graph</a> — <em>Content supplemented from the course syllabus.</em></p>
+
+      <h3>1. What is a Knowledge Graph (KG)?</h3>
+      <ul>
+        <li>A graph where <strong>nodes = entities</strong> (people, places, concepts) and <strong>edges = typed relations</strong> ("works at", "born in", "part of").</li>
+        <li>Facts are stored as <strong>triples</strong>: <code>(head, relation, tail)</code> — e.g., <code>(India, capital, New Delhi)</code>.</li>
+        <li>Examples: Freebase, Wikidata, DBpedia, Google Knowledge Graph.</li>
+      </ul>
+      <div class="diagram">
+        <div class="diagram-title">Knowledge Graph — Triples</div>
+        <pre class="mermaid">
+flowchart LR
+    A["India"] -->|"capital"| B["New Delhi"]
+    A -->|"official language"| C["Hindi"]
+    B -->|"located in"| D["Delhi"]
+    C -->|"spoken in"| A
+    A -->|"neighbor"| E["Nepal"]
+        </pre>
+      </div>
+
+      <h3>2. KG Representation</h3>
+      <ul>
+        <li><strong>Symbolic:</strong> discrete triples (interpretable, but sparse and hard to query with neural models directly).</li>
+        <li><strong>Embedding-based:</strong> map entities and relations into continuous vectors. E.g., <strong>TransE</strong> enforces <code>h + r ≈ t</code> for valid triples.</li>
+      </ul>
+      <div class="formula">\[\text{TransE:} \quad \text{score}(h, r, t) = \lVert h + r - t \rVert\]</div>
+
+      <h3>3. KG Completion (Link Prediction)</h3>
+      <p>Predict missing links: given two of <code>(h, r, t)</code>, infer the third. The embedding model ranks candidate entities by the score.</p>
+      <ul>
+        <li><strong>Translational models:</strong> TransE, TransR — relation as translation.</li>
+        <li><strong>Tensor/multiplicative models:</strong> RESCAL, DistMult — score via tensor decomposition.</li>
+        <li><strong>Neural models:</strong> GNNs (see below) and KG embeddings like RotatE (relations as rotations).</li>
+      </ul>
+
+      <h3>4. KG Tasks</h3>
+      <table>
+        <thead><tr><th>Task</th><th>Goal</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Completion / Link Prediction</strong></td><td>Fill missing triples</td></tr>
+          <tr><td><strong>Entity/Relation Classification</strong></td><td>Label nodes or edges</td></tr>
+          <tr><td><strong>Alignment / Entity Matching</strong></td><td>Link the same real-world entity across two KGs</td></tr>
+          <tr><td><strong>Isomorphism</strong></td><td>Find structure-preserving mappings between graphs</td></tr>
+          <tr><td><strong>QA over KG (KGQA)</strong></td><td>Answer questions by traversing/querying the graph</td></tr>
+        </tbody>
+      </table>
+
+      <h3>5. GNNs vs Neural KG Inference</h3>
+      <ul>
+        <li><strong>GNNs</strong> (Graph Neural Networks): learn node representations by <strong>message passing</strong> over the graph structure — aggregate neighbor features, stack layers. Great for node classification, link prediction.</li>
+        <li><strong>Neural KG inference</strong>: typically embedding or attention-based scoring of triples; often treats relations as first-class objects and reasons about paths in the graph.</li>
+        <li><strong>Distinction:</strong> GNNs rely on local structure (neighborhoods); KG inference relies on global relation semantics and multi-hop paths — though modern systems combine both.</li>
+      </ul>
+
+      <h3>6. KGs in the LLM Era</h3>
+      <div class="callout good" data-icon="✅">
+        <ul>
+          <li><strong>Grounding:</strong> RAG + KG (KGQA) supplies structured, verifiable facts to LLMs.</li>
+          <li><strong>Reducing hallucination:</strong> answers traceable to graph triples.</li>
+          <li><strong>Bridging:</strong> converting unstructured text to KGs (information extraction) and back (text generation from KGs) is an active research frontier.</li>
+        </ul>
+      </div>
+      <div class="callout note" data-icon="📝">
+        <p><em>Note: The original source page contained only a video link with no written notes; this section was compiled from the course syllabus (Week 10) for completeness.</em></p>
+      </div>
+    </section>
+
+    <!-- ============ MARKS ============ -->
+    <section class="lecture" id="marks">
+      <h2><span class="lec-badge">Marks</span> Internal Assessment</h2>
+      <table>
+        <thead><tr><th>Week</th><th>Marks</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>8.5</td></tr>
+          <tr><td>2</td><td>10</td></tr>
+          <tr><td>3</td><td>10</td></tr>
+          <tr><td>4</td><td>0</td></tr>
+          <tr><td>5</td><td>10</td></tr>
+          <tr><td>6</td><td>10</td></tr>
+          <tr><td>7</td><td>9.67</td></tr>
+          <tr><td>8</td><td>7.33</td></tr>
+          <tr><td>9</td><td>10</td></tr>
+          <tr><td>10</td><td>9</td></tr>
+          <tr><td>11</td><td>8</td></tr>
+          <tr><td>12</td><td>9.5</td></tr>
+        </tbody>
+      </table>
+      <div class="diagram">
+        <div class="diagram-title">Marks by Week</div>
+        <pre class="mermaid">
+xychart-beta
+    title "Internal Assessment Marks by Week"
+    x-axis ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+    y-axis "Marks" 0 --> 10
+    bar [8.5, 10, 10, 0, 10, 10, 9.67, 7.33, 10, 9, 8, 9.5]
+        </pre>
+      </div>
+    </section>
+
+    <footer>
+      <p><em>Note: a few lectures are not yet covered in these notes — only the lectures above have complete write-ups.</em></p>
+      <p>Compiled from personal study notes.</p>
+    </footer>
+
+</main>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var themeVars = {
+      background: '#11151d',
+      primaryColor: '#1a2230',
+      primaryTextColor: '#e8eaf0',
+      primaryBorderColor: '#2f3a4d',
+      lineColor: '#8b93a7',
+      secondaryColor: '#232a38',
+      tertiaryColor: '#161c27',
+      clusterBkg: '#11151d',
+      clusterBorder: '#2f3a4d',
+      titleColor: '#f5a623',
+      edgeLabelBackground: '#161c27',
+      nodeTextColor: '#e8eaf0',
+      fontSize: '13px'
+    };
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'base',
+      themeVariables: themeVars,
+      flowchart: { curve: 'basis' },
+      suppressErrorRendering: true,
+      securityLevel: 'loose'
+    });
+    mermaid.run({ querySelector: 'pre.mermaid' }).catch(function () {});
+
+    if (window.renderMathInElement) {
+      renderMathInElement(document.body, {
+        delimiters: [
+          { left: '$$', right: '$$', display: true },
+          { left: '\\[', right: '\\]', display: true },
+          { left: '\\(', right: '\\)', display: false }
+        ],
+        throwOnError: false,
+        strict: false
+      });
+    }
+
+    if (window.hljs) hljs.highlightAll();
+
+    // mobile nav toggle
+    var sidebar = document.getElementById('sidebar');
+    var toggle = document.getElementById('menuToggle');
+    toggle.addEventListener('click', function () { sidebar.classList.toggle('open'); });
+    document.querySelectorAll('.navlink').forEach(function (l) {
+      l.addEventListener('click', function () { sidebar.classList.remove('open'); });
+    });
+
+    // active link highlighting on scroll
+    var links = Array.from(document.querySelectorAll('.navlink[href^="#"]'));
+    var sections = links.map(function (l) { return document.querySelector(l.getAttribute('href')); }).filter(Boolean);
+    function onScroll() {
+      var current = sections[0];
+      var y = window.scrollY + 120;
+      for (var i = 0; i < sections.length; i++) {
+        if (sections[i].offsetTop <= y) current = sections[i];
+      }
+      links.forEach(function (l) { l.classList.remove('active'); });
+      if (current) {
+        var active = links.find(function (l) { return l.getAttribute('href') === '#' + current.id; });
+        if (active) active.classList.add('active');
+      }
+    }
+    window.addEventListener('scroll', onScroll);
+    onScroll();
+  });
+</script>
+</body>
+</html>
