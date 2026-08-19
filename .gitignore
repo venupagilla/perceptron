@@ -12,6 +12,3 @@ node_modules/
 
 # Local superpowers scratch
 .superpowers/
-
-# Working docs (specs, plans)
-docs/
