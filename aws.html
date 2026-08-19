@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS — Cloud Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/nord.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js"></script>
+<style>
+:root{
+  --bg:#0a0d13;
+  --panel:#11151d;
+  --panel-2:#161c27;
+  --border:#232a38;
+  --text:#e8eaf0;
+  --muted:#8b93a7;
+  --muted-2:#5c6478;
+  --amber:#f5a623;   /* Cloud models */
+  --teal:#4fd1c5;    /* IAM & Security */
+  --coral:#ff6b6b;   /* Linux */
+  --periwinkle:#7c9cff; /* Storage */
+  --green:#7ee787;   /* Networking */
+  --mono:'JetBrains Mono', monospace;
+  --display:'Space Grotesk', sans-serif;
+  --body:'Inter', sans-serif;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--body);
+  line-height:1.65;
+  font-size:15.5px;
+}
+::selection{background:rgba(245,166,35,0.3);}
+
+/* subtle grid texture */
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size:36px 36px;
+  pointer-events:none;
+  z-index:0;
+}
+
+a{color:var(--periwinkle); text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* ===== Layout ===== */
+.shell{display:flex; min-height:100vh; position:relative; z-index:1;}
+
+.sidebar{
+  width:280px; flex-shrink:0;
+  background:var(--panel);
+  border-right:1px solid var(--border);
+  position:fixed; top:0; left:0; bottom:0;
+  overflow-y:auto;
+  padding:24px 0 40px;
+  z-index:20;
+  transition:transform .25s ease;
+}
+.sidebar::-webkit-scrollbar{width:6px;}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border); border-radius:4px;}
+
+.brand{
+  padding:0 22px 20px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:18px;
+}
+.brand .tag{
+  font-family:var(--mono); font-size:11px; letter-spacing:.12em;
+  color:var(--amber); text-transform:uppercase; display:block; margin-bottom:8px;
+}
+.brand h1{
+  font-family:var(--display); font-size:18px; font-weight:700; line-height:1.3;
+  color:var(--text);
+}
+.brand .sub{font-size:12.5px; color:var(--muted); margin-top:6px;}
+
+.navgroup{margin-bottom:4px;}
+.navgroup > .glabel{
+  display:flex; align-items:center; gap:8px;
+  padding:10px 22px 8px;
+  font-family:var(--mono); font-size:11px; letter-spacing:.08em;
+  color:var(--muted-2); text-transform:uppercase;
+}
+.navgroup .glabel .idx{color:var(--teal); font-weight:600;}
+.navlink{
+  display:block;
+  padding:6px 22px 6px 34px;
+  font-size:13.5px; color:var(--muted);
+  border-left:2px solid transparent;
+}
+.navlink:hover{color:var(--text); text-decoration:none; background:rgba(255,255,255,0.02);}
+.navlink.active{color:var(--text); border-left-color:var(--amber); background:rgba(245,166,35,0.06);}
+
+.menu-toggle{
+  display:none; position:fixed; top:16px; left:16px; z-index:30;
+  background:var(--panel-2); border:1px solid var(--border); color:var(--text);
+  width:40px; height:40px; border-radius:8px; font-size:18px; cursor:pointer;
+}
+
+.main{margin-left:280px; flex:1; min-width:0;}
+
+/* ===== Hero ===== */
+.hero{
+  padding:90px 64px 70px;
+  border-bottom:1px solid var(--border);
+  position:relative;
+  overflow:hidden;
+}
+.hero-inner{max-width:900px; position:relative; z-index:2;}
+.hero .eyebrow{
+  font-family:var(--mono); color:var(--amber); font-size:12px;
+  letter-spacing:.14em; text-transform:uppercase; display:block; margin-bottom:18px;
+}
+.hero h1{
+  font-family:var(--display); font-size:52px; line-height:1.08; font-weight:700;
+  letter-spacing:-.01em; margin-bottom:20px;
+}
+.hero h1 span{color:var(--amber);}
+.hero p.lead{
+  font-size:17px; color:var(--muted); max-width:560px; margin-bottom:36px;
+}
+.pillrow{display:flex; flex-wrap:wrap; gap:10px;}
+.pill{
+  font-family:var(--mono); font-size:11.5px; padding:6px 12px;
+  border:1px solid var(--border); border-radius:100px; color:var(--muted);
+  background:var(--panel);
+}
+
+/* Signature: cloud stack ring */
+.loop-wrap{
+  position:absolute; right:40px; top:50%; transform:translateY(-50%);
+  width:340px; height:340px; z-index:1;
+}
+@media(max-width:1100px){.loop-wrap{display:none;}}
+.loop-ring{width:100%; height:100%; position:relative;}
+.loop-node{
+  position:absolute; width:96px; height:96px; border-radius:50%;
+  border:1px solid var(--border); background:var(--panel-2);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  font-family:var(--mono); font-size:11px; letter-spacing:.04em; text-align:center;
+  animation:pulse 8s ease-in-out infinite;
+}
+.loop-node .n{font-size:9px; color:var(--muted-2); margin-bottom:4px;}
+.loop-node.n1{top:0; left:50%; transform:translateX(-50%); color:var(--amber); border-color:rgba(245,166,35,.4); animation-delay:0s;}
+.loop-node.n2{top:50%; right:0; transform:translateY(-50%); color:var(--teal); border-color:rgba(79,209,197,.4); animation-delay:2s;}
+.loop-node.n3{bottom:0; left:50%; transform:translateX(-50%); color:var(--green); border-color:rgba(126,231,135,.4); animation-delay:4s;}
+.loop-node.n4{top:50%; left:0; transform:translateY(-50%); color:var(--periwinkle); border-color:rgba(124,156,255,.4); animation-delay:6s;}
+@keyframes pulse{
+  0%,88%,100%{box-shadow:none;}
+  4%{box-shadow:0 0 0 6px rgba(255,255,255,0.04);}
+}
+.loop-ring svg{position:absolute; inset:0; width:100%; height:100%;}
+.loop-ring circle.track{fill:none; stroke:var(--border); stroke-width:1;}
+.loop-ring circle.runner{fill:none; stroke:var(--amber); stroke-width:2; stroke-linecap:round;
+  stroke-dasharray:40 900; animation:run 8s linear infinite;}
+@keyframes run{ to { stroke-dashoffset:-940; } }
+
+/* ===== Sections ===== */
+section.block{padding:56px 64px; border-bottom:1px solid var(--border);}
+section.block:target{}
+.block-head{max-width:820px; margin-bottom:36px;}
+.block-head .eyebrow{
+  font-family:var(--mono); font-size:11.5px; letter-spacing:.12em; text-transform:uppercase;
+  display:block; margin-bottom:10px;
+}
+.block-head h2{font-family:var(--display); font-size:30px; font-weight:700; margin-bottom:10px;}
+.block-head p{color:var(--muted); max-width:680px;}
+
+h3.sub-h{
+  font-family:var(--display); font-size:20px; font-weight:600; margin:40px 0 14px;
+  padding-top:4px;
+  scroll-margin-top:20px;
+}
+h3.sub-h .idx{color:var(--muted-2); font-family:var(--mono); font-size:14px; margin-right:8px;}
+h4.mini-h{font-family:var(--display); font-size:15.5px; font-weight:600; margin:24px 0 10px; color:var(--text);}
+
+.card{
+  background:var(--panel); border:1px solid var(--border); border-radius:12px;
+  padding:22px 24px; margin:18px 0;
+}
+.card.accent-amber{border-left:3px solid var(--amber);}
+.card.accent-teal{border-left:3px solid var(--teal);}
+.card.accent-coral{border-left:3px solid var(--coral);}
+.card.accent-peri{border-left:3px solid var(--periwinkle);}
+.card.accent-green{border-left:3px solid var(--green);}
+.card h4{margin-top:0;}
+.card p:last-child{margin-bottom:0;}
+
+.quote{
+  font-family:var(--body); font-style:normal; color:var(--text);
+  border-left:2px solid var(--amber); padding:4px 0 4px 18px; margin:18px 0;
+  color:var(--muted); font-size:14.5px;
+}
+.quote strong{color:var(--text);}
+
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+.grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+@media(max-width:900px){.grid2,.grid3{grid-template-columns:1fr;}}
+
+table{width:100%; border-collapse:collapse; margin:18px 0; font-size:13.5px;}
+thead th{
+  font-family:var(--mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase;
+  color:var(--muted-2); text-align:left; padding:10px 14px; border-bottom:1px solid var(--border);
+}
+tbody td{padding:11px 14px; border-bottom:1px solid var(--border); color:var(--muted); vertical-align:top;}
+tbody td:first-child{color:var(--text); font-weight:600;}
+tbody tr:hover{background:rgba(255,255,255,0.015);}
+.table-wrap{overflow-x:auto; border:1px solid var(--border); border-radius:10px;}
+.table-wrap table{margin:0;}
+
+pre{
+  background:#0d1117 !important; border:1px solid var(--border); border-radius:10px;
+  padding:18px 20px; overflow-x:auto; margin:16px 0; font-size:13px;
+}
+code{font-family:var(--mono);}
+:not(pre) > code{
+  background:var(--panel-2); padding:2px 6px; border-radius:4px; font-size:.9em; color:var(--teal);
+}
+.code-label{
+  font-family:var(--mono); font-size:11px; color:var(--muted-2); letter-spacing:.05em;
+  text-transform:uppercase; margin-bottom:-8px; display:block; margin-top:16px;
+}
+
+ul.list, ol.list{margin:12px 0 12px 20px; color:var(--muted);}
+ul.list li, ol.list li{margin-bottom:8px;}
+ul.list li strong, ol.list li strong{color:var(--text);}
+ul.checklist{list-style:none; margin:12px 0;}
+ul.checklist li{
+  padding-left:26px; position:relative; margin-bottom:9px; color:var(--muted); font-size:14px;
+}
+ul.checklist li::before{
+  content:"✓"; position:absolute; left:0; color:var(--green); font-family:var(--mono); font-weight:600;
+}
+
+.mermaid{background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:20px; margin:18px 0; display:flex; justify-content:center;}
+
+.diagram-box{
+  font-family:var(--mono); font-size:12.5px; white-space:pre; overflow-x:auto;
+  background:#0d1117; border:1px solid var(--border); border-radius:10px; padding:18px 20px; margin:16px 0;
+  color:var(--muted);
+}
+.diagram-box .hl{color:var(--amber);}
+
+.badge-row{display:flex; gap:8px; flex-wrap:wrap; margin:14px 0;}
+.badge{
+  font-family:var(--mono); font-size:11px; padding:4px 10px; border-radius:100px;
+  border:1px solid var(--border); color:var(--muted);
+}
+.badge.risk-low{color:var(--green); border-color:rgba(126,231,135,.3);}
+.badge.risk-med{color:var(--amber); border-color:rgba(245,166,35,.3);}
+.badge.risk-high{color:var(--coral); border-color:rgba(255,107,107,.3);}
+
+.layer-stack{margin:20px 0;}
+.layer{
+  border:1px solid var(--border); border-radius:10px; padding:18px 20px; margin-bottom:10px;
+  background:var(--panel); position:relative; padding-left:56px;
+}
+.layer .num{
+  position:absolute; left:18px; top:18px; font-family:var(--display); font-weight:700;
+  font-size:20px; color:var(--muted-2); width:28px;
+}
+.layer h4{margin:0 0 6px;}
+.layer p{color:var(--muted); font-size:13.5px; margin-bottom:8px;}
+
+.timeline-attack{
+  border-left:2px solid var(--coral); padding-left:20px; margin:20px 0 20px 8px;
+}
+.timeline-attack .att{margin-bottom:22px;}
+.timeline-attack .att .date{font-family:var(--mono); font-size:11px; color:var(--coral); text-transform:uppercase; letter-spacing:.05em;}
+.timeline-attack .att h4{margin:4px 0 6px;}
+.timeline-attack ol.list{margin-top:6px;}
+
+.footer{
+  padding:50px 64px 70px; color:var(--muted-2); font-size:13px;
+}
+.footer a{color:var(--muted);}
+.back-top{
+  display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:12px;
+  color:var(--muted); border:1px solid var(--border); padding:8px 14px; border-radius:8px; margin-bottom:24px;
+}
+
+.stub-card{
+  border:1px dashed var(--border); border-radius:12px; padding:20px; color:var(--muted-2);
+  font-size:13.5px;
+}
+.stub-card strong{color:var(--muted);}
+
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .menu-toggle{display:flex; align-items:center; justify-content:center;}
+  .hero, section.block, .footer{padding-left:26px; padding-right:26px;}
+  .hero{padding-top:80px;}
+  .hero h1{font-size:36px;}
+}
+</style>
+</head>
+<body>
+
+<button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">☰</button>
+
+<div class="shell">
+
+  <nav class="sidebar" id="sidebar">
+    <div class="brand">
+      <span class="tag">Reference Notes</span>
+      <h1>AWS</h1>
+      <div class="sub">Cloud fundamentals — working reference</div>
+    </div>
+
+    <div class="navgroup">
+      <a class="navlink" href="#top" style="padding-left:22px; font-weight:600; color:var(--text);">Overview</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">01</span> Session 1 — Foundations</div>
+      <a class="navlink" href="#s1-foundations">Session overview</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">02</span> Session 2</div>
+      <a class="navlink" href="#s2-foundations">Session overview</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">03</span> Session 3 — Cloud, IAM & Linux</div>
+      <a class="navlink" href="#s3-cloud">Cloud computing</a>
+      <a class="navlink" href="#s3-types">Cloud models</a>
+      <a class="navlink" href="#s3-iam">IAM</a>
+      <a class="navlink" href="#s3-sg">Security groups</a>
+      <a class="navlink" href="#s3-linux">Linux OS</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">04</span> Session 4 — Storage</div>
+      <a class="navlink" href="#s4-storage">Storage solutions</a>
+      <a class="navlink" href="#s4-ebs">EBS deep dive</a>
+      <a class="navlink" href="#s4-filesystems">File systems</a>
+      <a class="navlink" href="#s4-metrics">Performance metrics</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">05</span> Session 5 — Networking</div>
+      <a class="navlink" href="#s5-ip">IP address classes</a>
+      <a class="navlink" href="#s5-private">Private IPs & NAT</a>
+      <a class="navlink" href="#s5-subnet">Subnetting & CIDR</a>
+      <a class="navlink" href="#s5-components">Networking components</a>
+      <a class="navlink" href="#s5-peering">Peering & VPC</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">06</span> Session 6 — Subnets</div>
+      <a class="navlink" href="#s6-subnets">Gateways & subnets</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">07</span> Session 7 — Scale & Load</div>
+      <a class="navlink" href="#s7-load">Load balancing</a>
+      <a class="navlink" href="#s7-autoscale">Auto scaling</a>
+      <a class="navlink" href="#s7-scaling">Scaling models</a>
+      <a class="navlink" href="#s7-ami">AMI</a>
+    </div>
+  </nav>
+
+  <main class="main" id="top">
+
+    <!-- HERO -->
+    <header class="hero">
+      <div class="loop-wrap">
+        <div class="loop-ring">
+          <svg viewBox="0 0 340 340">
+            <circle class="track" cx="170" cy="170" r="150"/>
+            <circle class="runner" cx="170" cy="170" r="150" transform="rotate(-90 170 170)"/>
+          </svg>
+          <div class="loop-node n1"><span class="n">01</span>Compute</div>
+          <div class="loop-node n2"><span class="n">02</span>Storage</div>
+          <div class="loop-node n3"><span class="n">03</span>Network</div>
+          <div class="loop-node n4"><span class="n">04</span>Scale</div>
+        </div>
+      </div>
+      <div class="hero-inner">
+        <span class="eyebrow">// AWS — cloud foundations</span>
+        <h1>Compute, <span>storage</span>, and<br>networks — <span>on demand.</span></h1>
+        <p class="lead">A working reference on cloud fundamentals with Amazon Web Services — from cloud computing models, IAM, and security groups, through storage (EBS / S3 / EFS) and file systems, to networking (IP, subnetting, VPC peering) and scaling with load balancing and auto scaling.</p>
+        <div class="pillrow">
+          <span class="pill">Cloud Models · IaaS · PaaS · SaaS</span>
+          <span class="pill">IAM & Security Groups</span>
+          <span class="pill">EBS · S3 · EFS</span>
+          <span class="pill">Subnetting · CIDR · VPC</span>
+          <span class="pill">ELB & Auto Scaling</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============ SECTION 01 : SESSION 1 ============ -->
+    <section class="block" id="s1-foundations" style="background:linear-gradient(180deg, rgba(245,166,35,0.03), transparent 200px);">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">01 · Session 1</span>
+        <h2>Cloud foundations</h2>
+        <p>The opening session sets the stage for the AWS journey.</p>
+      </div>
+      <div class="stub-card">
+        <strong>Notes not populated.</strong><br>
+        The source notes for this session contain only the session heading — no technical content was recorded. Move on to Session 3 where the cloud foundations are covered in detail.
+      </div>
+    </section>
+
+    <!-- ============ SECTION 02 : SESSION 2 ============ -->
+    <section class="block" id="s2-foundations" style="background:linear-gradient(180deg, rgba(79,209,197,0.03), transparent 200px);">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--teal);">02 · Session 2</span>
+        <h2>Getting oriented</h2>
+        <p>A short placeholder session before the core content begins.</p>
+      </div>
+      <div class="stub-card">
+        <strong>Notes not populated.</strong><br>
+        The source notes for this session contain only the session heading — no technical content was recorded. The following sessions pick up the core AWS material.
+      </div>
+    </section>
+
+    <!-- ============ SECTION 03 : SESSION 3 ============ -->
+    <section class="block" id="s3-cloud" style="background:linear-gradient(180deg, rgba(245,166,35,0.03), transparent 200px);">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">03 · Session 3</span>
+        <h2>Cloud computing, IAM & Linux</h2>
+        <p>Cloud computing models, AWS identity and access management, security groups, and the Linux command line that drives EC2.</p>
+      </div>
+
+      <h3 class="sub-h" id="s3-cloud-def">Cloud computing</h3>
+      <div class="quote" style="border-color:var(--amber);"><strong>Cloud computing</strong> is the <strong>on-demand supply of IT resources on rent</strong> — you provision compute, storage, and networking as you need them instead of buying and maintaining physical hardware.</div>
+
+      <h4 class="mini-h">Advantages of cloud computing</h4>
+      <ul class="checklist">
+        <li><strong>Cost</strong> — pay only for what you use</li>
+        <li><strong>Availability</strong> — resources are accessible whenever needed</li>
+        <li><strong>Reliability</strong> — services continue to work despite failures</li>
+        <li><strong>Security</strong> — built-in protections and compliance controls</li>
+        <li><strong>Market place</strong> — pre-built services and solutions ready to use</li>
+        <li><strong>Connectivity</strong> — global reach from anywhere</li>
+      </ul>
+
+      <h4 class="mini-h">Job roles</h4>
+      <div class="grid3">
+        <div class="card"><h4>Cloud engineer</h4><p>Builds and maintains cloud infrastructure.</p></div>
+        <div class="card"><h4>Cloud developer</h4><p>Develops applications that run in the cloud.</p></div>
+        <div class="card"><h4>Cloud architect</h4><p>Designs the overall cloud solutions and topology.</p></div>
+      </div>
+
+      <h4 class="mini-h">Virtualization</h4>
+      <div class="card accent-amber">
+        <p><strong>Virtualization</strong> is the process of turning <strong>physical hardware into a software environment</strong> — it is the foundation that lets one physical server run many isolated virtual machines.</p>
+      </div>
+
+      <div class="card">
+        <h4>Suggested task</h4>
+        <p>List down 50 cloud computing companies.</p>
+      </div>
+
+      <h3 class="sub-h" id="s3-types">Types of cloud computing</h3>
+      <div class="grid2">
+        <div class="card accent-teal">
+          <h4>PaaS — Platform as a Service</h4>
+          <p>Renting a complete development environment over the internet. You get a platform to build, run, and manage applications, with tools for database integration, testing, and deployment — without worrying about infrastructure maintenance.</p>
+          <p style="margin-top:8px;"><strong>Examples:</strong> Heroku, Google App Engine.</p>
+        </div>
+        <div class="card accent-teal">
+          <h4>SaaS — Software as a Service</h4>
+          <p>Renting software over the internet instead of installing it locally. You get applications accessible through a browser; updates, bug fixes, and new features are handled by the provider.</p>
+          <p style="margin-top:8px;"><strong>Examples:</strong> Google Workspace (formerly G Suite), Salesforce.</p>
+        </div>
+        <div class="card accent-teal">
+          <h4>IaaS — Infrastructure as a Service</h4>
+          <p>Renting the basic building blocks of a computer over the internet: virtual machines or servers, storage space, and networking components like firewalls and load balancers. You manage the OS, apps, and data on top.</p>
+          <p style="margin-top:8px;"><strong>Examples:</strong> Amazon EC2, Google Compute Engine.</p>
+        </div>
+        <div class="card accent-teal">
+          <h4>Who manages what</h4>
+          <p>Moving from IaaS to SaaS shifts management responsibility to the provider: <strong>IaaS</strong> — you manage OS/apps/data; <strong>PaaS</strong> — provider manages the platform, you manage your app; <strong>SaaS</strong> — provider manages everything.</p>
+        </div>
+      </div>
+
+      <div class="mermaid">
+graph LR
+    subgraph Cloud["Cloud Computing Stack"]
+        SaaS["SaaS — Software (browser)"]
+        PaaS["PaaS — Platform (build & deploy)"]
+        IaaS["IaaS — Infrastructure (VMs, storage, network)"]
+    end
+    IaaS --> PaaS
+    PaaS --> SaaS
+      </div>
+
+      <h3 class="sub-h" id="s3-iam">IAM — Identity and Access Management</h3>
+      <div class="card accent-teal">
+        <h4>What IAM is</h4>
+        <p>AWS provides an <strong>Identity and Access Management (IAM)</strong> system that enables you to manage access to your AWS services and resources securely.</p>
+      </div>
+
+      <h4 class="mini-h">Benefits of IAM users</h4>
+      <ul class="checklist">
+        <li><strong>Security Best Practices</strong> — avoid using the root user and reduce security risks</li>
+        <li><strong>Granular Access Control</strong> — assign specific permissions using policies</li>
+        <li><strong>Multi-Factor Authentication (MFA)</strong> — add an extra layer of security</li>
+        <li><strong>Group and Role Management</strong> — organize users into groups and assign roles</li>
+        <li><strong>Auditing and Monitoring</strong> — track activities using AWS CloudTrail</li>
+        <li><strong>Temporary Credentials for Applications</strong> — use IAM roles for secure access</li>
+        <li><strong>Least Privilege Access</strong> — grant only necessary permissions to users</li>
+      </ul>
+
+      <h4 class="mini-h">Steps to create an IAM user</h4>
+      <ol class="list">
+        <li>Open the IAM dashboard</li>
+        <li>Click on <strong>Users</strong></li>
+        <li>Click on <strong>Create user</strong> and specify a username</li>
+        <li>Check <em>"Provide user access to the AWS Management Console"</em> (optional)</li>
+        <li>Click on <em>"I want to create an IAM user"</em></li>
+        <li>Set a password — two options: autogenerated or custom</li>
+        <li>Optionally check <em>"Users must create a new password at next sign-in"</em></li>
+        <li>Click <strong>Next</strong> — you are redirected to the set-permissions page</li>
+        <li>Three options: <strong>Add user to group</strong>, <strong>Copy permissions</strong>, or <strong>Attach policies directly</strong></li>
+        <li>Click on <strong>Attach policies directly</strong></li>
+        <li>Search for the policy you want to add, e.g. <code>AdministratorAccess</code></li>
+        <li>Click <strong>Next</strong> — you are redirected to the review page</li>
+        <li>Review and click <strong>Create user</strong></li>
+        <li>Save the password as a CSV, and optionally send it as a mail with the instructions</li>
+      </ol>
+
+      <h4 class="mini-h">Login as an IAM user</h4>
+      <ol class="list">
+        <li>Open the IAM user login page</li>
+        <li>Required fields:
+          <ul class="list">
+            <li>12-digit account ID</li>
+            <li>Username</li>
+            <li>Password</li>
+          </ul>
+        </li>
+      </ol>
+
+      <h4 class="mini-h">Benefits of IAM user groups</h4>
+      <ul class="checklist">
+        <li><strong>Simplified Management</strong> — manage multiple users at once by assigning permissions to a group instead of individual users</li>
+        <li><strong>Consistent Access Control</strong> — ensure all users in a group have uniform permissions, reducing misconfigurations</li>
+        <li><strong>Easier Policy Updates</strong> — modify permissions at the group level instead of updating each user separately</li>
+        <li><strong>Scalability</strong> — easily add or remove users from groups without affecting security policies</li>
+        <li><strong>Least Privilege Principle</strong> — assign only necessary permissions to groups, improving security</li>
+        <li><strong>Improved Compliance</strong> — maintain structured access control for audits and security compliance</li>
+        <li><strong>Role-Based Access Control (RBAC)</strong> — organize users into logical groups like Admins, Developers, or Viewers</li>
+        <li><strong>Reduced Risk of Human Error</strong> — centralized control minimizes accidental over-permissions</li>
+      </ul>
+
+      <h4 class="mini-h">Steps to create an IAM user group</h4>
+      <ol class="list">
+        <li>Click on <strong>User groups</strong> in the IAM dashboard</li>
+        <li>Click on <strong>Create group</strong></li>
+        <li>Give a name for the user group</li>
+        <li>Select the users you want to add to the group</li>
+        <li>Add the policies</li>
+        <li>Click on <strong>Create</strong></li>
+      </ol>
+
+      <h4 class="mini-h">Roles</h4>
+      <div class="card">
+        <p>Roles are <strong>identities that define permissions for accessing AWS services</strong>. Roles are similar to users, but they don't have permanent credentials — instead, they create <strong>temporary security credentials</strong> when needed.</p>
+      </div>
+      <p style="color:var(--muted); font-weight:600; margin-top:14px;">Steps to create a role</p>
+      <ol class="list">
+        <li>Select <strong>Roles</strong> from the IAM dashboard</li>
+        <li>Click on <strong>Create role</strong></li>
+        <li>Select the trusted entity type and use case, then click <strong>Next</strong></li>
+        <li>Give permissions and click <strong>Next</strong></li>
+        <li>Give a role name, description, etc., and click <strong>Create role</strong></li>
+      </ol>
+
+      <h4 class="mini-h">Policies</h4>
+      <div class="card">
+        <p><strong>Policies</strong> are JSON-based documents that define permissions and control access to AWS resources. They specify <strong>who</strong> (users, groups, or roles) can perform <strong>what actions</strong> on <strong>which resources</strong>, and under <strong>what conditions</strong>.</p>
+      </div>
+      <p style="color:var(--muted); font-weight:600; margin-top:14px;">Types of policies</p>
+      <ul class="list">
+        <li>AWS policies (managed by AWS)</li>
+        <li>User-created policies (custom)</li>
+      </ul>
+
+      <h3 class="sub-h" id="s3-sg">Security groups</h3>
+      <div class="card accent-teal">
+        <h4>Definition</h4>
+        <p>A <strong>Security Group (SG)</strong> in AWS acts as a <strong>virtual firewall</strong> that controls inbound and outbound traffic for EC2 instances and other AWS resources. It helps define <strong>which IP addresses and ports are allowed</strong> to connect to your instance.</p>
+      </div>
+      <h4 class="mini-h">Important points about security groups</h4>
+      <ul class="checklist">
+        <li>Acts as a <strong>virtual firewall</strong> controlling inbound and outbound traffic for EC2 and other AWS resources</li>
+        <li><strong>Stateful</strong> — if an incoming request is allowed, the response is automatically allowed without an explicit outbound rule</li>
+        <li><strong>Only allow rules</strong> — security groups do not support deny rules (unlike Network ACLs)</li>
+        <li><strong>Attached to instances, not subnets</strong> — assigned to individual EC2 instances, not entire subnets</li>
+        <li><strong>Can have multiple security groups</strong> — an instance can have several applied at once</li>
+        <li><strong>Default security group</strong> — if none is specified, AWS assigns one that allows all outbound traffic and blocks all inbound traffic</li>
+        <li><strong>Rules use protocols &amp; ports</strong> — rules specify protocols (TCP, UDP, ICMP), port numbers (e.g. 22 for SSH, 80 for HTTP), and IP ranges (CIDR) or another security group as source/destination</li>
+        <li><strong>Supports cross-security-group communication</strong> — allow traffic between instances by specifying another security group as the source</li>
+        <li><strong>Applies to several AWS services</strong> — used with EC2, RDS, Lambda (VPC-enabled), ELB, and more</li>
+        <li><strong>Modifications take effect immediately</strong> — changes apply instantly without restarting instances</li>
+      </ul>
+
+      <h3 class="sub-h" id="s3-linux">Linux OS</h3>
+      <h4 class="mini-h">Different distributions</h4>
+      <div class="badge-row">
+        <span class="badge">Kali</span>
+        <span class="badge">Parrot</span>
+        <span class="badge">Ubuntu</span>
+        <span class="badge">Oracle</span>
+        <span class="badge">RedHat</span>
+        <span class="badge">CentOS</span>
+        <span class="badge">SUSE</span>
+      </div>
+
+      <h4 class="mini-h">Linux commands</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Command</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>pwd</td><td>Print the present working directory</td></tr>
+            <tr><td>ls</td><td>List files and directories</td></tr>
+            <tr><td>cd</td><td>Change directory</td></tr>
+            <tr><td>sudo su</td><td>Change privileges to root from the current user</td></tr>
+            <tr><td>mkdir</td><td>Create a directory</td></tr>
+            <tr><td>cd ..</td><td>Go back to the previous directory</td></tr>
+            <tr><td>mkdir -p d1/d2/d3/d4</td><td>Create nested directories in one command</td></tr>
+            <tr><td>ls -R</td><td>List all nested directories recursively</td></tr>
+            <tr><td>cp file dest</td><td>Copy a file to a destination</td></tr>
+            <tr><td>cp -rf dir dest</td><td>Copy a directory recursively</td></tr>
+            <tr><td>mv</td><td>Move a file/directory</td></tr>
+            <tr><td>mv old new</td><td>Rename a file/directory</td></tr>
+            <tr><td>rm</td><td>Delete a file/directory</td></tr>
+            <tr><td>.</td><td>Refer to the present working directory</td></tr>
+            <tr><td>..</td><td>Refer to the directory above the present working directory</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4 class="mini-h">Linux file hierarchy</h4>
+      <div class="quote" style="border-color:var(--coral);">The Linux file system is known as an <strong>inverted tree</strong> or <strong>distributed file system</strong>. The file hierarchy is the way of storing files; the main directory is <strong>"/"</strong>.</div>
+      <p style="color:var(--muted); font-weight:600; margin-top:14px;">Under "/" there are more than 15 directories — some of them:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Directory</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td>root</td><td>Home directory for the administrator</td></tr>
+            <tr><td>home</td><td>Home directory of the user</td></tr>
+            <tr><td>boot</td><td>Contains bootable files</td></tr>
+            <tr><td>var</td><td>System logs, mail, pools</td></tr>
+            <tr><td>usr</td><td>Software files</td></tr>
+            <tr><td>temp</td><td>Temporary files</td></tr>
+            <tr><td>lib</td><td>Help docs / libraries</td></tr>
+            <tr><td>proc</td><td>System info, running processes</td></tr>
+            <tr><td>bin</td><td>Command files (anyone can execute them)</td></tr>
+            <tr><td>sbin</td><td>Admin command files</td></tr>
+            <tr><td>etc</td><td>All configuration/executable files</td></tr>
+            <tr><td>media</td><td>Mount point</td></tr>
+            <tr><td>dev</td><td>Mount point for devices</td></tr>
+            <tr><td>mnt</td><td>Mount point</td></tr>
+            <tr><td>run</td><td>Running processes</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="quote" style="border-color:var(--coral);">Moving and renaming use the same command <code>mv</code> — if you give a destination location it <strong>moves</strong>; if you give a filename instead it <strong>renames</strong>.</div>
+
+      <h4 class="mini-h">Path</h4>
+      <div class="card">
+        <p>A path in Linux is a string that specifies the location of a file or directory in the filesystem.</p>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <h4>Absolute Path</h4>
+          <p>Specifies the full path from the root (<code>/</code>), e.g. <code>/home/user/documents/file.txt</code>.</p>
+        </div>
+        <div class="card">
+          <h4>Relative Path</h4>
+          <p>Specifies the path relative to the current directory, e.g. <code>documents/file.txt</code>.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h4>Suggested task</h4>
+        <p>List all Linux commands and what they are used for — at least 50.</p>
+      </div>
+    </section>
+
+    <!-- ============ SECTION 04 : SESSION 4 ============ -->
+    <section class="block" id="s4-storage" style="background:linear-gradient(180deg, rgba(124,156,255,0.03), transparent 200px);">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--periwinkle);">04 · Session 4</span>
+        <h2>Storage solutions in AWS</h2>
+        <p>How AWS stores data — block, object, and file storage, plus the file systems and performance metrics behind them.</p>
+      </div>
+
+      <h3 class="sub-h" id="s4-overview">Storage solutions</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Service</th><th>Expansion</th><th>Type</th></tr></thead>
+          <tbody>
+            <tr><td>EBS</td><td>Elastic Block Storage</td><td>Block storage</td></tr>
+            <tr><td>S3</td><td>Simple Storage Service</td><td>Object storage</td></tr>
+            <tr><td>EFS</td><td>Elastic File System</td><td>File storage</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h" id="s4-ebs">Elastic Block Storage (EBS)</h3>
+      <div class="card accent-peri">
+        <h4>What block storage is</h4>
+        <p><strong>Block storage</strong> is a type of data storage commonly used in cloud computing and enterprise IT environments. Data is divided into fixed-sized chunks or <strong>"blocks"</strong>, which are stored separately and assigned unique identifiers. These blocks can be accessed and managed independently, allowing for efficient data retrieval and flexibility.</p>
+      </div>
+      <div class="quote" style="border-color:var(--periwinkle);"><strong>EBS is a zonal service</strong> — it is tied to a specific availability zone within a region.</div>
+
+      <h4 class="mini-h">Types of storage</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Type</th><th>Use</th><th>Volume options</th></tr></thead>
+          <tbody>
+            <tr><td>SSD — solid state drive</td><td>Used for root volumes</td><td>gp2, gp3, io1, io2</td></tr>
+            <tr><td>HDD — hard disk drive</td><td>Not used for root volumes</td><td>Cold HDD, Throughput-optimized HDD, Magnetic drive</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4 class="mini-h">Process of adding a new hard disk</h4>
+      <ol class="list">
+        <li><strong>Mount</strong></li>
+        <li><strong>Partition</strong></li>
+        <li><strong>Formatting</strong> — the process of creating a new file system on the disk</li>
+        <li><strong>Use</strong></li>
+      </ol>
+
+      <div class="mermaid">
+graph LR
+    A[Create EBS volume] --> B[Attach to EC2 instance]
+    B --> C[Mount]
+    C --> D[Partition]
+    D --> E[Format with a file system]
+    E --> F[Use the disk]
+      </div>
+
+      <h3 class="sub-h" id="s4-filesystems">File systems</h3>
+
+      <h4 class="mini-h">Windows file systems</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>File system</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>FAT32</td><td>Compatible with almost all OSes; good for smaller drives and USB storage. File size limit: 4 GB; partition size limit: 32 GB.</td></tr>
+            <tr><td>exFAT</td><td>Designed for flash drives and external storage; supports larger files than FAT32 without its limits; compatible with both Windows and macOS.</td></tr>
+            <tr><td>NTFS</td><td>Default for modern Windows; supports large files and partitions; offers file permissions, encryption, and compression. Ideal for internal drives and system partitions.</td></tr>
+            <tr><td>ReFS</td><td>Designed for reliability, scalability, and fault tolerance; primarily used in server environments; supports large data volumes and resists corruption.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4 class="mini-h">macOS file systems</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>File system</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>APFS</td><td>Default for macOS, iOS, and iPadOS since 2017; optimized for flash and SSD; features snapshots, encryption, space sharing, and faster performance.</td></tr>
+            <tr><td>HFS+</td><td>Used in macOS before APFS; supports large files and journaling for data integrity; still compatible with older macOS versions.</td></tr>
+            <tr><td>exFAT / FAT32</td><td>Used for compatibility with external drives shared between macOS and Windows; good for USB drives and memory cards.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4 class="mini-h">Linux file systems</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>File system</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>EXT4</td><td>Default for most Linux distributions; supports large volumes, journaling, and excellent performance.</td></tr>
+            <tr><td>Btrfs</td><td>Designed for advanced features like snapshots, pooling, and error detection; focused on scalability and fault tolerance.</td></tr>
+            <tr><td>XFS</td><td>High-performance journaling file system; ideal for large files and fast throughput.</td></tr>
+            <tr><td>ZFS</td><td>Known for data integrity, snapshots, and scalability; popular in data storage and server environments.</td></tr>
+            <tr><td>F2FS</td><td>Optimized for NAND flash storage like SSDs and SD cards.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h" id="s4-metrics">Performance metrics of a hard disk</h3>
+      <div class="grid2">
+        <div class="card">
+          <h4>Throughput</h4>
+          <p>Measures how much data can be read from or written to a storage device, typically expressed in <strong>MB/s</strong> (Megabytes per second) or <strong>Gbps</strong> (Gigabits per second).</p>
+        </div>
+        <div class="card">
+          <h4>IOPS</h4>
+          <p><strong>Input/Output Operations Per Second</strong> — the number of read and write operations a storage device can perform in a second.</p>
+        </div>
+        <div class="card">
+          <h4>Durability</h4>
+          <p>Measures the probability of data being safely stored and not lost or corrupted over time.</p>
+        </div>
+        <div class="card">
+          <h4>Latency</h4>
+          <p>Measures the time delay in data access — the time taken for a storage system to complete a single I/O operation.</p>
+        </div>
+      </div>
+
+      <h4 class="mini-h">To learn next</h4>
+      <ul class="checklist">
+        <li>Creating a volume and attaching it to a Linux server</li>
+        <li>Snapshots</li>
+        <li>Migrating data between two servers</li>
+      </ul>
+    </section>
+
+    <!-- ============ SECTION 05 : SESSION 5 ============ -->
+    <section class="block" id="s5-ip" style="background:linear-gradient(180deg, rgba(126,231,135,0.03), transparent 200px);">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--green);">05 · Session 5</span>
+        <h2>Networking — IP, subnetting & VPC</h2>
+        <p>IP address classes, private ranges, subnetting and CIDR, networking components, and VPC peering on AWS's backbone.</p>
+      </div>
+
+      <h3 class="sub-h" id="s5-ip-classes">IP address classes</h3>
+      <p style="color:var(--muted); max-width:680px;">IP addresses are divided into five classes based on the first octet (the first number in the IP). These classes were originally designed to allocate address spaces efficiently.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Class</th><th>Range</th><th>First Octet Bits</th><th>Purpose</th><th>Default Subnet Mask</th></tr></thead>
+          <tbody>
+            <tr><td>A</td><td>0.0.0.0 – 127.255.255.255</td><td>0xxxxxxx</td><td>Large networks (e.g. ISPs)</td><td>255.0.0.0 (/8)</td></tr>
+            <tr><td>B</td><td>128.0.0.0 – 191.255.255.255</td><td>10xxxxxx</td><td>Medium networks (e.g. companies)</td><td>255.255.0.0 (/16)</td></tr>
+            <tr><td>C</td><td>192.0.0.0 – 223.255.255.255</td><td>110xxxxx</td><td>Small networks (e.g. LANs)</td><td>255.255.255.0 (/24)</td></tr>
+            <tr><td>D</td><td>224.0.0.0 – 239.255.255.255</td><td>1110xxxx</td><td>Multicasting (e.g. streaming)</td><td>None (not subnetted)</td></tr>
+            <tr><td>E</td><td>240.0.0.0 – 255.255.255.255</td><td>1111xxxx</td><td>Research and development</td><td>None (not subnetted)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4 class="mini-h">Additional notes on classes</h4>
+      <ul class="list">
+        <li><strong>Classful addressing</strong> — this system (Classes A–E) is largely historical. Modern networking uses <strong>Classless Inter-Domain Routing (CIDR)</strong>, which allows flexible subnet masks instead of fixed class boundaries.</li>
+        <li><strong>Reserved IPs in Class A</strong> — <code>0.0.0.0</code> (default network, "any"/"unknown") and <code>127.0.0.0 – 127.255.255.255</code> (loopback range; <code>127.0.0.1</code> is localhost).</li>
+        <li><strong>Class D</strong> — used for multicast groups (e.g. video conferencing, IPTV); devices subscribe to these addresses rather than being assigned them.</li>
+        <li><strong>Class E</strong> — experimental; not used in public or private networks.</li>
+      </ul>
+
+      <h4 class="mini-h">Usable public IP ranges</h4>
+      <p style="color:var(--muted);">These exclude reserved addresses:</p>
+      <ul class="list">
+        <li><strong>Class A:</strong> 1.0.0.0 – 126.255.255.255</li>
+        <li><strong>Class B:</strong> 128.0.0.0 – 191.255.255.255</li>
+        <li><strong>Class C:</strong> 192.0.0.0 – 223.255.255.255</li>
+      </ul>
+
+      <h3 class="sub-h" id="s5-private">Private IP ranges</h3>
+      <div class="card accent-green">
+        <p>Private IPs are reserved for internal networks (e.g. home or office LANs) and are <strong>not routable on the public internet</strong>. They require <strong>Network Address Translation (NAT)</strong> to communicate externally. Defined in <strong>RFC 1918</strong>.</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Class</th><th>Range</th><th>Number of IPs</th></tr></thead>
+          <tbody>
+            <tr><td>A</td><td>10.0.0.0 – 10.255.255.255</td><td>16,777,216 (1 network)</td></tr>
+            <tr><td>B</td><td>172.16.0.0 – 172.31.255.255</td><td>1,048,576 (16 networks)</td></tr>
+            <tr><td>C</td><td>192.168.0.0 – 192.168.255.255</td><td>65,536 (256 networks)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="list">
+        <li><strong>Class A</strong> — large enterprises (e.g. <code>10.x.x.x</code>)</li>
+        <li><strong>Class B</strong> — medium-sized organizations (e.g. <code>172.16.x.x</code>)</li>
+        <li><strong>Class C</strong> — home networks (e.g. <code>192.168.1.x</code>)</li>
+        <li><strong>NAT</strong> — routers translate private IPs to public IPs for internet access</li>
+      </ul>
+
+      <h3 class="sub-h" id="s5-subnet">Subnetting &amp; CIDR</h3>
+      <div class="card accent-green">
+        <p><strong>Subnetting</strong> divides a larger network into smaller subnetworks, improving efficiency and security. The <strong>subnet mask</strong> defines which part of the IP is the network and which is the host.</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Class</th><th>Default Subnet Mask</th><th>CIDR</th><th>Format</th><th>Total IPs</th><th>Usable Hosts</th></tr></thead>
+          <tbody>
+            <tr><td>A</td><td>255.0.0.0</td><td>/8</td><td>n.h.h.h</td><td>16,777,216</td><td>16,777,214</td></tr>
+            <tr><td>B</td><td>255.255.0.0</td><td>/16</td><td>n.n.h.h</td><td>65,536</td><td>65,534</td></tr>
+            <tr><td>C</td><td>255.255.255.0</td><td>/24</td><td>n.n.n.h</td><td>256</td><td>254</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="list">
+        <li><strong>n = Network portion, h = Host portion</strong></li>
+        <li><strong>Total IPs</strong> — calculated as <code>2^(32 − CIDR bits)</code></li>
+        <li><strong>Usable Hosts</strong> — total IPs minus 2 (network address and broadcast address). Example: /24 = 256 IPs, but 254 usable (network: x.x.x.0, broadcast: x.x.x.255).</li>
+        <li><strong>Binary</strong> — /8 means first 8 bits are network (255.0.0.0); /16 means first 16 bits (255.255.0.0); /24 means first 24 bits (255.255.255.0).</li>
+      </ul>
+
+      <h4 class="mini-h">Practical subnetting example</h4>
+      <div class="card">
+        <p><strong>IP:</strong> <code>192.168.1.0/24</code></p>
+        <ul class="list" style="margin-left:0;">
+          <li>Network: 192.168.1.0</li>
+          <li>Broadcast: 192.168.1.255</li>
+          <li>Usable range: 192.168.1.1 – 192.168.1.254</li>
+        </ul>
+        <p style="margin-top:10px;"><strong>Smaller subnet:</strong> <code>192.168.1.0/26</code> — /26 = 32 − 26 = 6 host bits → 2⁶ = 64 IPs per subnet.</p>
+        <ul class="list" style="margin-left:0;">
+          <li>Subnets: 192.168.1.0/26, 192.168.1.64/26, 192.168.1.128/26, 192.168.1.192/26</li>
+          <li>Usable hosts per subnet: 62 (64 − 2)</li>
+        </ul>
+      </div>
+
+      <h4 class="mini-h">Why Class A isn't used practically without subnetting</h4>
+      <ul class="list">
+        <li>Broadcast traffic overload</li>
+        <li>Lack of segmentation (security and organization)</li>
+        <li>Need for network and broadcast addresses</li>
+      </ul>
+      <p style="color:var(--muted);">16+ million hosts in a single network is simply unmanageable.</p>
+
+      <h4 class="mini-h">CIDR examples</h4>
+      <div class="grid2">
+        <div class="card">
+          <h4>CIDR 10.0.0.0/16</h4>
+          <ul class="list" style="margin-left:0;">
+            <li>Network bits: 16 (first 2 bytes)</li>
+            <li>Range: 10.0.0.0 – 10.0.255.255</li>
+            <li>Total IPs: 65,536 (2¹⁶)</li>
+            <li>Usable hosts: 65,534</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>Subnet 10.0.1.0/24</h4>
+          <ul class="list" style="margin-left:0;">
+            <li>Network bits: 24 (first 3 bytes)</li>
+            <li>Range: 10.0.1.0 – 10.0.1.255</li>
+            <li>Total IPs: 256 (2⁸)</li>
+            <li>Usable hosts: 254</li>
+          </ul>
+        </div>
+      </div>
+      <div class="quote" style="border-color:var(--green);"><strong>CIDR vs. classful:</strong> CIDR (Classless Inter-Domain Routing) uses variable-length subnet masks for flexibility — it allows borrowing bits from the host portion to create more networks (e.g. /20 instead of /16).</div>
+
+      <h3 class="sub-h" id="s5-components">Networking components</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Component</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>IGW (Internet Gateway)</td><td><code>0.0.0.0/0</code> — represents "all destinations" (default route); used in routing tables to send traffic to the internet via a gateway.</td></tr>
+            <tr><td>Route Table</td><td>Maps IP destinations to network targets (e.g. gateway, interface). Example: destination <code>4.4.4.4/32</code> → Google DNS server; destination <code>0.0.0.0/0</code> → Internet Gateway.</td></tr>
+            <tr><td>Special IP 4.4.4.4</td><td>A public DNS server operated by Google (often paired with <code>8.8.8.8</code>).</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4 class="mini-h">Additional notes</h4>
+      <ul class="list">
+        <li><strong>IPv4 vs. IPv6</strong> — IPv4 is 32-bit (4 billion addresses, nearly exhausted); IPv6 is 128-bit (e.g. <code>2001:0db8::1</code>), designed to replace IPv4 due to address scarcity.</li>
+        <li><strong>Loopback</strong> — <code>127.0.0.1</code> is used to test network functionality on the local machine.</li>
+        <li><strong>APIPA (Automatic Private IP Addressing)</strong> — range <code>169.254.0.0 – 169.254.255.255</code>, assigned automatically when DHCP fails.</li>
+        <li><strong>Broadcast</strong> — traffic sent to all devices in a subnet (e.g. <code>192.168.1.255</code> for /24).</li>
+      </ul>
+
+      <h3 class="sub-h" id="s5-peering">Peering connections</h3>
+      <h4 class="mini-h">Peering in general</h4>
+      <div class="card accent-green">
+        <p>A <strong>peering connection</strong> is a direct network link between two separate networks to exchange traffic efficiently, bypassing the public internet. It's typically used to reduce latency, improve bandwidth, and enhance security by avoiding third-party intermediaries.</p>
+      </div>
+      <ul class="list">
+        <li>Two autonomous networks (e.g. two companies, ISPs, or cloud providers) agree to connect their infrastructure.</li>
+        <li>Traffic flows directly between them via a private link, often through a shared router or switch.</li>
+        <li><strong>Public peering</strong> — via an Internet Exchange Point (IXP), where multiple networks connect.</li>
+        <li><strong>Private peering</strong> — a dedicated, point-to-point link between two networks.</li>
+      </ul>
+      <h4 class="mini-h">Example (general)</h4>
+      <div class="card">
+        <p>Company A (an e-commerce site) and Company B (a content delivery network, CDN) want to share data. <strong>Without peering</strong>, traffic goes through multiple public internet hops (e.g. 50 ms). <strong>With peering</strong>, a direct fiber link lets traffic flow directly (e.g. 5 ms), avoiding congestion. Streaming services like Netflix peer with ISPs to deliver content faster.</p>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <h4>Benefits</h4>
+          <ul class="list" style="margin-left:0;">
+            <li>Lower latency</li>
+            <li>Higher bandwidth</li>
+            <li>Cost savings (less reliance on transit providers)</li>
+            <li>Improved reliability</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>Limitations</h4>
+          <ul class="list" style="margin-left:0;">
+            <li>Requires mutual agreement and compatible infrastructure</li>
+            <li>Doesn't inherently provide internet access — only connects the peered networks</li>
+          </ul>
+        </div>
+      </div>
+
+      <h4 class="mini-h">VPC peering in AWS</h4>
+      <div class="card accent-green">
+        <p>In AWS, a <strong>VPC Peering Connection</strong> links two Virtual Private Clouds (VPCs) to route traffic privately using <strong>AWS's backbone network</strong>. It enables communication between two VPCs (same or different AWS accounts/regions). VPCs must have <strong>non-overlapping CIDR blocks</strong> (e.g. VPC A: <code>10.0.0.0/16</code>, VPC B: <code>172.16.0.0/16</code>).</p>
+      </div>
+      <h4 class="mini-h">Setup</h4>
+      <ol class="list">
+        <li>Create a peering request from the owner of VPC A</li>
+        <li>Accept the request from VPC B's owner</li>
+        <li>Update route tables in both VPCs to point to the peering connection (e.g. <code>10.0.0.0/16</code> → <code>pcx-12345</code>)</li>
+      </ol>
+      <div class="mermaid">
+flowchart LR
+    subgraph A["VPC A — 10.0.1.0/24 (Application)"]
+        App[Web App]
+    end
+    subgraph B["VPC B — 172.16.1.0/24 (Database)"]
+        DB[Database]
+    end
+    App <-->|"pcx-abc123 | private, AWS backbone"| DB
+      </div>
+      <p style="color:var(--muted); font-size:14px;"><strong>Result:</strong> the app in VPC A queries the database in VPC B privately over AWS's network — no internet gateway needed. Traffic uses private IP addresses.</p>
+      <h4 class="mini-h">Limitations</h4>
+      <ul class="list">
+        <li><strong>No transitive peering</strong> — if VPC A peers with B, and B peers with C, A can't reach C directly</li>
+        <li>Maximum of <strong>125 peering connections per VPC</strong> (adjustable via quota request)</li>
+        <li>Doesn't support overlapping security groups or edge-to-edge routing (e.g. a NAT Gateway in one VPC can't serve the other)</li>
+      </ul>
+      <div class="grid2">
+        <div class="card"><h4>Use case</h4><p>Connect a web app VPC (<code>10.0.0.0/16</code>) to a database VPC (<code>172.16.0.0/16</code>) for secure, low-latency access.</p></div>
+        <div class="card"><h4>Cost</h4><p>Free within the same region; charges apply for cross-region peering (data transfer fees).</p></div>
+      </div>
+    </section>
+
+    <!-- ============ SECTION 06 : SESSION 6 ============ -->
+    <section class="block" id="s6-subnets" style="background:linear-gradient(180deg, rgba(79,209,197,0.03), transparent 200px);">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--teal);">06 · Session 6</span>
+        <h2>Gateways &amp; subnets</h2>
+        <p>Short notes on gateways, classful networks, and why we create subnets.</p>
+      </div>
+
+      <div class="grid2">
+        <div class="card accent-teal">
+          <h4>Gateway</h4>
+          <p>A gateway is the <strong>IP address given to a router interface</strong> where the network is connected.</p>
+        </div>
+        <div class="card accent-teal">
+          <h4>Classful network</h4>
+          <p>Any network with a <strong>default subnet mask</strong> is known as a classful network (or complete network).</p>
+        </div>
+      </div>
+
+      <h4 class="mini-h">Advantages of creating subnets</h4>
+      <ul class="checklist">
+        <li><strong>Reduce traffic</strong> in the network</li>
+        <li><strong>Reduce the broadcast domain</strong></li>
+        <li>Easier to <strong>manage the network</strong></li>
+        <li><strong>Security</strong> — isolation between segments</li>
+      </ul>
+
+      <div class="mermaid">
+graph LR
+    VPC[VPC] --> Sub1[Subnet 1]
+    VPC --> Sub2[Subnet 2]
+    VPC --> Sub3[Subnet 3]
+    Sub1 -->|less traffic| Net1[(Broadcast domain 1)]
+    Sub2 -->|less traffic| Net2[(Broadcast domain 2)]
+    Sub3 -->|less traffic| Net3[(Broadcast domain 3)]
+      </div>
+    </section>
+
+    <!-- ============ SECTION 07 : SESSION 7 ============ -->
+    <section class="block" id="s7-load" style="background:linear-gradient(180deg, rgba(126,231,135,0.03), transparent 200px);">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--green);">07 · Session 7</span>
+        <h2>Load balancing &amp; auto scaling</h2>
+        <p>Distributing traffic across servers and automatically adjusting capacity with Elastic Load Balancing and Auto Scaling.</p>
+      </div>
+
+      <h3 class="sub-h" id="s7-load-bal">Load balancing</h3>
+      <div class="card accent-green">
+        <p><strong>Distribution of network traffic to multiple servers</strong> is known as load balancing. In AWS this is done automatically by the <strong>Elastic Load Balancing (ELB)</strong> service.</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Load balancer</th><th>Layer</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>Application Load Balancer (ALB)</td><td>Layer 7</td><td>Best for HTTP/HTTPS traffic; supports advanced routing such as host-based or path-based routing. Protocols: HTTP, HTTPS.</td></tr>
+            <tr><td>Network Load Balancer (NLB)</td><td>Layer 4</td><td>Designed for high-performance TCP/UDP traffic; can handle millions of requests per second with low latency. Protocols: TCP, UDP.</td></tr>
+            <tr><td>Gateway Load Balancer</td><td>—</td><td>Enables seamless deployment and management of third-party virtual appliances (e.g. firewalls) for network traffic; used for security.</td></tr>
+            <tr><td>Classic Load Balancer (CLB)</td><td>Layers 4 &amp; 7</td><td>Operates at both layers but is now largely considered outdated and used for legacy systems.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mermaid">
+flowchart LR
+    U1[Client 1] --> ELB[Elastic Load Balancer]
+    U2[Client 2] --> ELB
+    U3[Client 3] --> ELB
+    ELB --> I1[EC2 Instance 1]
+    ELB --> I2[EC2 Instance 2]
+    ELB --> I3[EC2 Instance 3]
+      </div>
+
+      <h3 class="sub-h" id="s7-autoscale">Auto scaling</h3>
+      <div class="card accent-green">
+        <p><strong>Auto Scaling</strong> in AWS is a powerful feature that automatically adjusts the number of instances in your application based on demand.</p>
+      </div>
+      <h4 class="mini-h">Key advantages</h4>
+      <ul class="checklist">
+        <li><strong>Improved Availability</strong> — always has the right capacity for incoming traffic, reducing downtime and improving reliability</li>
+        <li><strong>Cost Optimization</strong> — scales down resources during low-demand periods, saving costs by only using what is needed</li>
+        <li><strong>High Performance</strong> — responds to demand spikes by rapidly adding instances, maintaining performance under heavy load</li>
+        <li><strong>Fault Tolerance</strong> — replaces unhealthy instances with new ones, keeping the application running smoothly</li>
+        <li><strong>Scalability</strong> — easily handles fluctuating workloads, ideal for unpredictable traffic or seasonal spikes</li>
+        <li><strong>Ease of Management</strong> — automatically adjusts resources once configured, reducing manual intervention</li>
+      </ul>
+
+      <h4 class="mini-h">Setting up auto scaling</h4>
+      <ol class="list">
+        <li><strong>Create a Launch Template</strong> — define the EC2 configuration including the Amazon Machine Image (AMI), instance type, key pair, and security groups.</li>
+        <li><strong>Create an Auto Scaling Group</strong> — specify the launch template, desired capacity, minimum and maximum instances, and the VPC/subnet where instances run.</li>
+        <li><strong>Set Scaling Policies</strong> — define rules for scaling in/out based on metrics like CPU utilization, network traffic, or custom CloudWatch alarms.</li>
+        <li><strong>Test the Setup</strong> — simulate traffic or terminate instances to ensure Auto Scaling responds correctly.</li>
+      </ol>
+
+      <div class="mermaid">
+flowchart LR
+    A[Auto Scaling Group] -->|scale out| B1[Instance]
+    A -->|scale out| B2[Instance]
+    A -->|scale out| B3[Instance]
+    A -->|scale in| A
+      </div>
+
+      <h3 class="sub-h" id="s7-scaling">Scaling models</h3>
+      <h4 class="mini-h">Vertical vs. horizontal scaling</h4>
+      <div class="grid2">
+        <div class="card">
+          <h4>Vertical Scaling (Scaling Up)</h4>
+          <p>Adding more power (CPU, RAM, or storage) to a <strong>single</strong> server or machine.</p>
+          <ul class="list" style="margin-left:0;">
+            <li><strong>How:</strong> upgrade existing hardware or switch to a more powerful machine</li>
+            <li><strong>Advantages:</strong> simpler to implement; fewer machines to manage</li>
+            <li><strong>Drawbacks:</strong> limited by hardware capacity; downtime may be required for upgrades</li>
+            <li><strong>Example:</strong> EC2 <code>t2.micro</code> → <code>t2.large</code></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>Horizontal Scaling (Scaling Out)</h4>
+          <p>Adding <strong>more machines</strong> or servers to distribute the workload across multiple systems.</p>
+          <ul class="list" style="margin-left:0;">
+            <li><strong>How:</strong> add additional instances or nodes instead of upgrading hardware</li>
+            <li><strong>Advantages:</strong> virtually unlimited scalability; redundancy improves fault tolerance</li>
+            <li><strong>Drawbacks:</strong> more complex to set up and manage; apps may need to be designed for load distribution</li>
+            <li><strong>Example:</strong> more EC2 instances in an Auto Scaling Group behind an ELB</li>
+          </ul>
+        </div>
+      </div>
+      <div class="quote" style="border-color:var(--green);"><strong>Summary:</strong> vertical scaling improves the capacity of a single machine; horizontal scaling increases capacity by adding more machines. The choice depends on your workload, budget, and system design.</div>
+
+      <h4 class="mini-h">Scale In and Scale Out</h4>
+      <div class="grid2">
+        <div class="card">
+          <h4>Scale Out (Adding resources)</h4>
+          <p>Increasing the number of instances, servers, or machines to handle higher loads.</p>
+          <ul class="list" style="margin-left:0;">
+            <li><strong>Example:</strong> adding EC2 instances during traffic spikes</li>
+            <li><strong>Use case:</strong> sudden increase in demand — ensures capacity without compromising performance</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>Scale In (Removing resources)</h4>
+          <p>Decreasing the number of instances, servers, or machines during periods of low demand.</p>
+          <ul class="list" style="margin-left:0;">
+            <li><strong>Example:</strong> terminating unused EC2 instances to reduce costs</li>
+            <li><strong>Use case:</strong> off-peak hours — minimizes unnecessary usage, saving money while maintaining efficiency</li>
+          </ul>
+        </div>
+      </div>
+      <div class="quote" style="border-color:var(--green);"><strong>Key advantage:</strong> the combination of Scale In and Scale Out achieves <strong>elasticity</strong> — infrastructure dynamically adjusts to match the workload, ensuring optimal performance and cost-effectiveness.</div>
+
+      <h3 class="sub-h" id="s7-ami">Amazon Machine Image (AMI)</h3>
+      <div class="card accent-green">
+        <p>In AWS, an <strong>image</strong> typically refers to an <strong>Amazon Machine Image (AMI)</strong> — a pre-configured template that contains the software, operating system, and settings required to launch an EC2 instance. It serves as the <strong>blueprint</strong> for creating virtual machines in the cloud.</p>
+      </div>
+      <h4 class="mini-h">Key features of AMIs</h4>
+      <ul class="checklist">
+        <li><strong>Customizable</strong> — create your own AMI by customizing an EC2 instance and saving it as an image</li>
+        <li><strong>Region-specific</strong> — tied to specific AWS regions, but can be copied across regions</li>
+        <li><strong>Types</strong> — AWS provides public AMIs, shared AMIs, and marketplace AMIs for various use cases</li>
+      </ul>
+      <p style="color:var(--muted); font-size:14px;">AMIs simplify deployment by allowing you to launch multiple instances with the same configuration.</p>
+    </section>
+
+    <footer class="footer">
+      <a class="back-top" href="#top">↑ Back to top</a>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad:true,
+    theme:'base',
+    themeVariables:{
+      background:'#11151d',
+      primaryColor:'#161c27',
+      primaryTextColor:'#e8eaf0',
+      primaryBorderColor:'#232a38',
+      lineColor:'#5c6478',
+      secondaryColor:'#161c27',
+      tertiaryColor:'#161c27',
+      fontFamily:'JetBrains Mono, monospace',
+      fontSize:'13px'
+    },
+    flowchart:{curve:'basis'},
+    securityLevel:'loose'
+  });
+  hljs.highlightAll();
+
+  // mobile nav toggle
+  const sidebar = document.getElementById('sidebar');
+  const toggle = document.getElementById('menuToggle');
+  toggle.addEventListener('click', ()=> sidebar.classList.toggle('open'));
+  document.querySelectorAll('.navlink').forEach(l=>{
+    l.addEventListener('click', ()=> sidebar.classList.remove('open'));
+  });
+
+  // active link highlighting on scroll
+  const links = Array.from(document.querySelectorAll('.navlink[href^="#"]'));
+  const sections = links.map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
+  function onScroll(){
+    let current = sections[0];
+    const y = window.scrollY + 120;
+    for(const s of sections){
+      if(s.offsetTop <= y) current = s;
+    }
+    links.forEach(l=>l.classList.remove('active'));
+    if(current){
+      const active = links.find(l => l.getAttribute('href') === '#'+current.id);
+      if(active) active.classList.add('active');
+    }
+  }
+  window.addEventListener('scroll', onScroll);
+  onScroll();
+</script>
+</body>
+</html>
