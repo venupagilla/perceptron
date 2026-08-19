@@ -40,12 +40,59 @@ nav .nav-links{display:flex; gap:22px; font-family:var(--mono); font-size:12px; 
 nav .nav-links a{color:var(--muted);}
 nav .nav-links a:hover{color:var(--text); text-decoration:none;}
 section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:80px 40px;}
+.hero{position:relative; min-height:100vh; display:flex; align-items:center; overflow:hidden; z-index:1;}
+#neuralCanvas{position:absolute; inset:0; width:100%; height:100%; z-index:0;}
+.hero-inner{position:relative; z-index:2; max-width:900px; padding:120px 40px 80px;}
+.hero .eyebrow{
+  font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--amber); display:block; margin-bottom:20px;
+}
+.hero h1{font-family:var(--display); font-size:56px; line-height:1.08; font-weight:700; letter-spacing:-.01em; margin-bottom:22px;}
+.hero h1 span{color:var(--amber);}
+.hero p.lead{font-size:17px; color:var(--muted); max-width:560px; margin-bottom:36px;}
+.cta-row{display:flex; flex-wrap:wrap; gap:14px; margin-bottom:40px;}
+.btn{
+  font-family:var(--mono); font-size:13px; letter-spacing:.04em; padding:13px 22px; border-radius:10px;
+  border:1px solid var(--border); cursor:pointer; display:inline-block;
+}
+.btn.primary{background:var(--amber); color:#0a0d13; font-weight:600; border-color:transparent;}
+.btn.primary:hover{background:#ffb53d; text-decoration:none;}
+.btn.ghost{background:var(--panel); color:var(--text);}
+.btn.ghost:hover{border-color:var(--periwinkle); color:var(--periwinkle); text-decoration:none;}
+.pillrow{display:flex; flex-wrap:wrap; gap:10px;}
+.pill{
+  font-family:var(--mono); font-size:11.5px; padding:6px 12px; border:1px solid var(--border);
+  border-radius:100px; color:var(--muted); background:var(--panel);
+}
 </style>
 </head>
 <body>
 <nav>
   <div class="brand">perceptron<span>.</span></div>
-  <div class="nav-links"></div>
+  <div class="nav-links">
+    <a href="#notes">Notes</a>
+    <a href="#features">Topics</a>
+  </div>
 </nav>
+<header class="hero" id="hero">
+  <canvas id="neuralCanvas" aria-hidden="true"></canvas>
+  <div class="hero-inner">
+    <span class="eyebrow">// perceptron — AI study notes</span>
+    <h1>From <span>tokens</span> to <span>agents</span>,<br>one connected library of notes.</h1>
+    <p class="lead">Hand-written reference notes on large language models and agentic AI — covering embeddings, attention, tokenization, agent loops, protocols, and guardrails.</p>
+    <div class="cta-row">
+      <a class="btn primary" href="introduction-to-llm.html">Start with LLM foundations</a>
+      <a class="btn ghost" href="agentic-ai-foundations.html">Dive into AI agents</a>
+    </div>
+    <div class="pillrow">
+      <span class="pill">Self-Attention</span>
+      <span class="pill">Tokenization</span>
+      <span class="pill">AI Agents</span>
+      <span class="pill">LangChain</span>
+      <span class="pill">MCP</span>
+      <span class="pill">Guardrails</span>
+    </div>
+  </div>
+</header>
 </body>
 </html>
