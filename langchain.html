@@ -1,0 +1,2654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LangChain — Framework Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/nord.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js"></script>
+<style>
+:root{
+  --bg:#0a0d13;
+  --panel:#11151d;
+  --panel-2:#161c27;
+  --border:#232a38;
+  --text:#e8eaf0;
+  --muted:#8b93a7;
+  --muted-2:#5c6478;
+  --amber:#f5a623;   /* Core Components */
+  --teal:#4fd1c5;    /* Models */
+  --coral:#ff6b6b;   /* Prompts & Output */
+  --periwinkle:#7c9cff; /* Chains & Runnables */
+  --green:#7ee787;   /* Data Pipeline */
+  --mono:'JetBrains Mono', monospace;
+  --display:'Space Grotesk', sans-serif;
+  --body:'Inter', sans-serif;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--body);
+  line-height:1.65;
+  font-size:15.5px;
+}
+::selection{background:rgba(245,166,35,0.3);}
+
+/* subtle grid texture */
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size:36px 36px;
+  pointer-events:none;
+  z-index:0;
+}
+
+a{color:var(--periwinkle); text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* ===== Layout ===== */
+.shell{display:flex; min-height:100vh; position:relative; z-index:1;}
+
+.sidebar{
+  width:280px; flex-shrink:0;
+  background:var(--panel);
+  border-right:1px solid var(--border);
+  position:fixed; top:0; left:0; bottom:0;
+  overflow-y:auto;
+  padding:24px 0 40px;
+  z-index:20;
+  transition:transform .25s ease;
+}
+.sidebar::-webkit-scrollbar{width:6px;}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border); border-radius:4px;}
+
+.brand{
+  padding:0 22px 20px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:18px;
+}
+.brand .tag{
+  font-family:var(--mono); font-size:11px; letter-spacing:.12em;
+  color:var(--amber); text-transform:uppercase; display:block; margin-bottom:8px;
+}
+.brand h1{
+  font-family:var(--display); font-size:18px; font-weight:700; line-height:1.3;
+  color:var(--text);
+}
+.brand .sub{font-size:12.5px; color:var(--muted); margin-top:6px;}
+
+.navgroup{margin-bottom:4px;}
+.navgroup > .glabel{
+  display:flex; align-items:center; gap:8px;
+  padding:10px 22px 8px;
+  font-family:var(--mono); font-size:11px; letter-spacing:.08em;
+  color:var(--muted-2); text-transform:uppercase;
+}
+.navgroup .glabel .idx{color:var(--teal); font-weight:600;}
+.navlink{
+  display:block;
+  padding:6px 22px 6px 34px;
+  font-size:13.5px; color:var(--muted);
+  border-left:2px solid transparent;
+}
+.navlink:hover{color:var(--text); text-decoration:none; background:rgba(255,255,255,0.02);}
+.navlink.active{color:var(--text); border-left-color:var(--amber); background:rgba(245,166,35,0.06);}
+
+.menu-toggle{
+  display:none; position:fixed; top:16px; left:16px; z-index:30;
+  background:var(--panel-2); border:1px solid var(--border); color:var(--text);
+  width:40px; height:40px; border-radius:8px; font-size:18px; cursor:pointer;
+}
+
+.main{margin-left:280px; flex:1; min-width:0;}
+
+/* ===== Hero ===== */
+.hero{
+  padding:90px 64px 70px;
+  border-bottom:1px solid var(--border);
+  position:relative;
+  overflow:hidden;
+}
+.hero-inner{max-width:900px; position:relative; z-index:2;}
+.hero .eyebrow{
+  font-family:var(--mono); color:var(--amber); font-size:12px;
+  letter-spacing:.14em; text-transform:uppercase; display:block; margin-bottom:18px;
+}
+.hero h1{
+  font-family:var(--display); font-size:52px; line-height:1.08; font-weight:700;
+  letter-spacing:-.01em; margin-bottom:20px;
+}
+.hero h1 span{color:var(--amber);}
+.hero p.lead{
+  font-size:17px; color:var(--muted); max-width:560px; margin-bottom:36px;
+}
+.pillrow{display:flex; flex-wrap:wrap; gap:10px;}
+.pill{
+  font-family:var(--mono); font-size:11.5px; padding:6px 12px;
+  border:1px solid var(--border); border-radius:100px; color:var(--muted);
+  background:var(--panel);
+}
+
+/* Signature: chain pipeline ring */
+.loop-wrap{
+  position:absolute; right:40px; top:50%; transform:translateY(-50%);
+  width:340px; height:340px; z-index:1;
+}
+@media(max-width:1100px){.loop-wrap{display:none;}}
+.loop-ring{width:100%; height:100%; position:relative;}
+.loop-node{
+  position:absolute; width:96px; height:96px; border-radius:50%;
+  border:1px solid var(--border); background:var(--panel-2);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  font-family:var(--mono); font-size:11px; letter-spacing:.04em; text-align:center;
+  animation:pulse 8s ease-in-out infinite;
+}
+.loop-node .n{font-size:9px; color:var(--muted-2); margin-bottom:4px;}
+.loop-node.n1{top:0; left:50%; transform:translateX(-50%); color:var(--amber); border-color:rgba(245,166,35,.4); animation-delay:0s;}
+.loop-node.n2{top:50%; right:0; transform:translateY(-50%); color:var(--teal); border-color:rgba(79,209,197,.4); animation-delay:2s;}
+.loop-node.n3{bottom:0; left:50%; transform:translateX(-50%); color:var(--green); border-color:rgba(126,231,135,.4); animation-delay:4s;}
+.loop-node.n4{top:50%; left:0; transform:translateY(-50%); color:var(--periwinkle); border-color:rgba(124,156,255,.4); animation-delay:6s;}
+@keyframes pulse{
+  0%,88%,100%{box-shadow:none;}
+  4%{box-shadow:0 0 0 6px rgba(255,255,255,0.04);}
+}
+.loop-ring svg{position:absolute; inset:0; width:100%; height:100%;}
+.loop-ring circle.track{fill:none; stroke:var(--border); stroke-width:1;}
+.loop-ring circle.runner{fill:none; stroke:var(--amber); stroke-width:2; stroke-linecap:round;
+  stroke-dasharray:40 900; animation:run 8s linear infinite;}
+@keyframes run{ to { stroke-dashoffset:-940; } }
+
+/* ===== Sections ===== */
+section.block{padding:56px 64px; border-bottom:1px solid var(--border);}
+section.block:target{}
+.block-head{max-width:820px; margin-bottom:36px;}
+.block-head .eyebrow{
+  font-family:var(--mono); font-size:11.5px; letter-spacing:.12em; text-transform:uppercase;
+  display:block; margin-bottom:10px;
+}
+.block-head h2{font-family:var(--display); font-size:30px; font-weight:700; margin-bottom:10px;}
+.block-head p{color:var(--muted); max-width:680px;}
+
+h3.sub-h{
+  font-family:var(--display); font-size:20px; font-weight:600; margin:40px 0 14px;
+  padding-top:4px;
+}
+h3.sub-h .idx{color:var(--muted-2); font-family:var(--mono); font-size:14px; margin-right:8px;}
+h4.mini-h{font-family:var(--display); font-size:15.5px; font-weight:600; margin:24px 0 10px; color:var(--text);}
+
+.card{
+  background:var(--panel); border:1px solid var(--border); border-radius:12px;
+  padding:22px 24px; margin:18px 0;
+}
+.card.accent-amber{border-left:3px solid var(--amber);}
+.card.accent-teal{border-left:3px solid var(--teal);}
+.card.accent-coral{border-left:3px solid var(--coral);}
+.card.accent-peri{border-left:3px solid var(--periwinkle);}
+.card.accent-green{border-left:3px solid var(--green);}
+.card h4{margin-top:0;}
+.card p:last-child{margin-bottom:0;}
+
+.quote{
+  font-family:var(--body); font-style:normal; color:var(--text);
+  border-left:2px solid var(--amber); padding:4px 0 4px 18px; margin:18px 0;
+  color:var(--muted); font-size:14.5px;
+}
+.quote strong{color:var(--text);}
+
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+.grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+@media(max-width:900px){.grid2,.grid3{grid-template-columns:1fr;}}
+
+table{width:100%; border-collapse:collapse; margin:18px 0; font-size:13.5px;}
+thead th{
+  font-family:var(--mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase;
+  color:var(--muted-2); text-align:left; padding:10px 14px; border-bottom:1px solid var(--border);
+}
+tbody td{padding:11px 14px; border-bottom:1px solid var(--border); color:var(--muted); vertical-align:top;}
+tbody td:first-child{color:var(--text); font-weight:600;}
+tbody tr:hover{background:rgba(255,255,255,0.015);}
+.table-wrap{overflow-x:auto; border:1px solid var(--border); border-radius:10px;}
+.table-wrap table{margin:0;}
+
+pre{
+  background:#0d1117 !important; border:1px solid var(--border); border-radius:10px;
+  padding:18px 20px; overflow-x:auto; margin:16px 0; font-size:13px;
+}
+code{font-family:var(--mono);}
+:not(pre) > code{
+  background:var(--panel-2); padding:2px 6px; border-radius:4px; font-size:.9em; color:var(--teal);
+}
+.code-label{
+  font-family:var(--mono); font-size:11px; color:var(--muted-2); letter-spacing:.05em;
+  text-transform:uppercase; margin-bottom:-8px; display:block; margin-top:16px;
+}
+
+ul.list, ol.list{margin:12px 0 12px 20px; color:var(--muted);}
+ul.list li, ol.list li{margin-bottom:8px;}
+ul.list li strong, ol.list li strong{color:var(--text);}
+ul.checklist{list-style:none; margin:12px 0;}
+ul.checklist li{
+  padding-left:26px; position:relative; margin-bottom:9px; color:var(--muted); font-size:14px;
+}
+ul.checklist li::before{
+  content:"✓"; position:absolute; left:0; color:var(--green); font-family:var(--mono); font-weight:600;
+}
+
+.mermaid{background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:20px; margin:18px 0; display:flex; justify-content:center;}
+
+.diagram-box{
+  font-family:var(--mono); font-size:12.5px; white-space:pre; overflow-x:auto;
+  background:#0d1117; border:1px solid var(--border); border-radius:10px; padding:18px 20px; margin:16px 0;
+  color:var(--muted);
+}
+.diagram-box .hl{color:var(--amber);}
+
+.badge-row{display:flex; gap:8px; flex-wrap:wrap; margin:14px 0;}
+.badge{
+  font-family:var(--mono); font-size:11px; padding:4px 10px; border-radius:100px;
+  border:1px solid var(--border); color:var(--muted);
+}
+.badge.risk-low{color:var(--green); border-color:rgba(126,231,135,.3);}
+.badge.risk-med{color:var(--amber); border-color:rgba(245,166,35,.3);}
+.badge.risk-high{color:var(--coral); border-color:rgba(255,107,107,.3);}
+
+.layer-stack{margin:20px 0;}
+.layer{
+  border:1px solid var(--border); border-radius:10px; padding:18px 20px; margin-bottom:10px;
+  background:var(--panel); position:relative; padding-left:56px;
+}
+.layer .num{
+  position:absolute; left:18px; top:18px; font-family:var(--display); font-weight:700;
+  font-size:20px; color:var(--muted-2); width:28px;
+}
+.layer h4{margin:0 0 6px;}
+.layer p{color:var(--muted); font-size:13.5px; margin-bottom:8px;}
+
+.footer{
+  padding:50px 64px 70px; color:var(--muted-2); font-size:13px;
+}
+.footer a{color:var(--muted);}
+.back-top{
+  display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:12px;
+  color:var(--muted); border:1px solid var(--border); padding:8px 14px; border-radius:8px; margin-bottom:24px;
+}
+
+.stub-card{
+  border:1px dashed var(--border); border-radius:12px; padding:20px; color:var(--muted-2);
+  font-size:13.5px;
+}
+.stub-card strong{color:var(--muted);}
+
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .menu-toggle{display:flex; align-items:center; justify-content:center;}
+  .hero, section.block, .footer{padding-left:26px; padding-right:26px;}
+  .hero{padding-top:80px;}
+  .hero h1{font-size:36px;}
+}
+</style>
+</head>
+<body>
+
+<button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">☰</button>
+
+<div class="shell">
+
+  <nav class="sidebar" id="sidebar">
+    <div class="brand">
+      <span class="tag">// Framework Notes</span>
+      <h1>LangChain</h1>
+      <div class="sub">LLM application framework</div>
+    </div>
+
+    <div class="navgroup">
+      <a class="navlink" href="#top" style="padding-left:22px; font-weight:600; color:var(--text);">Overview</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">01</span> Core Components</div>
+      <a class="navlink" href="#core-components">The building blocks</a>
+      <a class="navlink" href="#other-components">Other components</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">02</span> Models</div>
+      <a class="navlink" href="#language-models">Language models</a>
+      <a class="navlink" href="#chat-model">Creating a chat model</a>
+      <a class="navlink" href="#invoke-messages">Invoke & messages</a>
+      <a class="navlink" href="#stream-batch">Stream & batch</a>
+      <a class="navlink" href="#open-source-models">Open source models</a>
+      <a class="navlink" href="#embedding-models">Embedding models</a>
+      <a class="navlink" href="#similarity">Document similarity</a>
+      <a class="navlink" href="#temperature">Temperature</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">03</span> Prompts & Output</div>
+      <a class="navlink" href="#prompts">Prompts</a>
+      <a class="navlink" href="#dynamic-prompt">Dynamic prompts</a>
+      <a class="navlink" href="#messages-placeholder">MessagesPlaceholder</a>
+      <a class="navlink" href="#structured-output">Structured output</a>
+      <a class="navlink" href="#output-parsers">Output parsers</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">04</span> Chains & Runnables</div>
+      <a class="navlink" href="#chains">Chains overview</a>
+      <a class="navlink" href="#sequential-chains">Sequential chains</a>
+      <a class="navlink" href="#parallel-chains">Parallel chains</a>
+      <a class="navlink" href="#conditional-chains">Conditional chains</a>
+      <a class="navlink" href="#runnables">Runnables & LCEL</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">05</span> Data Pipeline</div>
+      <a class="navlink" href="#document-loaders">Document loaders</a>
+      <a class="navlink" href="#load-lazy-load">load() & lazy_load()</a>
+      <a class="navlink" href="#text-splitters">Text splitters</a>
+      <a class="navlink" href="#vector-stores">Vector stores</a>
+      <a class="navlink" href="#retrievers">Retrievers</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">06</span> RAG</div>
+      <a class="navlink" href="#rag-why">Why RAG</a>
+      <a class="navlink" href="#rag-steps">Steps in RAG</a>
+      <a class="navlink" href="#rag-pros-cons">Advantages & limitations</a>
+    </div>
+  </nav>
+
+  <main class="main" id="top">
+
+    <!-- HERO -->
+    <header class="hero">
+      <div class="loop-wrap">
+        <div class="loop-ring">
+          <svg viewBox="0 0 340 340">
+            <circle class="track" cx="170" cy="170" r="150"/>
+            <circle class="runner" cx="170" cy="170" r="150" transform="rotate(-90 170 170)"/>
+          </svg>
+          <div class="loop-node n1"><span class="n">01</span>Model</div>
+          <div class="loop-node n2"><span class="n">02</span>Prompt</div>
+          <div class="loop-node n3"><span class="n">03</span>Chain</div>
+          <div class="loop-node n4"><span class="n">04</span>Tools</div>
+        </div>
+      </div>
+      <div class="hero-inner">
+        <span class="eyebrow">// LangChain — LLM application framework</span>
+        <h1>Don't just call a model.<br>Build a <span>system</span> around it.</h1>
+        <p class="lead">A working reference on LangChain, the open-source framework for building LLM-powered applications — models and prompts, chains and runnables, document loaders and splitters, vector stores and retrievers, and the RAG pipeline that ties it together.</p>
+        <div class="pillrow">
+          <span class="pill">Models</span>
+          <span class="pill">Chains</span>
+          <span class="pill">Agents</span>
+          <span class="pill">RAG</span>
+          <span class="pill">Memory</span>
+          <span class="pill">MCP</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============ SECTION 01 : CORE COMPONENTS ============ -->
+    <section class="block" id="core-components" style="background:linear-gradient(180deg, rgba(245,166,35,0.03), transparent 200px);">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">01 · Core Components of LangChain</span>
+        <h2>The building blocks</h2>
+        <p>LangChain is a Python framework used to build applications that are powered by LLMs.</p>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Component</th><th>Role</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td>Models</td><td>Core AI engines that generate responses — act as the brain.</td><td>GPT, Gemini, Grok</td></tr>
+            <tr><td>Prompts</td><td>Define how input is structured before sending to the model.</td><td>Question format</td></tr>
+            <tr><td>Chains</td><td>Sequence of operations where the output of one step becomes the input of the next.</td><td>Pipeline</td></tr>
+            <tr><td>Memory</td><td>Stores past interactions so the model can maintain context.</td><td>Chat history</td></tr>
+            <tr><td>Tools</td><td>External functions or APIs the LLM can use.</td><td>Search, calculator</td></tr>
+            <tr><td>Agents</td><td>Use LLMs to decide which actions/tools to use dynamically.</td><td>ReAct agent</td></tr>
+            <tr><td>Document Loaders</td><td>Load data from sources like PDFs, text files, or websites.</td><td>PDF, txt, web</td></tr>
+            <tr><td>Text Splitters</td><td>Split large text into smaller chunks for preprocessing.</td><td>Recursive splitter</td></tr>
+            <tr><td>Embeddings</td><td>Convert text into numerical vectors for similarity search.</td><td>Vector encoding</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block" id="other-components">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">01 · Core Components of LangChain</span>
+        <h2>Other components</h2>
+      </div>
+      <ul class="list">
+        <li><strong>Vector Stores</strong> — databases that store embeddings and enable similarity search.</li>
+        <li><strong>Retrievers</strong> — fetch relevant documents from a vector store based on a query.</li>
+        <li><strong>Output Parser</strong> — converts raw LLM output into structured formats like JSON.</li>
+      </ul>
+    </section>
+    <!-- ============ SECTION 02 : MODELS ============ -->
+    <section class="block" id="language-models" style="background:linear-gradient(180deg, rgba(79,209,197,0.03), transparent 200px);">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--teal);">02 · Models</span>
+        <h2>Models</h2>
+        <p>The Model component facilitates interactions with various language models and embedding models.</p>
+      </div>
+
+      <div class="mermaid">
+graph LR
+    A[Models] --> B[Language models]
+    A --> C[Embedding models]
+    B --> D[LLMs]
+    B --> E[Chat Models]
+      </div>
+
+      <h3 class="sub-h">Language models</h3>
+      <p style="color:var(--muted); max-width:680px;">Language models are AI systems designed to process, generate, and understand natural language text.</p>
+      <div class="diagram-box">Text → [ Language model ] → Text</div>
+      <p style="color:var(--muted);">There are two types:</p>
+      <div class="grid2">
+        <div class="card accent-teal">
+          <h4>LLMs</h4>
+          <p>General-purpose models used for raw text generation. They take a <strong>string</strong> as input and generate text as output.</p>
+        </div>
+        <div class="card accent-teal">
+          <h4>Chat Models</h4>
+          <p>Language models specialized for conversational tasks. They take a <strong>sequence of messages</strong> as input and return chat messages as output.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="chat-model">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--teal);">02 · Models</span>
+        <h2>Creating a chat model</h2>
+        <p>You can create a model in two ways.</p>
+      </div>
+
+      <h4 class="mini-h">i) Using init_chat_model</h4>
+      <p style="color:var(--muted);">This is universal — any model can be accessed using this class.</p>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain.chat_models import init_chat_model</code></pre>
+
+      <h4 class="mini-h">ii) Using a provider-specific package</h4>
+      <p style="color:var(--muted);">Restricted to a specific provider, but all packages implement the same interface — to switch providers you only change the package name, class name, and model name; everything else stays the same.</p>
+      <span class="code-label">python — example (Groq)</span>
+      <pre><code class="language-python">from langchain_groq import ChatGroq</code></pre>
+    </section>
+
+    <section class="block" id="invoke-messages">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--teal);">02 · Models</span>
+        <h2>Getting a response: invoke & messages</h2>
+        <p>You can get a response from a model using the invoke, stream, or batch methods.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">1</span>Invoke method</h3>
+      <p style="color:var(--muted); max-width:680px;">The invoke method takes a single message or a list of messages representing a conversation history and responds with a single response at once, after it is entirely generated.</p>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_groq import ChatGroq
+import dotenv
+
+dotenv.load_dotenv()  # for importing system variables
+model = ChatGroq(model="groq/gpt-oss-12ob")
+model_resp = model.invoke("hi, how are you")
+print(model_resp.content)</code></pre>
+
+      <h3 class="sub-h"><span class="idx">2</span>Messages</h3>
+      <p style="color:var(--muted); max-width:680px;">Messages are structured objects used to communicate with Chat Models. For passing a conversation you can use either dictionaries or message objects.</p>
+      <div class="quote" style="border-color:var(--teal);"><strong>Why use messages?</strong> they help maintain conversation history, allow setting behavior using a System Message, are more powerful and structured than raw text, and are required for ChatPromptTemplate.</div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Message Type</th><th>Role</th><th>Purpose</th><th>Who Creates It</th></tr></thead>
+          <tbody>
+            <tr><td>SystemMessage</td><td>System</td><td>Sets the behavior, personality, rules, and context for the AI</td><td>Developer</td></tr>
+            <tr><td>HumanMessage</td><td>Human / User</td><td>Represents user input or query</td><td>User</td></tr>
+            <tr><td>AIMessage</td><td>AI / Assistant</td><td>Model's response (can contain text, tool calls, etc.)</td><td>LLM</td></tr>
+            <tr><td>ToolMessage</td><td>Tool</td><td>Result returned after executing a tool/function</td><td>System (after tool)</td></tr>
+            <tr><td>ChatMessage</td><td>Custom</td><td>Generic message with any custom role (rarely used)</td><td>Developer</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4 class="mini-h">Using a dictionary</h4>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">conv = [
+    {"role": "system", "content": "you are a teacher"},
+    {"role": "user", "content": "hi"},
+    {"role": "assistant", "content": "hello student"},
+    {"role": "user", "content": "teach me Algebra"}
+]
+resp = model.invoke(conv)
+print(resp.content)</code></pre>
+
+      <h4 class="mini-h">Using message objects</h4>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain.messages import HumanMessage, AIMessage, SystemMessage
+
+conv = [
+    SystemMessage("M1"),
+    HumanMessage("M2"),
+    AIMessage("M3"),
+    HumanMessage("M4")
+]
+resp = model.invoke(conv)
+print(resp.content)</code></pre>
+    </section>
+
+    <section class="block" id="stream-batch">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--teal);">02 · Models</span>
+        <h2>Stream & batch</h2>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">1</span>Stream</h3>
+      <p style="color:var(--muted); max-width:680px;">Most models can stream their output content while it is being generated. Calling <code>stream()</code> returns an iterator that yields output chunks as they are produced.</p>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">for chunk in model.stream("why do parrots fly?"):
+    print(chunk.text, end="", flush=True)
+    # if we set flush to True the chunk prints right away</code></pre>
+
+      <h3 class="sub-h"><span class="idx">2</span>Batch</h3>
+      <p style="color:var(--muted); max-width:680px;">Batching a collection of independent requests to a model can significantly improve performance and reduce costs, as the processing can be done in parallel.</p>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">resp = model.batch([
+    "ques 1",
+    "ques 2",
+    "ques 3"
+])
+for response in resp:
+    print(response)</code></pre>
+      <p style="color:var(--muted); font-size:14px;">By default <code>batch()</code> only returns the final output for the entire batch. To receive output for each item as it finishes generating, stream results with <code>batch_as_completed()</code>:</p>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">for resp in model.batch_as_completed(["q1", "q2", "q3"]):
+    print(resp)</code></pre>
+    </section>
+    <section class="block" id="open-source-models">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--teal);">02 · Models</span>
+        <h2>Open source models</h2>
+        <p>Open source models are large language models whose weights, architecture, and code are publicly released under an open license. Anyone can download, run, modify, fine-tune, or deploy them freely (subject to the license).</p>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Aspect</th><th>Open Source Models</th><th>Closed Source (e.g., GPT-4o, Claude)</th></tr></thead>
+          <tbody>
+            <tr><td>Access</td><td>Download weights, run locally or self-host</td><td>API access only</td></tr>
+            <tr><td>Cost</td><td>Free (hardware/inference cost only)</td><td>Pay per token</td></tr>
+            <tr><td>Customization</td><td>High (fine-tuning, quantization)</td><td>Limited</td></tr>
+            <tr><td>Privacy</td><td>Full control (run offline)</td><td>Data sent to provider</td></tr>
+            <tr><td>Performance (2026)</td><td>Very close or competitive in many areas</td><td>Still edges in some frontier capabilities</td></tr>
+            <tr><td>Examples</td><td>Llama series, DeepSeek, Qwen, Gemma, GLM</td><td>GPT, Claude, Gemini</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="color:var(--muted);">These models are mostly released on Hugging Face and can be used via the <code>langchain_huggingface</code> package. There are two ways to use them.</p>
+
+      <h3 class="sub-h">Using a Hugging Face endpoint</h3>
+      <p style="color:var(--muted); max-width:680px;"><code>HuggingFaceEndpoint</code> is the recommended way in modern LangChain to access and run open-source models hosted on Hugging Face servers (no need to download the model locally).</p>
+      <ul class="list">
+        <li>Runs models remotely on Hugging Face's infrastructure.</li>
+        <li>Uses the serverless Inference API (free tier available with limits) or dedicated Inference Endpoints.</li>
+        <li>Very easy to switch between different open-source models.</li>
+      </ul>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_huggingface import HuggingFaceEndpoint
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+os.environ["HUGGINGFACEHUB_API_TOKEN"] = "hf_xxxx"   # Your HF token
+
+llm = HuggingFaceEndpoint(
+    repo_id="meta-llama/Meta-Llama-3-8B-Instruct",  # or any other model
+    task="text-generation",
+    max_new_tokens=512,
+    temperature=0.7,
+    do_sample=True,
+    # provider="auto"   # optional
+)
+
+response = llm.invoke("What is LangChain?")
+print(response)</code></pre>
+      <p style="color:var(--muted);">If you just want a simple text response this is fine — but to use it as a chat model and get the response in a LangChain-compatible format like an AIMessage, wrap the model in <code>ChatHuggingFace</code> first:</p>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_huggingface import HuggingFaceEndpoint, ChatHuggingFace
+
+llm = HuggingFaceEndpoint(
+    repo_id="meta-llama/Meta-Llama-3-8B-Instruct",
+    task="text-generation",
+    max_new_tokens=512,
+    temperature=0.7
+)
+
+chat_model = ChatHuggingFace(llm=llm)   # this wrapper
+
+response = chat_model.invoke("Hello, how are you?")
+print(response.content)</code></pre>
+
+      <h3 class="sub-h">Downloading models directly to run locally</h3>
+      <p style="color:var(--muted); max-width:680px;">This method downloads the full model weights to your machine and runs them on your own hardware (CPU/GPU). The main class used is <code>HuggingFacePipeline</code> (from <code>langchain_huggingface</code>).</p>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_huggingface import HuggingFacePipeline
+from transformers import pipeline
+
+# Create pipeline from downloaded model
+pipe = pipeline(
+    "text-generation",
+    model="meta-llama/Meta-Llama-3-8B-Instruct",   # or smaller model like "gpt2", "TinyLlama/TinyLlama-1.1B"
+    device=0,          # 0 for GPU, -1 for CPU
+    max_new_tokens=512,
+    temperature=0.7,
+)
+
+llm = HuggingFacePipeline(pipeline=pipe)
+
+response = llm.invoke("What is LangChain?")
+print(response)</code></pre>
+
+      <h4 class="mini-h">For chat-style (recommended)</h4>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_huggingface import ChatHuggingFace
+
+chat_model = ChatHuggingFace(llm=llm)
+response = chat_model.invoke("Hello, how are you?")
+print(response.content)</code></pre>
+
+      <h4 class="mini-h">Key requirements</h4>
+      <ul class="list">
+        <li>Good hardware: GPU with at least 8–16GB VRAM for decent-sized models (use smaller models like 7B or less on normal laptops).</li>
+        <li>Installed libraries: <code>transformers</code>, <code>torch</code>, <code>accelerate</code>, <code>langchain_huggingface</code>.</li>
+        <li>First run will download the model (can take time and disk space).</li>
+      </ul>
+      <div class="grid2">
+        <div class="card accent-green">
+          <h4>Pros</h4>
+          <ul class="list" style="margin-left:0;">
+            <li>Full privacy, offline, no rate limits.</li>
+          </ul>
+        </div>
+        <div class="card accent-coral">
+          <h4>Cons</h4>
+          <ul class="list" style="margin-left:0;">
+            <li>Needs strong hardware, slower setup.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="embedding-models">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--teal);">02 · Models</span>
+        <h2>Embedding models</h2>
+        <p>Embedding models convert text into numerical vectors (high-dimensional arrays) that capture the semantic meaning of the text.</p>
+      </div>
+      <ul class="list">
+        <li>Unlike LLMs (which generate text), embeddings are used for similarity search, RAG, semantic search, clustering, etc.</li>
+        <li>Key benefit: texts with similar meanings have vectors that are close to each other in vector space.</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">1</span>OpenAI embeddings (closed source / hosted)</h3>
+      <p style="color:var(--muted);">Uses <code>OpenAIEmbeddings</code> from <code>langchain_openai</code>. Requires an API key. Easy to use, high quality, and fast. Two main methods: <code>.embed_query()</code> for a single query and <code>.embed_documents()</code> for multiple documents.</p>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_openai import OpenAIEmbeddings
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+embeddings = OpenAIEmbeddings(
+    model="text-embedding-3-small",   # or "text-embedding-3-large"
+    openai_api_key=os.getenv("OPENAI_API_KEY")
+)
+
+# Embed a single query
+query_result = embeddings.embed_query("What is LangChain?")
+
+# Embed multiple documents
+documents = [
+    "LangChain is a framework for building LLM applications.",
+    "RAG stands for Retrieval Augmented Generation."
+]
+doc_result = embeddings.embed_documents(documents)
+
+print("Query embedding dimension:", len(query_result))
+print("Document embedding dimension:", len(doc_result[0]))</code></pre>
+
+      <h3 class="sub-h"><span class="idx">2</span>Hugging Face embeddings (open source)</h3>
+      <p style="color:var(--muted);">Local: uses <code>HuggingFaceEmbeddings</code> (downloads the model to your machine). Runs on your CPU/GPU using sentence-transformers. Example model: <code>sentence-transformers/all-MiniLM-L6-v2</code>. Good for privacy, offline use, and no API cost.</p>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_huggingface import HuggingFaceEmbeddings
+
+embeddings = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/all-MiniLM-L6-v2",  # very popular & fast
+    # model_kwargs={'device': 'cuda'}   # use 'cpu' or 'cuda'
+)
+
+# Embed a single query
+query_result = embeddings.embed_query("What is LangChain?")
+
+# Embed multiple documents
+documents = [
+    "LangChain is a framework for building LLM applications.",
+    "RAG stands for Retrieval Augmented Generation."
+]
+doc_result = embeddings.embed_documents(documents)
+
+print("Query embedding dimension:", len(query_result))
+print("Document embedding dimension:", len(doc_result[0]))</code></pre>
+    </section>
+
+    <section class="block" id="similarity">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--teal);">02 · Models</span>
+        <h2>Document similarity</h2>
+        <p>Document similarity is a technique to find how semantically similar two or more pieces of text are, using their embeddings.</p>
+      </div>
+      <ul class="list">
+        <li>Embeddings convert text into vectors.</li>
+        <li>We compare these vectors using cosine similarity (the most common method).</li>
+        <li>Higher cosine score (closer to 1) = more similar documents.</li>
+        <li>This is the foundation for RAG, semantic search, and retrieval systems.</li>
+      </ul>
+      <span class="code-label">python — document similarity with cosine similarity</span>
+      <pre><code class="language-python">from langchain_huggingface import HuggingFaceEmbeddings
+import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
+
+# Load embedding model
+embeddings = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/all-MiniLM-L6-v2"
+)
+
+# Sample documents
+documents = [
+    "LangChain is a framework for building applications with LLMs.",
+    "LangChain helps in developing LLM-powered applications.",
+    "Python is a popular programming language.",
+    "Machine learning is a subset of artificial intelligence."
+]
+
+# Embed documents
+doc_embeddings = embeddings.embed_documents(documents)
+
+# Query
+query = "What is LangChain?"
+query_embedding = embeddings.embed_query(query)
+
+# Calculate similarity
+similarities = cosine_similarity([query_embedding], doc_embeddings)[0]
+
+# Show results
+for i, score in enumerate(similarities):
+    print(f"Document {i+1}: Score = {score:.4f} → {documents[i]}")</code></pre>
+      <div class="quote" style="border-color:var(--teal);"><strong>Output interpretation:</strong> the document with the highest score is the most similar to the query.</div>
+    </section>
+
+    <section class="block" id="temperature">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--teal);">02 · Models</span>
+        <h2>Temperature</h2>
+        <p>Temperature is a key hyperparameter in LLMs that controls the randomness (or creativity) of the generated output.</p>
+      </div>
+
+      <h3 class="sub-h">Simple explanation</h3>
+      <ul class="list">
+        <li><strong>Low temperature</strong> (e.g., 0.0 to 0.3): more deterministic/focused. The model picks the most probable words, giving consistent, repetitive, or "safe" answers. Ideal for factual tasks, code generation, or math.</li>
+        <li><strong>Temperature = 1.0</strong>: default behavior — uses the model's natural probability distribution.</li>
+        <li><strong>High temperature</strong> (e.g., 0.7 to 1.5+): more creative/random. The model is more likely to pick less probable words, leading to diverse, surprising, or even hallucinated outputs. Good for storytelling, brainstorming, or poetry.</li>
+      </ul>
+      <p style="color:var(--muted);">In LangChain you set it like this:</p>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_openai import ChatOpenAI
+
+llm = ChatOpenAI(model="gpt-4o", temperature=0.7)</code></pre>
+
+      <h3 class="sub-h">How it works internally (technical details)</h3>
+      <div class="layer-stack">
+        <div class="layer">
+          <span class="num">1</span>
+          <h4>Model outputs logits</h4>
+          <p>The LLM produces logits (raw scores) for every possible next token in its vocabulary. Higher logit = higher confidence for that token.</p>
+        </div>
+        <div class="layer">
+          <span class="num">2</span>
+          <h4>Softmax function (converts logits to probabilities)</h4>
+          <p>Normally: <code>P_i = e^z_i / Σ_j e^z_j</code></p>
+        </div>
+        <div class="layer">
+          <span class="num">3</span>
+          <h4>Temperature scaling</h4>
+          <p>Before applying softmax, divide the logits by the temperature value T: <code>P_i = e^(z_i/T) / Σ_j e^(z_j/T)</code></p>
+          <ul class="list" style="margin-left:0;">
+            <li><strong>T &lt; 1</strong> (low temperature): dividing by a small number makes the differences between logits larger → the highest logit dominates even more → peaky distribution (very confident, deterministic).</li>
+            <li><strong>T &gt; 1</strong> (high temperature): dividing by a large number shrinks the differences → distribution becomes flatter → even lower-probability tokens get a decent chance → more random/creative.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    <!-- ============ SECTION 03 : PROMPTS & OUTPUT ============ -->
+    <section class="block" id="prompts" style="background:linear-gradient(180deg, rgba(255,107,107,0.03), transparent 200px);">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--coral);">03 · Prompts & Structured Output</span>
+        <h2>Prompts</h2>
+        <p>Prompts are the input instructions or queries that you give to a model to guide its output.</p>
+      </div>
+
+      <p style="color:var(--muted);">The content in the prompt can be: text, image, video, sound, and more.</p>
+      <p style="color:var(--muted);">There are two types of prompts in LangChain:</p>
+
+      <div class="grid2">
+        <div class="card accent-coral">
+          <h4>1 · Static prompts</h4>
+          <p>A prompt that is written directly as a string. It does not accept any input variables.</p>
+          <p style="font-family:var(--mono); font-size:12.5px;">example: <code>prompt = "Explain what is machine learning in simple words."</code></p>
+        </div>
+        <div class="card accent-teal">
+          <h4>2 · Dynamic prompts</h4>
+          <p>A prompt that contains placeholders (variables) which can be replaced with actual values when running the code.</p>
+        </div>
+      </div>
+      <span class="code-label">python — dynamic prompt</span>
+      <pre><code class="language-python">from langchain.prompts import PromptTemplate
+
+prompt_template = PromptTemplate.from_template(
+    "Explain {topic} in {level} language for {audience}."
+)
+
+# You can use different values every time
+filled_prompt = prompt_template.format(
+    topic="Neural Networks",
+    level="beginner",
+    audience="college students"
+)</code></pre>
+    </section>
+
+    <section class="block" id="dynamic-prompt">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--coral);">03 · Prompts & Structured Output</span>
+        <h2>Dynamic prompts</h2>
+        <p>We can create dynamic prompts with the <code>ChatPromptTemplate</code> class from the <code>langchain_core</code> library.</p>
+      </div>
+
+      <h4 class="mini-h">Most popular methods in ChatPromptTemplate</h4>
+      <ul class="list">
+        <li><code>from_messages([...])</code> — build a prompt from a list of <code>(role, content)</code> pairs.</li>
+        <li><code>from_template("...")</code> — build a prompt from a single string template.</li>
+        <li><code>format(**kwargs)</code> — fill placeholders and return a string prompt.</li>
+        <li><code>format_messages(**kwargs)</code> — fill placeholders and return a list of structured messages (system/human/ai objects).</li>
+        <li><code>partial(**kwargs)</code> — pre-fill some variables so you don't need to pass them every time.</li>
+        <li><code>__call__(**kwargs)</code> — shortcut for <code>format_messages</code>.</li>
+      </ul>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_core.prompts import ChatPromptTemplate
+from langchain_groq import ChatGroq
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "You are a helpful {domain} expert."),
+    ("human", "Explain {topic} in {level} language."),
+    ("ai", "Sure, I can help with that."),
+    ("human", "{question}")
+])
+
+prompt_value = prompt.format(
+    domain="data science",
+    topic="decision trees",
+    level="simple",
+    question="Can you give me a real-world example?"
+)
+llm = ChatGroq(
+    model="openai/gpt-oss-120b",
+    temperature=0.7
+)
+response = llm.invoke(prompt_value)
+print(response.content)</code></pre>
+
+      <h3 class="sub-h">Saving & loading templates</h3>
+      <p style="color:var(--muted); max-width:680px;">Instead of writing the same prompt again and again in different files, create a PromptTemplate once, save it as JSON, and load it wherever needed. This makes code clean, maintainable, and scalable.</p>
+      <span class="code-label">save template as JSON</span>
+      <pre><code class="language-python">prompt.save("research_prompt.json")</code></pre>
+      <span class="code-label">load template in any program</span>
+      <pre><code class="language-python">from langchain.prompts import load_prompt
+prompt = load_prompt("research_prompt.json")</code></pre>
+
+      <div class="quote" style="border-color:var(--coral);"><strong>Why use PromptTemplate instead of plain f-strings?</strong> default validation, reusability, and the LangChain ecosystem.</div>
+    </section>
+
+    <section class="block" id="messages-placeholder">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--coral);">03 · Prompts & Structured Output</span>
+        <h2>MessagesPlaceholder</h2>
+        <p><code>MessagesPlaceholder</code> is a special component in ChatPromptTemplate that acts as a dynamic placeholder for a list of messages. It lets you insert conversation history (or any list of previous messages) into your prompt at runtime.</p>
+      </div>
+
+      <h3 class="sub-h">Why do we need it?</h3>
+      <ul class="list">
+        <li>Chatbots need to remember past conversation.</li>
+        <li>You cannot hardcode history in the template because it keeps changing.</li>
+        <li><code>MessagesPlaceholder</code> solves this by acting as a slot where you can inject previous messages dynamically.</li>
+      </ul>
+
+      <h3 class="sub-h">Simple code example</h3>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain.prompts import ChatPromptTemplate
+from langchain.prompts import MessagesPlaceholder
+from langchain_core.messages import HumanMessage, AIMessage
+
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "You are a helpful AI assistant."),
+    MessagesPlaceholder(variable_name="chat_history"),   # this is the placeholder
+    ("human", "{input}")
+])</code></pre>
+      <p style="color:var(--muted);">When you run it:</p>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">chat_history = [
+    HumanMessage(content="Hi, how are you?"),
+    AIMessage(content="I'm doing great! How can I help you today?"),
+    HumanMessage(content="What is LangChain?")
+]
+
+final_messages = prompt.format_messages(
+    chat_history=chat_history,      # inject history here
+    input="Tell me more about it"
+)</code></pre>
+
+      <h3 class="sub-h">Key points</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Feature</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>Purpose</td><td>Insert dynamic list of messages (especially chat history)</td></tr>
+            <tr><td>variable_name</td><td>Required — this is how you pass the messages later</td></tr>
+            <tr><td>Input Type</td><td>List of <code>BaseMessage</code> objects (<code>HumanMessage</code>, <code>AIMessage</code>, etc.)</td></tr>
+            <tr><td>Location</td><td>Usually placed after the System Message and before the latest user input</td></tr>
+            <tr><td>Best Use Case</td><td>Building chatbots with memory</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h">Real-world flow</h3>
+      <ol class="list">
+        <li>System Message → sets behavior</li>
+        <li><strong>MessagesPlaceholder</strong> → past conversation history</li>
+        <li>Latest Human Message → current user question</li>
+      </ol>
+      <p style="color:var(--muted);">This structure helps the model understand the full context of the conversation.</p>
+    </section>
+
+    <section class="block" id="structured-output">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--coral);">03 · Prompts & Structured Output</span>
+        <h2>Structured output</h2>
+        <p>Normally an LLM returns plain text — unstructured output. Structured output forces the model to return data in a well-defined format (most commonly JSON, or Python objects like dictionaries or Pydantic models), making output predictable, easy to parse, validate, and use programmatically.</p>
+      </div>
+
+      <h3 class="sub-h">Why do we need structured output?</h3>
+      <ul class="list">
+        <li>LLMs are great at talking to humans but poor at directly talking to machines/systems.</li>
+        <li>Structured output turns the LLM into a reliable data processor.</li>
+        <li>It enables seamless integration with other parts of your application.</li>
+      </ul>
+
+      <h4 class="mini-h">Real-world use cases</h4>
+      <ul class="list">
+        <li><strong>Data extraction</strong> (e.g., resume parsing for job portals): upload resumes → extract text → send to LLM → get structured JSON (name, experience, education, last company, etc.) → directly insert into a database. No manual parsing needed.</li>
+        <li><strong>Review analysis / sentiment extraction</strong> (e.g., e-commerce sites): take product reviews → ask the LLM to extract topics (battery, display, processor), pros and cons, overall sentiment → return structured data → store in a DB or expose via API.</li>
+        <li><strong>Building agents</strong>: agents need tools that expect specific inputs like numbers, not natural language. Structured output helps the agent reliably extract parameters (e.g., "square root of 2" → extract the number 2) before calling the tool.</li>
+      </ul>
+
+      <h3 class="sub-h">Ways to get structured output</h3>
+      <div class="grid2">
+        <div class="card accent-teal">
+          <h4>Models that support structured output</h4>
+          <p>Use <code>with_structured_output()</code> directly.</p>
+        </div>
+        <div class="card accent-coral">
+          <h4>Models that cannot generate structured output</h4>
+          <p>Use an output parser to get structured output from these models.</p>
+        </div>
+      </div>
+
+      <h4 class="mini-h">with_structured_output — three ways</h4>
+      <div class="badge-row">
+        <span class="badge">TypedDict</span>
+        <span class="badge">Pydantic</span>
+        <span class="badge">JSON</span>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">A</span>TypedDict</h3>
+      <p style="color:var(--muted); max-width:680px;">Simplest way for basic structures. Define a class that inherits from <code>TypedDict</code>. Add descriptions using <code>Annotated</code> for better guidance to the model.</p>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_groq import ChatGroq
+from dotenv import load_dotenv
+from typing import TypedDict, Annotated, Literal
+load_dotenv()
+
+class out1(TypedDict):
+    title: Annotated[str, "This is the title of the para"]
+    sentiment: Annotated[Literal["pos","neg"], "This is the sentiment of the para like negative, positive and neutral"]
+
+model = ChatGroq(model="openai/gpt-oss-120b", temperature=1.0)
+
+s_model = model.with_structured_output(out1)
+
+resp1 = s_model.invoke(
+    "The 2006 Football League Championship play-off final was an association football match played on 21 May 2006 at the Millennium Stadium in Cardiff, Wales, between Leeds United and Watford. The match was to determine the third and final team to gain promotion from the Football League Championship, the second tier of English football, to the FA Premiership."
+)
+print(resp1)</code></pre>
+      <div class="quote" style="border-color:var(--coral);">Output: <code>{'sentiment': 'pos', 'title': '2006 Championship Play-off Final: Leeds United vs Watford'}</code></div>
+
+      <h3 class="sub-h"><span class="idx">B</span>Pydantic</h3>
+      <p style="color:var(--muted); max-width:680px;">Pydantic is a Python library used for data validation and data parsing. It ensures the data you work with is correct, structured, and type-safe.</p>
+      <ul class="list">
+        <li>Define a class that inherits from <code>BaseModel</code>.</li>
+        <li>Add fields with types and descriptions using <code>Field(...)</code>.</li>
+        <li>Benefits: automatic validation, type hints, default values, and rich error handling.</li>
+        <li>Returns a Pydantic object (which you can easily convert to a dict if needed).</li>
+      </ul>
+      <p style="color:var(--muted);">Pydantic is preferred in most real projects because of its robustness.</p>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from pydantic import BaseModel, Field
+from typing import Optional, List
+from langchain_openai import ChatOpenAI
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Define schema
+class Person(BaseModel):
+    name: str = Field(description="Full name of the person")
+    age: int = Field(description="Age of the person")
+    occupation: str = Field(description="Current profession")
+    email: Optional[str] = Field(default=None, description="Email address")
+    skills: List[str] = Field(description="List of skills")
+
+# Initialize
+llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+structured_llm = llm.with_structured_output(Person)
+
+# Test
+text = """
+My name is Priya Mehta, 26 years old. I work as a Machine Learning Engineer at Microsoft.
+Skills: Python, Deep Learning, LangChain. Contact: priya.mehta@outlook.com
+"""
+
+result = structured_llm.invoke(text)
+print(result)</code></pre>
+      <div class="quote" style="border-color:var(--coral);">Output: <code>name='Priya Mehta' age=26 occupation='Machine Learning Engineer' email='priya.mehta@outlook.com' skills=['Python', 'Deep Learning', 'LangChain']</code></div>
+
+      <h3 class="sub-h"><span class="idx">C</span>JSON</h3>
+      <p style="color:var(--muted); max-width:680px;">You can also pass a raw JSON schema dictionary. Some models support native JSON mode (via provider APIs like OpenAI). LangChain handles the underlying prompting and parsing for you.</p>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_openai import ChatOpenAI
+
+llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+
+json_schema = {
+    "title": "Person",
+    "type": "object",
+    "properties": {
+        "name": {"type": "string", "description": "Full name"},
+        "age": {"type": "integer", "description": "Age"},
+        "occupation": {"type": "string", "description": "Current job"},
+        "email": {"type": "string", "description": "Email address"},
+        "skills": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "List of skills"
+        }
+    },
+    "required": ["name", "age", "occupation", "skills"]
+}
+
+structured_llm = llm.with_structured_output(json_schema)
+
+result = structured_llm.invoke("My name is Rahul Sharma, 28 years old...")
+print(result)   # Returns dict</code></pre>
+    </section>
+
+    <section class="block" id="output-parsers">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--coral);">03 · Prompts & Structured Output</span>
+        <h2>Output parsers</h2>
+        <p>Output parsers convert a raw LLM response into structured formats like Pydantic models, JSON, or CSV. They can be used with models that generate structured output and models that cannot. The four most useful types are StrOutputParser, JsonOutputParser, PydanticOutputParser, and StructuredOutputParser.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">1</span>StrOutputParser</h3>
+      <p style="color:var(--muted); max-width:680px;">A class in <code>langchain_core.output_parsers</code> that takes the output of an LLM as input and returns a string as output.</p>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import PromptTemplate
+from langchain_ollama import ChatOllama
+
+# defining everything
+model = ChatOllama(model="gemma3:270m")
+parser = StrOutputParser()
+template = PromptTemplate.from_template(
+    "create a 5 line summary about {topic}"
+)
+inp = input("Enter the topic name : ")
+
+# chain
+chain1 = template | model | parser
+resp = chain1.invoke({"topic": inp})
+print(resp)</code></pre>
+
+      <h3 class="sub-h"><span class="idx">2</span>JsonOutputParser</h3>
+      <p style="color:var(--muted); max-width:680px;">A class in <code>langchain_core.output_parsers</code> that takes the output of an LLM as input and returns a JSON dictionary as output.</p>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_core.prompts import PromptTemplate
+from langchain_core.output_parsers import JsonOutputParser
+from langchain_ollama import ChatOllama
+
+# creation
+parser = JsonOutputParser()
+template = PromptTemplate.from_template("give name,age and city of a fictional person . /n {format_instructions}").partial(format_instructions=parser.get_format_instructions())
+llm = ChatOllama(model="gemma3:270m")
+resp = template | llm | parser
+
+# testing
+ans = resp.invoke({})
+print(ans)</code></pre>
+      <div class="quote" style="border-color:var(--coral);"><strong>The biggest drawback</strong> of JsonOutputParser is it does not enforce schema.</div>
+
+      <h3 class="sub-h"><span class="idx">3</span>StructuredOutputParser</h3>
+      <p style="color:var(--muted); max-width:680px;">A class in <code>langchain.output_parsers</code> that takes the output of an LLM as input and returns a JSON dictionary based on a defined schema. It is the upgraded version of JsonOutputParser — you can define a schema.</p>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_classic.output_parsers import StructuredOutputParser, ResponseSchema
+from langchain_ollama import ChatOllama
+from langchain_core.prompts import PromptTemplate
+
+# creation
+model = ChatOllama(model="llama3.2:1b")
+schema = [
+    ResponseSchema(name="name", description="name of the person"),
+    ResponseSchema(name="age", description="age of the person"),
+    ResponseSchema(name="city", description="city of the person")
+]
+parser = StructuredOutputParser.from_response_schemas(schema)
+template = PromptTemplate.from_template("Give details of an imaginary person who is living in {state} \n {format_instructions}").partial(format_instructions=parser.get_format_instructions())
+
+# invoking and printing
+print(f"original template : {template}")
+print(f"original schema : {schema}")
+chain = template | model | parser
+state1 = input("Enter the preferred state : ")
+resp = chain.invoke({"state": state1})
+print(resp)</code></pre>
+      <div class="quote" style="border-color:var(--coral);"><strong>The main drawback</strong> is it doesn't provide any data validation.</div>
+
+      <h3 class="sub-h"><span class="idx">4</span>PydanticOutputParser</h3>
+      <p style="color:var(--muted); max-width:680px;"><code>PydanticOutputParser</code> is a class in <code>langchain_core.output_parsers</code> that parses LLM responses into a structured Pydantic model. Unlike JsonOutputParser or StructuredOutputParser, it leverages Pydantic's data validation and type enforcement. If the LLM produces data that doesn't match the model, Pydantic raises a validation error — ensuring reliable, strongly-typed data.</p>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from typing import List
+from pydantic import BaseModel, Field
+from langchain_core.output_parsers import PydanticOutputParser
+from langchain_core.prompts import PromptTemplate
+from langchain_ollama import ChatOllama
+
+# 1. Define the Pydantic schema
+class Person(BaseModel):
+    name: str = Field(description="Name of the person")
+    age: int = Field(description="Age of the person")
+    hobbies: List[str] = Field(description="List of hobbies")
+
+# 2. Setup parser and model
+parser = PydanticOutputParser(pydantic_object=Person)
+model = ChatOllama(model="gemma3:270m")
+
+# 3. Create prompt with format instructions
+template = PromptTemplate.from_template(
+    "Provide details for a fictional character. \n{format_instructions}\n"
+).partial(format_instructions=parser.get_format_instructions())
+
+# 4. Invoke the chain
+chain = template | model | parser
+resp = chain.invoke({})
+
+# resp is now a Pydantic object, not just a raw dictionary
+print(f"Name: {resp.name}")
+print(f"Age: {resp.age}")
+print(f"Hobbies: {resp.hobbies}")
+print(type(resp))  # <class '__main__.Person'></code></pre>
+    </section>
+    <!-- ============ SECTION 04 : CHAINS & RUNNABLES ============ -->
+    <section class="block" id="chains" style="background:linear-gradient(180deg, rgba(124,156,255,0.03), transparent 200px);">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--periwinkle);">04 · Chains & Runnables</span>
+        <h2>Chains</h2>
+        <p>A chain is a fundamental block that links multiple components together to create a specific workflow.</p>
+      </div>
+
+      <h3 class="sub-h">Three types of chains</h3>
+      <div class="grid3">
+        <div class="card accent-peri">
+          <h4>Sequential chains</h4>
+          <p>The output of one component is the input of another.</p>
+        </div>
+        <div class="card accent-teal">
+          <h4>Parallel chains</h4>
+          <p>Multiple chains invoked in parallel on the same input.</p>
+        </div>
+        <div class="card accent-amber">
+          <h4>Conditional / Branch chains</h4>
+          <p>Act like an if/else statement to route the flow.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="sequential-chains">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--periwinkle);">04 · Chains & Runnables</span>
+        <h2>Sequential chains</h2>
+        <p>A basic type of chain where the output of one component becomes the input of another.</p>
+      </div>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_groq import ChatGroq
+from langchain_core.prompts import PromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from dotenv import load_dotenv
+load_dotenv()
+
+# creation
+model = ChatGroq(model="openai/gpt-oss-120b")
+temp1 = PromptTemplate.from_template(
+    "Create a clear 2 page report on the topic {topic}"
+)
+temp2 = PromptTemplate.from_template(
+    "summarize the below text in 2 lines: {info}"
+)
+parser = StrOutputParser()
+
+# sequential chain creation
+chain1 = temp1 | model | parser | temp2 | model | parser
+
+# getting response
+resp1 = chain1.invoke({"topic": "Prabhas"})
+print("\n" + resp1 + "\n")
+print(chain1.get_graph().print_ascii())</code></pre>
+      <div class="diagram-box">     +-------------+
+     | PromptInput |
+     +-------------+
+            *
+            *
+            *
+    +----------------+
+    | PromptTemplate |
+    +----------------+
+            *
+            *
+            *
+      +----------+
+      | ChatGroq |
+      +----------+
+            *
+            *
+            *
+   +-----------------+
+   | StrOutputParser |
+   +-----------------+
+            *
+            *
+            *
+    +----------------+
+    | PromptTemplate |
+    +----------------+
+            *
+            *
+            *
+      +----------+
+      | ChatGroq |
+      +----------+
+            *
+            *
+            *
+   +-----------------+
+   | StrOutputParser |
+   +-----------------+
+            *
+            *
+            *
++-----------------------+
+| StrOutputParserOutput |
++-----------------------+</div>
+    </section>
+
+    <section class="block" id="parallel-chains">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--periwinkle);">04 · Chains & Runnables</span>
+        <h2>Parallel chains</h2>
+        <p>A type of workflow where multiple chains are invoked in parallel and executed based on the same input.</p>
+      </div>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_groq import ChatGroq
+from langchain_core.prompts import PromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnableParallel
+from dotenv import load_dotenv
+load_dotenv()
+model = ChatGroq(model="openai/gpt-oss-120b")
+temp1 = PromptTemplate.from_template(
+    "Create a clear 5 line report on the topic {topic}"
+)
+temp2 = PromptTemplate.from_template(
+    "Create a clear 10 line report on the topic {topic}"
+)
+parser = StrOutputParser()
+parachain = RunnableParallel(
+    {
+        "five": temp1 | model | parser,
+        "ten": temp2 | model | parser
+    }
+)
+resp = parachain.invoke({"topic": "prabhas"})
+print(f"\n Information from first chain : \n  {resp['five']} \n\n Information from second chain : \n {resp['ten']} \n Chain graph : {parachain.get_graph().print_ascii()}")</code></pre>
+      <div class="diagram-box">            +-------------------------+
+            | Parallel&lt;five,ten&gt;Input |
+            +-------------------------+
+                ***             ***
+              **                   **
+            **                       **
++----------------+              +----------------+
+| PromptTemplate |              | PromptTemplate |
++----------------+              +----------------+
+          *                             *
+          *                             *
+          *                             *
+    +----------+                  +----------+
+    | ChatGroq |                  | ChatGroq |
+    +----------+                  +----------+
+          *                             *
+          *                             *
+          *                             *
++-----------------+            +-----------------+
+| StrOutputParser |            | StrOutputParser |
++-----------------+            +-----------------+
+                ***             ***
+                   **         **
+                     **     **
+           +--------------------------+
+           | Parallel&lt;five,ten&gt;Output |
+           +--------------------------+</div>
+    </section>
+
+    <section class="block" id="conditional-chains">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--periwinkle);">04 · Chains & Runnables</span>
+        <h2>Conditional chains</h2>
+        <p>This lets a chain act like an if/else statement. Two ways: using custom Python functions, or using <code>RunnableBranch</code> from <code>langchain_core.runnable</code>.</p>
+      </div>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from dotenv import load_dotenv
+from langchain_groq import ChatGroq
+from langchain_core.prompts import PromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnableBranch
+load_dotenv()
+# LLM
+model = ChatGroq(model="openai/gpt-oss-120b")
+# Prompts
+temp1 = PromptTemplate.from_template("Create a clear 5-line report on the topic: {topic}")
+temp2 = PromptTemplate.from_template("Create a clear 10-line report on the topic: {topic}")
+parser = StrOutputParser()
+# Chains
+five_line_chain = temp1 | model | parser
+ten_line_chain = temp2 | model | parser
+# Branch logic
+branch_chain = RunnableBranch(
+    (lambda x: x["report_type"] == "five", five_line_chain),
+    (lambda x: x["report_type"] == "ten", ten_line_chain),
+    five_line_chain  # default branch
+)
+# Execute
+response = branch_chain.invoke(
+    {
+        "topic": "Prabhas",
+        "report_type": "five"
+    }
+)
+print(response)
+# Graph
+branch_chain.get_graph().print_ascii()</code></pre>
+      <div class="diagram-box">+-------------+
+| PromptInput |
++-------------+
+        *
+        *
+        *
+   +--------+
+   | Branch |
+   +--------+
+        *
+        *
+        *
++--------------+
+| BranchOutput |
++--------------+</div>
+    </section>
+    <section class="block" id="runnables">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--periwinkle);">04 · Chains & Runnables</span>
+        <h2>Runnables & LCEL</h2>
+        <p>Interview-ready notes on Runnables &amp; LCEL in LangChain.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">1</span>What are Runnables?</h3>
+      <p style="color:var(--muted); max-width:680px;">Runnables are the foundational building blocks of modern LangChain. Any component that can accept an input, process it, and return an output follows the Runnable interface — including prompt templates, LLMs, output parsers, retrievers, tools, and even complete chains.</p>
+      <p style="color:var(--muted); max-width:680px;">The main idea is a standardized, unified interface so all LangChain components can be composed together like Lego blocks. This makes building complex LLM applications more modular, flexible, and maintainable.</p>
+
+      <h3 class="sub-h"><span class="idx">2</span>Why were Runnables introduced?</h3>
+      <p style="color:var(--muted); max-width:680px;">Traditional chains in early LangChain were simple but rigid. They worked for basic sequences but struggled with parallel processing, conditional logic, selective data passing, debugging, and scaling. Runnables solve these issues by providing a powerful composition system — the basis of LCEL (LangChain Expression Language) — making LangChain far more production-ready.</p>
+
+      <h3 class="sub-h"><span class="idx">3</span>Core features of Runnables</h3>
+      <p style="color:var(--muted);">Every Runnable supports consistent methods:</p>
+      <ul class="list">
+        <li><code>.invoke(input)</code> — synchronous execution</li>
+        <li><code>.ainvoke(input)</code> — asynchronous execution</li>
+        <li><code>.batch(inputs)</code> — process multiple inputs in one go</li>
+        <li><code>.stream(input)</code> — real-time streaming support</li>
+      </ul>
+      <div class="quote" style="border-color:var(--periwinkle);"><strong>The most powerful feature</strong> is the pipe operator (<code>|</code>), which creates seamless sequences where the output of one component automatically becomes the input for the next.</div>
+
+      <h3 class="sub-h"><span class="idx">4</span>Major types of Runnables</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Runnable</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td>RunnableSequence</td><td>Connects multiple components in a linear flow — the backbone of most chains. e.g. <code>chain = prompt | llm | output_parser</code></td></tr>
+            <tr><td>RunnableParallel</td><td>Runs several components at the same time (concurrently) — useful when fetching data from multiple sources or processing independent branches.</td></tr>
+            <tr><td>RunnablePassthrough</td><td>Passes input data forward without modification — commonly paired with RunnableParallel to preserve the original information (like the user's question) while adding new processed data (like retrieved documents).</td></tr>
+            <tr><td>RunnableLambda</td><td>Wraps any custom Python function into a Runnable — for custom logic, data transformations, or formatting.</td></tr>
+            <tr><td>RunnableBranch</td><td>Enables conditional routing — the flow can branch into different paths based on logic (e.g., query type).</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <span class="code-label">python — RunnableLambda</span>
+      <pre><code class="language-python">from langchain_core.runnables import RunnableLambda
+
+def add(values):
+    return values["a"] + values["b"]
+
+run_add = RunnableLambda(add)
+resp = run_add.invoke({"a": 10, "b": 20})
+print(resp)
+
+'''
+# or
+def add(values):
+    return values[0] + values[1]
+
+run_add = RunnableLambda(add)
+resp = run_add.invoke((10, 20))
+print(resp)
+'''</code></pre>
+
+      <h3 class="sub-h"><span class="idx">5</span>LCEL — LangChain Expression Language</h3>
+      <p style="color:var(--muted); max-width:680px;">LCEL is the expression language built on top of Runnables. It composes complex chains using simple, declarative syntax (mainly the <code>|</code> operator along with parallel and other utilities).</p>
+      <ul class="list">
+        <li>Highly readable and Pythonic code.</li>
+        <li>Automatic handling of input/output schemas between components.</li>
+        <li>Excellent support for parallelism, streaming, async, and batching.</li>
+        <li>Forms the foundation for advanced frameworks like LangGraph.</li>
+      </ul>
+      <div class="quote" style="border-color:var(--periwinkle);"><strong>In short:</strong> Runnables + LCEL = the modern way to build LLM applications in LangChain.</div>
+
+      <h3 class="sub-h"><span class="idx">6</span>Most important patterns (high-impact for interviews)</h3>
+      <h4 class="mini-h">Basic sequence</h4>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">chain = prompt_template | llm | output_parser
+response = chain.invoke({"input": "Tell me a joke"})</code></pre>
+
+      <h4 class="mini-h">RAG-style parallel pattern (very common)</h4>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_core.runnables import RunnableParallel, RunnablePassthrough
+
+chain = RunnableParallel({
+    "context": retriever,            # fetches documents
+    "question": RunnablePassthrough()  # keeps the original question
+}) | prompt | llm | parser</code></pre>
+      <p style="color:var(--muted); font-size:14px;">This pattern ensures the LLM receives both retrieved context and the original query cleanly.</p>
+
+      <h3 class="sub-h"><span class="idx">7</span>Advantages of Runnables + LCEL</h3>
+      <ul class="list">
+        <li>Exceptional modularity and reusability of components.</li>
+        <li>Easy creation of complex workflows (sequential, parallel, conditional).</li>
+        <li>Strong support for production features like streaming, async, and batch processing.</li>
+        <li>Much better debugging and observability compared to old chains.</li>
+        <li>Serves as the foundation for building agents and LangGraph applications.</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">8</span>Old chains vs Runnables + LCEL</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Aspect</th><th>Old Traditional Chains</th><th>Runnables + LCEL</th></tr></thead>
+          <tbody>
+            <tr><td>Flexibility</td><td>Low</td><td>Very High</td></tr>
+            <tr><td>Parallel Execution</td><td>Difficult</td><td>Easy with RunnableParallel</td></tr>
+            <tr><td>Custom Logic</td><td>Hard</td><td>Simple with RunnableLambda</td></tr>
+            <tr><td>Conditional Routing</td><td>Very Limited</td><td>Supported via RunnableBranch</td></tr>
+            <tr><td>Readability</td><td>Average</td><td>Excellent (pipe syntax)</td></tr>
+            <tr><td>Production Readiness</td><td>Moderate</td><td>High</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">9</span>Common interview questions & answers</h3>
+      <div class="card accent-peri">
+        <h4>Q1. What are Runnables in LangChain?</h4>
+        <p>Standardized components that follow a common interface with methods like invoke, ainvoke, batch, etc. They enable easy composition of LLM workflows.</p>
+      </div>
+      <div class="card accent-peri">
+        <h4>Q2. What is LCEL?</h4>
+        <p>LCEL (LangChain Expression Language) is a declarative way to compose Runnables using the pipe (<code>|</code>) operator and other utilities, making chain creation clean and powerful.</p>
+      </div>
+      <div class="card accent-peri">
+        <h4>Q3. Explain RunnableParallel and RunnablePassthrough with an example.</h4>
+        <p>RunnableParallel runs branches concurrently. RunnablePassthrough passes input unchanged. They are used together in RAG to merge retrieved context with the original question.</p>
+      </div>
+      <div class="card accent-peri">
+        <h4>Q4. When would you use RunnableLambda or RunnableBranch?</h4>
+        <p>Use RunnableLambda for custom Python functions. Use RunnableBranch for conditional logic and routing different query types to different prompts or models.</p>
+      </div>
+      <div class="card accent-peri">
+        <h4>Q5. Why are Runnables better than previous chains?</h4>
+        <p>They offer greater flexibility, better performance, parallel execution, cleaner syntax, and serve as the base for advanced tools like LangGraph.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">10</span>Final takeaways for interviews</h3>
+      <ul class="checklist">
+        <li>Runnables and LCEL are at the heart of modern LangChain.</li>
+        <li>Focus on understanding data flow — how input and output move between components.</li>
+        <li>Master Sequence, Parallel + Passthrough, Lambda, and Branch patterns, as these are frequently asked.</li>
+        <li>Be ready to explain with simple diagrams: linear flow vs parallel flow.</li>
+        <li>Remember: Runnables turned LangChain from a simple chaining tool into a robust framework for building production-grade LLM applications and agents.</li>
+      </ul>
+    </section>
+    <!-- ============ SECTION 05 : DATA PIPELINE ============ -->
+    <section class="block" id="document-loaders" style="background:linear-gradient(180deg, rgba(126,231,135,0.03), transparent 200px);">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--green);">05 · Document Loaders & Retrievers</span>
+        <h2>Document loaders</h2>
+        <p>Document loaders load data from various sources into a common format (Document objects) that can be used for chunking, embedding, retrieval, and generation.</p>
+      </div>
+
+      <h3 class="sub-h">Overview of RAG</h3>
+      <p style="color:var(--muted); max-width:680px;">RAG (Retrieval Augmented Generation) is a technique that combines information retrieval with language generation — a model retrieves relevant documents from a knowledge base and uses them as context to generate accurate, grounded responses.</p>
+      <h4 class="mini-h">Benefits</h4>
+      <ul class="list">
+        <li>Privacy</li>
+        <li>Up-to-date responses</li>
+        <li>No document size limit</li>
+      </ul>
+      <h4 class="mini-h">Main components of RAG</h4>
+      <div class="mermaid">
+graph TD
+    RAG --> DL["Document Loader"]
+    RAG --> TS["Text Splitter"]
+    RAG --> VDB["Vector DB"]
+    RAG --> RET["Retrievers"]
+      </div>
+
+      <h3 class="sub-h">The main loaders</h3>
+      <p style="color:var(--muted);">All loader classes are available in the <code>langchain_community.document_loaders</code> package.</p>
+
+      <h4 class="mini-h">TextLoader</h4>
+      <p style="color:var(--muted);">A simple loader used to load text files into document objects — but it only works with <code>.txt</code> files.</p>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_community.document_loaders import TextLoader
+loader = TextLoader("data/prabhas.txt", encoding='utf-8')
+docs = loader.load()
+print(docs[0].page_content)</code></pre>
+
+      <h4 class="mini-h">PyPDFLoader</h4>
+      <p style="color:var(--muted);">A loader that uses content from PDF files and converts each page into a document object. It uses the PyPDF library under the hood — not great with scanned PDFs or complex layouts.</p>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_community.document_loaders import PyPDFLoader
+loader = PyPDFLoader(file_path="data/iot.pdf", mode="single")
+docs = loader.load()
+print(docs[0].page_content)</code></pre>
+
+      <h4 class="mini-h">Directory Loader</h4>
+      <p style="color:var(--muted);">Reads all files from a folder at once. Instead of loading each file individually, it automatically detects file types (like PDFs or text files) and loads them together into a list of documents. Perfect for quickly getting many documents ready for splitting and embedding in a RAG pipeline.</p>
+      <h4 class="mini-h">Common parameters</h4>
+      <ul class="list">
+        <li><code>path</code> — directory path to load from</li>
+        <li><code>glob</code> — pattern to match files (e.g., <code>"*.txt"</code>, <code>"**/*.pdf"</code>)</li>
+        <li><code>recursive</code> — whether to search subdirectories (default: True)</li>
+        <li><code>show_progress</code> — show loading progress bar</li>
+        <li><code>loader_cls</code> — custom loader class for specific file types</li>
+      </ul>
+      <h4 class="mini-h">Common glob patterns</h4>
+      <ul class="list">
+        <li><code>"*.pdf"</code> — all PDFs in current directory only</li>
+        <li><code>"**/*.pdf"</code> — all PDFs in current directory and all subdirectories</li>
+        <li><code>"*.txt"</code> — all text files</li>
+        <li><code>"*.{pdf,docx}"</code> — all PDF and DOCX files (if supported)</li>
+        <li><code>"data/**/*.csv"</code> — all CSVs inside <code>data/</code> folder tree</li>
+        <li><code>"report_*.pdf"</code> — PDFs starting with "report_"</li>
+      </ul>
+
+      <h4 class="mini-h">CSVLoader</h4>
+      <p style="color:var(--muted);">Reads data from CSV (Comma-Separated Values) files and converts each row into a LangChain Document object. Useful when you have structured tabular data to include in a RAG pipeline or LLM applications.</p>
+      <ul class="list">
+        <li>Reads CSV files and creates one document per row.</li>
+        <li>Automatically uses column headers as metadata keys.</li>
+        <li>Preserves the relationship between columns and values.</li>
+      </ul>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain.document_loaders import CSVLoader
+loader = CSVLoader(file_path="data.csv")
+docs = loader.load()</code></pre>
+
+      <h3 class="sub-h">Custom document loaders</h3>
+      <p style="color:var(--muted); max-width:680px;">LangChain has many built-in loaders, but you might need a custom one when working with proprietary or unusual file formats (e.g., <code>.log</code>, <code>.xml</code>, custom APIs), needing specific preprocessing logic during loading, integrating with internal databases/APIs not covered by default loaders, or extracting data from complex structures (e.g., nested JSON, specialized HTML).</p>
+      <p style="color:var(--muted);">To create a custom loader, subclass <code>BaseLoader</code> and implement two key methods:</p>
+      <ol class="list">
+        <li><strong><code>lazy_load()</code></strong> — a generator that yields Document objects one by one (memory efficient).</li>
+        <li><strong><code>load()</code></strong> — usually just calls <code>list(self.lazy_load())</code> to return all documents at once.</li>
+      </ol>
+      <span class="code-label">python — basic template</span>
+      <pre><code class="language-python">from langchain_core.document_loaders import BaseLoader
+from langchain_core.documents import Document
+from typing import Iterator
+
+class MyCustomLoader(BaseLoader):
+    def __init__(self, source_path: str):
+        self.source_path = source_path
+
+    def lazy_load(self) -> Iterator[Document]:
+        # Your logic to read and parse the file
+        with open(self.source_path, 'r') as f:
+            for line in f:
+                yield Document(
+                    page_content=line.strip(),
+                    metadata={"source": self.source_path}
+                )</code></pre>
+      <p style="color:var(--muted);">When yielding documents, always include:</p>
+      <ul class="list">
+        <li><strong><code>page_content</code></strong> (str) — the actual text content extracted.</li>
+        <li><strong><code>metadata</code></strong> (dict) — extra info like source file, page number, date, author, etc.</li>
+      </ul>
+    </section>
+
+    <section class="block" id="load-lazy-load">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--green);">05 · Document Loaders & Retrievers</span>
+        <h2>load() and lazy_load()</h2>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">1</span>load()</h3>
+      <ul class="list">
+        <li><strong>Behavior:</strong> reads all documents into memory at once and returns a complete list.</li>
+        <li><strong>Use case:</strong> best for small to medium-sized datasets where you need immediate access to all data.</li>
+        <li><strong>Pros:</strong> simple to use; easy to iterate or process the entire dataset immediately.</li>
+        <li><strong>Cons:</strong> high memory usage for large files or directories; can cause crashes if data exceeds available RAM.</li>
+      </ul>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">docs = loader.load()  # Returns List[Document]</code></pre>
+
+      <h3 class="sub-h"><span class="idx">2</span>lazy_load()</h3>
+      <ul class="list">
+        <li><strong>Behavior:</strong> returns a generator that yields documents one by one as needed.</li>
+        <li><strong>Use case:</strong> ideal for large datasets, streaming data, or when memory efficiency is critical.</li>
+        <li><strong>Pros:</strong> low memory footprint; starts processing immediately without waiting for full load; scalable.</li>
+        <li><strong>Cons:</strong> can only iterate through once (unless converted to a list); slightly more complex handling if you need random access.</li>
+      </ul>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">for doc in loader.lazy_load():  # Yields Document one at a time
+    process(doc)</code></pre>
+
+      <h3 class="sub-h">Key difference</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Feature</th><th>load()</th><th>lazy_load()</th></tr></thead>
+          <tbody>
+            <tr><td>Return Type</td><td>List[Document]</td><td>Generator[Document]</td></tr>
+            <tr><td>Memory</td><td>Loads everything at once</td><td>Loads one document at a time</td></tr>
+            <tr><td>Speed</td><td>Slower start (waits for all)</td><td>Faster start (streams immediately)</td></tr>
+            <tr><td>Best For</td><td>Small datasets</td><td>Large datasets / streaming</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section class="block" id="text-splitters">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--green);">05 · Document Loaders & Retrievers</span>
+        <h2>Text splitters</h2>
+        <p>Text splitters break down large, unstructured text documents into smaller, manageable pieces called chunks or documents.</p>
+      </div>
+
+      <h3 class="sub-h">Why is text splitting needed?</h3>
+      <ul class="list">
+        <li><strong>Context window limitations:</strong> LLMs have a maximum amount of text they can process at once. Exceeding this limit causes errors or loss of information.</li>
+        <li><strong>Chunking for RAG:</strong> splitting text into smaller chunks allows for more precise retrieval than searching through entire documents.</li>
+      </ul>
+      <h4 class="mini-h">Key parameters: chunk size & overlap</h4>
+      <ul class="list">
+        <li><strong>Chunk size (<code>chunk_size</code>):</strong> the maximum length (in characters or tokens) of a chunk.</li>
+        <li><strong>Chunk overlap (<code>chunk_overlap</code>):</strong> the amount of text shared between consecutive chunks. This helps maintain context when a piece of information is split across a boundary.</li>
+      </ul>
+      <span class="code-label">bash — basic installation</span>
+      <pre><code class="language-bash">pip install -qU langchain-text-splitters</code></pre>
+
+      <h3 class="sub-h">Text splitting fundamentals</h3>
+      <p style="color:var(--muted);">The core challenge is balancing trade-offs:</p>
+      <ul class="list">
+        <li><strong>Large chunks:</strong> preserve more context but risk irrelevant information being included (lower precision) and may not fit in the context window.</li>
+        <li><strong>Small chunks:</strong> are more focused and precise but risk losing surrounding context (lower recall).</li>
+        <li><strong>Overlap:</strong> a crucial strategy to prevent context from being lost at the breakpoints between chunks.</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">3</span>Length-based text splitting</h3>
+      <p style="color:var(--muted); max-width:680px;">The simplest category — splitting text purely based on a size limit.</p>
+
+      <h4 class="mini-h">A. Character-based splitting (CharacterTextSplitter)</h4>
+      <ul class="list">
+        <li><strong>How it works:</strong> splits text based on a fixed number of characters.</li>
+        <li><strong>Separator:</strong> you can specify a separator (e.g., <code>\n\n</code>). It will try to split at the separator, but if a chunk still exceeds <code>chunk_size</code>, it will cut mid-text.</li>
+        <li><strong>Best for:</strong> simple, unstructured plain text where boundaries are unimportant.</li>
+      </ul>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_text_splitters import CharacterTextSplitter
+
+# Basic character-based splitter
+char_splitter = CharacterTextSplitter(
+    chunk_size=200,      # Maximum chunk size in characters
+    chunk_overlap=0,     # No overlap between chunks
+    separator=" "        # Split on spaces
+)
+
+text = "This is a very long piece of text that we need to split into smaller chunks for processing by an LLM."
+chunks = char_splitter.split_text(text)
+print(chunks)
+# Output: ['This is a very long piece of text that we need to split into smaller',
+#          'chunks for processing by an LLM.']</code></pre>
+
+      <h4 class="mini-h">B. Token-based splitting (TokenTextSplitter)</h4>
+      <ul class="list">
+        <li><strong>How it works:</strong> splits text based on the number of tokens — how LLMs actually "see" text. More accurate for respecting model limits.</li>
+        <li><strong>Token counting:</strong> can use different tokenizers (e.g., <code>cl100k_base</code> for GPT-4) to match your LLM.</li>
+      </ul>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_text_splitters import TokenTextSplitter
+
+# Token-based splitter (using tiktoken encoder)
+token_splitter = TokenTextSplitter(
+    chunk_size=50,       # Maximum tokens per chunk
+    chunk_overlap=10     # Overlap of 10 tokens
+)
+
+text = "This is a long document that needs to be split based on token count rather than characters."
+chunks = token_splitter.split_text(text)</code></pre>
+
+      <h3 class="sub-h"><span class="idx">4</span>Text-structure-based splitting (recursive) — RECOMMENDED</h3>
+      <p style="color:var(--muted); max-width:680px;">The recommended starting point for most use cases.</p>
+      <h4 class="mini-h">RecursiveCharacterTextSplitter</h4>
+      <ul class="list">
+        <li><strong>How it works:</strong> uses a hierarchical list of separators (e.g., <code>["\n\n", "\n", " ", ""]</code>). It recursively tries to split on the largest separator first (paragraphs), then moves to the next (sentences), and finally to individual characters to ensure chunks are under the size limit.</li>
+        <li><strong>Advantages:</strong> it intelligently preserves semantic units like paragraphs and sentences, creating much more coherent chunks than fixed-length splitting.</li>
+      </ul>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+# Default recursive splitter (recommended for most use cases)
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=500,      # Maximum size of chunks
+    chunk_overlap=50,    # Amount of overlap between chunks
+    length_function=len,
+    separators=["\n\n", "\n", " ", ""]  # Hierarchical separators
+)
+
+# Load a document
+with open("document.txt") as f:
+    document = f.read()
+
+# Split into chunks
+chunks = text_splitter.split_text(document)
+
+# Or create LangChain Document objects directly
+documents = text_splitter.create_documents([document])
+print(documents[0].page_content)</code></pre>
+      <h4 class="mini-h">Understanding separators</h4>
+      <span class="code-label">python — custom separators for better control</span>
+      <pre><code class="language-python">text_splitter = RecursiveCharacterTextSplitter(
+    separators=[
+        "\n\n",    # Paragraphs - highest priority
+        "\n",      # New lines
+        " ",       # Words
+        ".",       # Sentences
+        ",",       # Clauses
+        "",        # Characters - last resort
+    ],
+    chunk_size=200,
+    chunk_overlap=20,
+)</code></pre>
+
+      <h3 class="sub-h"><span class="idx">5</span>Document-structure-based splitting</h3>
+      <p style="color:var(--muted); max-width:680px;">For structured documents, splitting according to their inherent format is most effective.</p>
+
+      <h4 class="mini-h">A. Markdown splitting (MarkdownHeaderTextSplitter)</h4>
+      <p style="color:var(--muted);">Splits based on markdown headers (<code>#</code>, <code>##</code>, etc.), creating chunks that follow the document's outline.</p>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_text_splitters import MarkdownHeaderTextSplitter
+
+markdown_document = """
+# Foo
+
+## Bar
+Hi this is Jim
+Hi this is Joe
+
+### Boo
+Hi this is Lance
+
+## Baz
+Hi this is Molly
+"""
+
+# Define which headers to split on
+headers_to_split_on = [
+    ("#", "Header 1"),
+    ("##", "Header 2"),
+    ("###", "Header 3"),
+]
+
+# Create splitter and split
+markdown_splitter = MarkdownHeaderTextSplitter(
+    headers_to_split_on,
+    strip_headers=False  # Set to False to keep headers in content
+)
+
+splits = markdown_splitter.split_text(markdown_document)
+
+for split in splits:
+    print(f"Metadata: {split.metadata}")
+    print(f"Content: {split.page_content}\n")</code></pre>
+
+      <h4 class="mini-h">B. Code splitting (RecursiveCharacterTextSplitter.from_language)</h4>
+      <p style="color:var(--muted);">Splits code files while preserving functions, classes, and logical blocks.</p>
+      <span class="code-label">python — python code splitting</span>
+      <pre><code class="language-python">from langchain_text_splitters import RecursiveCharacterTextSplitter, Language
+
+python_code = """
+def hello_world():
+    print("Hello, World!")
+
+def add_numbers(a, b):
+    return a + b
+
+# Call the functions
+hello_world()
+result = add_numbers(5, 3)
+print(result)
+"""
+
+# Language-aware code splitter
+python_splitter = RecursiveCharacterTextSplitter.from_language(
+    language=Language.PYTHON,
+    chunk_size=100,
+    chunk_overlap=0
+)
+
+code_chunks = python_splitter.split_text(python_code)
+print(code_chunks)
+# Output preserves function boundaries</code></pre>
+      <p style="color:var(--muted);">Supported languages: <code>python</code>, <code>js</code>, <code>java</code>, <code>go</code>, <code>cpp</code>, <code>rust</code>, <code>ruby</code>, <code>php</code>, <code>swift</code>, <code>html</code>, <code>markdown</code>, <code>latex</code>.</p>
+      <span class="code-label">python — html splitting example</span>
+      <pre><code class="language-python">from langchain_text_splitters import RecursiveCharacterTextSplitter, Language
+
+html_content = """
+<html>
+    <head><title>My Page</title></head>
+    <body>
+        <h1>Welcome</h1>
+        <p>This is a paragraph of text.</p>
+    </body>
+</html>
+"""
+
+html_splitter = RecursiveCharacterTextSplitter.from_language(
+    language=Language.HTML,
+    chunk_size=100,
+    chunk_overlap=20
+)
+
+html_chunks = html_splitter.split_text(html_content)</code></pre>
+
+      <h3 class="sub-h"><span class="idx">6</span>Semantic meaning-based splitting — ADVANCED</h3>
+      <p style="color:var(--muted); max-width:680px;">The most advanced technique. Instead of fixed lengths or separators, it splits text at "semantic breakpoints" where the topic changes.</p>
+      <h4 class="mini-h">SemanticChunker</h4>
+      <ol class="list">
+        <li><strong>Break into sentences:</strong> the text is first split into individual sentences.</li>
+        <li><strong>Generate embeddings:</strong> each sentence is converted into a numerical vector capturing its meaning.</li>
+        <li><strong>Calculate differences:</strong> it measures the semantic distance (dissimilarity) between consecutive sentences.</li>
+        <li><strong>Identify breakpoints:</strong> sentences are grouped until the difference exceeds a threshold, indicating a shift in topic.</li>
+      </ol>
+      <p style="color:var(--muted);">Best for advanced RAG systems where retrieval quality is paramount.</p>
+      <span class="code-label">bash — installation</span>
+      <pre><code class="language-bash">pip install semantic-chunker-langchain  # or langchain-experimental</code></pre>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_experimental.text_splitter import SemanticChunker
+from langchain_openai import OpenAIEmbeddings
+
+# Using OpenAI embeddings
+embedding_model = OpenAIEmbeddings()
+
+semantic_splitter = SemanticChunker(
+    embeddings=embedding_model,
+    breakpoint_threshold_type="percentile",  # Options: percentile, standard_deviation, interquartile
+    breakpoint_threshold_amount=95  # Threshold percentile
+)
+
+text = """
+Artificial intelligence is transforming how we work and live.
+Machine learning algorithms can now recognize patterns in data.
+The weather today is sunny and warm.
+It's a perfect day for a picnic in the park.
+Back to AI topics: Neural networks are inspired by the human brain.
+Deep learning has achieved remarkable results in image recognition.
+"""
+
+semantic_chunks = semantic_splitter.split_text(text)
+
+# Each chunk should contain semantically related sentences
+for i, chunk in enumerate(semantic_chunks):
+    print(f"Chunk {i+1}: {chunk[:100]}...\n")</code></pre>
+      <h4 class="mini-h">Using different breakpoint thresholds</h4>
+      <span class="code-label">python</span>
+      <pre><code class="language-python"># Standard deviation method
+semantic_splitter_sd = SemanticChunker(
+    embeddings=embedding_model,
+    breakpoint_threshold_type="standard_deviation",
+    breakpoint_threshold_amount=1.0  # More sensitive to changes
+)
+
+# Interquartile range method
+semantic_splitter_iqr = SemanticChunker(
+    embeddings=embedding_model,
+    breakpoint_threshold_type="interquartile"
+)</code></pre>
+
+      <h3 class="sub-h"><span class="idx">7</span>Comparison & choosing the right splitter</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Splitter Category</th><th>Examples</th><th>Best For</th></tr></thead>
+          <tbody>
+            <tr><td>Length-Based</td><td>CharacterTextSplitter, TokenTextSplitter</td><td>Quick prototypes, simple text</td></tr>
+            <tr><td>Structure-Based</td><td>RecursiveCharacterTextSplitter</td><td>Most general use cases, articles, emails</td></tr>
+            <tr><td>Document-Based</td><td>MarkdownHeaderTextSplitter, Code Splitting</td><td>Markdown, HTML, JSON, source code</td></tr>
+            <tr><td>Semantic</td><td>SemanticChunker</td><td>High-performance RAG systems, complex documents</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h">Quick selection guide with code</h3>
+      <span class="code-label">python</span>
+      <pre><code class="language-python"># 1. For simple, unstructured text - Start here
+from langchain_text_splitters import CharacterTextSplitter
+splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+
+# 2. For most documents (RECOMMENDED default)
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+
+# 3. For markdown files
+from langchain_text_splitters import MarkdownHeaderTextSplitter
+headers = [("#", "Header 1"), ("##", "Header 2")]
+splitter = MarkdownHeaderTextSplitter(headers)
+
+# 4. For code files
+from langchain_text_splitters import RecursiveCharacterTextSplitter, Language
+splitter = RecursiveCharacterTextSplitter.from_language(
+    language=Language.PYTHON, chunk_size=500
+)
+
+# 5. For advanced semantic splitting (requires embeddings)
+from langchain_experimental.text_splitter import SemanticChunker
+from langchain_openai import OpenAIEmbeddings
+splitter = SemanticChunker(embeddings=OpenAIEmbeddings())</code></pre>
+    </section>
+    <section class="block" id="vector-stores">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--green);">05 · Document Loaders & Retrievers</span>
+        <h2>Vector stores</h2>
+        <p>A vector store is a specialized system (or database) designed to store and retrieve data represented as numerical vectors (embeddings). These embeddings capture the semantic meaning of text, images, or other data in high-dimensional space.</p>
+      </div>
+
+      <h3 class="sub-h">Key features of vector stores</h3>
+      <ul class="list">
+        <li><strong>Storage:</strong> holds vectors plus associated metadata (source, author, timestamps, etc.). Can be in-memory (fast for small data) or persistent (disk/cloud).</li>
+        <li><strong>Similarity search:</strong> finds vectors most similar to a query vector using metrics like cosine similarity, dot product, or Euclidean distance.</li>
+        <li><strong>Indexing:</strong> uses efficient data structures (e.g., Approximate Nearest Neighbors — ANN) for fast searches on millions of vectors instead of slow linear scans.</li>
+        <li><strong>CRUD operations:</strong> create (add), read (search), update, and delete vectors/documents.</li>
+      </ul>
+
+      <h3 class="sub-h">Why do we need vector stores?</h3>
+      <ul class="list">
+        <li>Enable semantic search (meaning-based) rather than simple keyword matching.</li>
+        <li>Core component of RAG: retrieve relevant external context to ground LLM responses and reduce hallucinations.</li>
+        <li>Applications: document Q&amp;A systems, intelligent chatbots, recommender systems, semantic search engines, knowledge bases, image/multimedia search.</li>
+      </ul>
+
+      <h3 class="sub-h">Vector store vs vector database</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Type</th><th>Description</th><th>Examples</th></tr></thead>
+          <tbody>
+            <tr><td>Vector Store (Lightweight)</td><td>Focuses primarily on storing embeddings and performing similarity search. Ideal for prototyping and smaller apps.</td><td>Basic FAISS usage, simple Chroma setups</td></tr>
+            <tr><td>Vector Database (Full-featured)</td><td>A complete database with vector capabilities plus enterprise features like scalability, persistence, metadata filtering, security, replication, backups, and ACID-like properties. Better for production.</td><td>Pinecone, Weaviate, Milvus, Qdrant</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="quote" style="border-color:var(--green);"><strong>Note:</strong> a vector database is essentially an advanced vector store with robust database functionalities.</div>
+
+      <h3 class="sub-h">How vector stores work in LangChain</h3>
+      <p style="color:var(--muted); max-width:680px;">LangChain provides a unified interface for many vector stores, making it easy to switch backends without changing core code.</p>
+      <div class="layer-stack">
+        <div class="layer">
+          <span class="num">1</span>
+          <h4>Load documents</h4>
+          <p>Use document loaders.</p>
+        </div>
+        <div class="layer">
+          <span class="num">2</span>
+          <h4>Split into chunks</h4>
+          <p>Use text splitters (important for large docs).</p>
+        </div>
+        <div class="layer">
+          <span class="num">3</span>
+          <h4>Create embeddings</h4>
+          <p>Convert chunks to vectors using embedding models (OpenAI, HuggingFace, etc.).</p>
+        </div>
+        <div class="layer">
+          <span class="num">4</span>
+          <h4>Store in vector store</h4>
+          <p>Save embeddings + original text + metadata.</p>
+        </div>
+        <div class="layer">
+          <span class="num">5</span>
+          <h4>Query</h4>
+          <p>Embed user query → perform similarity search → retrieve top-k relevant documents → pass to LLM for generation.</p>
+        </div>
+      </div>
+
+      <h4 class="mini-h">Common LangChain vector store methods</h4>
+      <ul class="list">
+        <li><code>from_texts()</code> or <code>from_documents()</code></li>
+        <li><code>add_documents()</code> / <code>add_texts()</code></li>
+        <li><code>similarity_search(query, k=...)</code></li>
+        <li><code>similarity_search_with_score()</code></li>
+        <li>Support for metadata filtering in most backends.</li>
+        <li><code>delete()</code>, <code>update()</code>, persistence methods (e.g., <code>save_local()</code>, <code>load_local()</code>).</li>
+      </ul>
+
+      <h3 class="sub-h">Popular vector stores supported by LangChain</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Store</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>FAISS</td><td>Facebook AI Similarity Search. Fast, local, open-source. Excellent for in-memory or saved indexes. Great for development.</td></tr>
+            <tr><td>Chroma</td><td>Lightweight, open-source, easy persistence. Very popular for local/dev use.</td></tr>
+            <tr><td>Pinecone</td><td>Managed cloud service, highly scalable, production-ready.</td></tr>
+            <tr><td>Weaviate</td><td>Open-source, supports hybrid search (vector + keyword), knowledge graphs.</td></tr>
+            <tr><td>Qdrant</td><td>Open-source, production-ready with advanced filtering.</td></tr>
+            <tr><td>Milvus</td><td>High-performance, enterprise-grade.</td></tr>
+            <tr><td>Others</td><td>Redis, Elasticsearch (with vector support), PGVector (PostgreSQL extension).</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h">Chroma vector store</h3>
+      <p style="color:var(--muted); max-width:680px;">Chroma is highlighted for its simplicity and is beginner-friendly.</p>
+      <h4 class="mini-h">Chroma hierarchy</h4>
+      <div class="diagram-box">Tenant → Top level
+Database → Under tenant
+Collection → Under database (where documents live)
+Documents → Individual entries with embeddings and metadata</div>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_community.vectorstores import Chroma
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain.schema import Document
+
+# Initialize embeddings
+embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+
+# Sample documents
+docs = [
+    Document(page_content="Content of document 1...", metadata={"source": "file1.pdf", "page": 1}),
+    # ... more documents
+]
+
+# Create vector store (persistent)
+vector_store = Chroma.from_documents(
+    documents=docs,
+    embedding=embeddings,
+    persist_directory="./chroma_db"  # Saves to disk
+)
+
+# Similarity search
+results = vector_store.similarity_search("Your user query here", k=4)
+
+for doc in results:
+    print(doc.page_content)
+    print(doc.metadata)</code></pre>
+      <h4 class="mini-h">Other operations</h4>
+      <ul class="list">
+        <li>Adding more documents: <code>vector_store.add_documents(new_docs)</code></li>
+        <li>Persistence and reloading.</li>
+        <li>Metadata filtering: e.g., <code>filter={"source": "file1.pdf"}</code></li>
+      </ul>
+
+      <h3 class="sub-h">FAISS example</h3>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_community.vectorstores import FAISS
+
+vector_store = FAISS.from_documents(docs, embeddings)
+vector_store.save_local("faiss_index")
+
+# Load later
+loaded_store = FAISS.load_local("faiss_index", embeddings)</code></pre>
+
+      <h3 class="sub-h">Best practices & key takeaways</h3>
+      <ul class="checklist">
+        <li>Always chunk documents properly before embedding (use recursive character text splitters, etc.).</li>
+        <li>Choose the right store: local/dev — FAISS or Chroma; production — Pinecone, Weaviate, etc.</li>
+        <li>Use metadata filtering for better precision.</li>
+        <li>Handle persistence carefully for reuse across sessions.</li>
+        <li>Monitor embedding model quality — it greatly affects search relevance.</li>
+        <li>Combine with LangChain retrievers for clean RAG pipelines: <code>vector_store.as_retriever(search_kwargs={"k": 5})</code>.</li>
+      </ul>
+    </section>
+    <section class="block" id="retrievers">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--green);">05 · Document Loaders & Retrievers</span>
+        <h2>Retrievers</h2>
+        <p>A retriever is a component in LangChain which retrieves documents from different sources based on the user query. It is a runnable.</p>
+      </div>
+
+      <div class="mermaid">
+graph TD
+    Query{Query} --> Retriever[Retriever]
+    Retriever --> DataSource((Data Source))
+    Retriever --> Document[Document]
+      </div>
+
+      <h3 class="sub-h">Types of retrievers</h3>
+      <div class="grid2">
+        <div class="card accent-green">
+          <h4>Based on data source</h4>
+          <ul class="list" style="margin-left:0;">
+            <li>Wikipedia retriever</li>
+            <li>Vector store retriever</li>
+            <li>Arxiv retriever</li>
+          </ul>
+        </div>
+        <div class="card accent-peri">
+          <h4>Based on search strategy</h4>
+          <ul class="list" style="margin-left:0;">
+            <li>MMR (Maximum Marginal Relevance)</li>
+            <li>Multi query retriever</li>
+            <li>Contextual compression retriever</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 class="sub-h">Wikipedia retriever</h3>
+      <p style="color:var(--muted); max-width:680px;">Used to fetch relevant documents from Wikipedia — it uses the Wikipedia API under the hood. You give it a query (e.g., "Albert Einstein"), it sends the query to Wikipedia's API, retrieves the most relevant articles, and returns them as LangChain Document objects.</p>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_community.retrievers import WikipediaRetriever
+retriever = WikipediaRetriever()
+resp = retriever.invoke("prabhas")
+print(resp[0].page_content)</code></pre>
+      <p style="color:var(--muted); font-size:14px;">If you get an error and no response from the Wikipedia API, the API may be restricting you. In that case add the code below before retriever initialization. Wikimedia requires all API clients to provide a unique identifier in the User-Agent header so they can track usage and prevent abusive automated scraping. Giving your application a descriptive User-Agent lifts the rate-limit block, allowing the API to return valid JSON again.</p>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">import wikipedia
+wikipedia.set_user_agent("MyApp/1.0 (langchain_bot)")  # always replace langchain_bot with an email so that if your app accidentally hits a loop or causes high traffic, the Wikimedia team can reach out instead of flat-out blocking your IP address.</code></pre>
+
+      <h3 class="sub-h">Vector store retriever</h3>
+      <p style="color:var(--muted); max-width:680px;">We convert a vector store into a retriever using the method <code>as_retriever()</code> (e.g., <code>retriever = vectorstore.as_retriever(search_kwargs={"k": 2})</code>). We can also retrieve documents directly from the vector store, but the vector store retriever helps in two ways: it is a runnable so we can integrate it into chains, and we can apply advanced retrieval methods.</p>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_community.vectorstores import Chroma
+from langchain_core.documents import Document
+from langchain_ollama import OllamaEmbeddings
+ipl_player_docs = [
+    Document(
+        page_content="""
+        Virat Kohli is an Indian cricketer who plays for Royal Challengers Bengaluru (RCB) in the IPL.
+        He is one of the highest run-scorers in IPL history and has been associated with RCB since 2008.
+        Known for his aggressive batting style, Kohli won the Orange Cap in IPL 2016 after scoring 973 runs.
+        """,
+        metadata={
+            "player_id": 18,
+            "name": "Virat Kohli",
+            "team": "RCB",
+            "role": "Batsman",
+            "country": "India"
+        }
+    ),
+
+    Document(
+        page_content="""
+        MS Dhoni is a legendary Indian wicketkeeper-batsman and former captain of Chennai Super Kings (CSK).
+        He has led CSK to multiple IPL titles and is renowned for his finishing abilities and leadership.
+        Dhoni debuted in the IPL in 2008 and remains one of the most influential players in the tournament.
+        """,
+        metadata={
+            "player_id": 7,
+            "name": "MS Dhoni",
+            "team": "CSK",
+            "role": "Wicketkeeper-Batsman",
+            "country": "India"
+        }
+    ),
+
+    Document(
+        page_content="""
+        Rohit Sharma is an Indian opening batsman who has represented Mumbai Indians (MI) in the IPL.
+        Under his captaincy, MI won multiple IPL championships.
+        Rohit is known for his elegant stroke play and ability to score big hundreds.
+        """,
+        metadata={
+            "player_id": 45,
+            "name": "Rohit Sharma",
+            "team": "MI",
+            "role": "Batsman",
+            "country": "India"
+        }
+    ),
+
+    Document(
+        page_content="""
+        Jasprit Bumrah is an Indian fast bowler playing for Mumbai Indians (MI).
+        He is widely regarded as one of the best death-over bowlers in T20 cricket.
+        Bumrah's unique bowling action and yorkers make him a key asset in the IPL.
+        """,
+        metadata={
+            "player_id": 93,
+            "name": "Jasprit Bumrah",
+            "team": "MI",
+            "role": "Bowler",
+            "country": "India"
+        }
+    ),
+
+    Document(
+        page_content="""
+        Andre Russell is a West Indian all-rounder who plays for Kolkata Knight Riders (KKR).
+        He is known for explosive batting, powerful six-hitting, and effective pace bowling.
+        Russell has won multiple IPL championships with KKR.
+        """,
+        metadata={
+            "player_id": 12,
+            "name": "Andre Russell",
+            "team": "KKR",
+            "role": "All-Rounder",
+            "country": "West Indies"
+        }
+    )
+]
+embeddings = OllamaEmbeddings(model="llama3:8b")
+vectorstore = Chroma.from_documents(
+    embedding=embeddings,
+    documents=ipl_player_docs,
+    collection_name="ipl_players",
+    persist_directory="./vectorstore_1"
+)
+retriever = vectorstore.as_retriever(search_kwargs={"k": 1})
+query = "who is the best player of ipl?"
+resp = retriever.invoke(query)
+for i in range(len(resp)):
+    print(i + 1, "\n")
+    print(resp[i].page_content)</code></pre>
+    </section>
+    <section class="block" id="mmr">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--green);">05 · Document Loaders & Retrievers</span>
+        <h2>Maximal Marginal Relevance (MMR)</h2>
+        <p>MMR is a retrieval technique that retrieves documents relevant to the query but diverse from each other — avoiding fetching documents that are very similar to each other.</p>
+      </div>
+      <p style="color:var(--muted);">The lambda value ranges from 0–1: 0 being fully diverse, 1 being fully similar. In LangChain we define lambda as a parameter in <code>search_kwargs</code> called <code>lambda_mult</code>.</p>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_core.documents import Document
+from langchain_ollama import OllamaEmbeddings
+from langchain_chroma import Chroma
+
+# 1. Create documents
+documents = [
+    Document(page_content="Kafka provides high scalability for streaming applications."),
+    Document(page_content="Kafka offers fault tolerance through replication."),
+    Document(page_content="Kafka supports real-time data processing."),
+    Document(page_content="Kafka scales horizontally across multiple brokers."),
+    Document(page_content="Kafka is commonly used in ETL and data pipelines.")
+]
+
+# 2. Create embeddings model
+embeddings = OllamaEmbeddings(
+    model="nomic-embed-text"
+)
+
+# 3. Store documents in Chroma
+vectorstore = Chroma.from_documents(
+    documents=documents,
+    embedding=embeddings
+)
+
+# 4. Create MMR retriever
+retriever = vectorstore.as_retriever(
+    search_type="mmr",
+    search_kwargs={
+        "k": 3,
+        "fetch_k": 5,
+        "lambda_mult": 0.7
+    }
+)
+
+# 5. Query
+query = "What are the benefits of Kafka?"
+
+results = retriever.invoke(query)
+
+# 6. Print results
+for doc in results:
+    print(doc.page_content)</code></pre>
+    </section>
+
+    <section class="block" id="multi-query-retriever">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--green);">05 · Document Loaders & Retrievers</span>
+        <h2>Multi query retriever</h2>
+        <p><code>MultiQueryRetriever</code> (MQR) is a LangChain retriever that uses an LLM to generate multiple variations of the user's query and retrieves documents for each variation. We use it because a single query may miss relevant documents because of wording differences.</p>
+      </div>
+      <p style="color:var(--muted);">For the user query "What are the benefits of Kafka?", it might generate:</p>
+      <div class="diagram-box">What advantages does Kafka provide?
+Why is Kafka used in data pipelines?
+What Kafka features improve scalability?
+How does Kafka support real-time processing?</div>
+      <div class="mermaid">
+flowchart LR
+    A[User Query] --> B[Generate Multiple Queries]
+    B --> C[Vector Search]
+    C --> D[Merge and Deduplicate]
+    D --> E[LLM Answer]
+      </div>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_chroma import Chroma
+from langchain_ollama import ChatOllama, OllamaEmbeddings
+from langchain_classic.retrievers import MultiQueryRetriever
+
+# Embeddings
+embeddings = OllamaEmbeddings(
+    model="llama3:8b"
+)
+# Vector Store
+vectorstore = Chroma.from_texts(
+    [
+        "Kafka provides high scalability.",
+        "Kafka supports real-time stream processing.",
+        "Kafka offers fault tolerance through replication."
+    ],
+    embedding=embeddings
+)
+
+# Base Retriever
+retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
+
+# LLM for query generation
+llm = ChatOllama(model="llama3:8b")
+
+# Multi Query Retriever
+multi_query_retriever = MultiQueryRetriever.from_llm(
+    retriever=retriever,
+    llm=llm
+)
+
+# Retrieve documents
+docs = multi_query_retriever.invoke(
+    "What are the benefits of Kafka?"
+)
+
+for doc in docs:
+    print(doc.page_content)</code></pre>
+    </section>
+
+    <section class="block" id="contextual-compression">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--green);">05 · Document Loaders & Retrievers</span>
+        <h2>Contextual compression retriever</h2>
+        <p>A Contextual Compression Retriever retrieves documents first and then compresses/filters the retrieved content to keep only the parts relevant to the user's query.</p>
+      </div>
+      <span class="code-label">python</span>
+      <pre><code class="language-python">from langchain_classic.retrievers import ContextualCompressionRetriever
+from langchain_classic.retrievers.document_compressors import LLMChainExtractor
+from langchain_ollama import ChatOllama
+from langchain_ollama import OllamaEmbeddings
+from langchain_community.vectorstores import Chroma
+
+# Base retriever
+embeddings = OllamaEmbeddings(
+    model="llama3:8b"
+)
+# Vector Store
+vectorstore = Chroma.from_texts(
+    [
+        "Kafka provides high scalability.",
+        "Kafka supports real-time stream processing.",
+        "Kafka offers fault tolerance through replication."
+    ],
+    embedding=embeddings
+)
+base_retriever = vectorstore.as_retriever()
+
+# LLM used for compression
+llm = ChatOllama(model="llama3:8b")
+
+# Compressor
+compressor = LLMChainExtractor.from_llm(llm)
+
+# Contextual Compression Retriever
+compression_retriever = ContextualCompressionRetriever(
+    base_compressor=compressor,
+    base_retriever=base_retriever
+)
+
+docs = compression_retriever.invoke(
+    "What are the benefits of Kafka?"
+)
+
+for doc in docs:
+    print(doc.page_content)</code></pre>
+      <div class="mermaid">
+flowchart LR
+    A[User Query] --> B[Retriever]
+    B --> C[Retrieved Documents]
+    C --> D[LLM Compression]
+    D --> E[Relevant Content Only]
+    E --> F[LLM]
+    F --> G[Final Answer]
+      </div>
+    </section>
+
+    <section class="block" id="other-retrievers">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--green);">05 · Document Loaders & Retrievers</span>
+        <h2>Other major retrievers</h2>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Retriever</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td>BM25 retriever</td><td>Uses keyword matching frequency instead of similarity. An improved version of tf-idf; uses the BM25 ranking algorithm.</td></tr>
+            <tr><td>ParentDocumentRetriever</td><td>Fetches the entire document of the retrieved chunk instead of just the chunk.</td></tr>
+            <tr><td>TimeWeightedVectorStoreRetriever</td><td>Gives priority to documents that are recent.</td></tr>
+            <tr><td>SelfQueryRetriever</td><td>Uses an LLM to convert natural language into vector search and metadata filters.</td></tr>
+            <tr><td>EnsembleRetriever</td><td>Combines multiple retrievers and merges the results.</td></tr>
+            <tr><td>MultiVectorRetriever</td><td>Stores multiple embeddings for a single document — converts it into multiple texts first (original text, summary, keywords, generated questions, etc.), embeds them all, and stores all of them.</td></tr>
+            <tr><td>ArxivRetriever</td><td>Fetches documents from the arXiv API.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <!-- ============ SECTION 06 : RAG ============ -->
+    <section class="block" id="rag-why" style="background:linear-gradient(180deg, rgba(245,166,35,0.03), transparent 200px);">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">06 · Retrieval Augmented Generation (RAG)</span>
+        <h2>Why RAG?</h2>
+        <p><strong>Retrieval-Augmented Generation (RAG)</strong> is an AI architecture that combines a <strong>retriever</strong> (finds relevant information from external knowledge sources) and a <strong>generator (LLM)</strong> (generates the final answer using both the retrieved information and the user's query). Instead of relying only on the LLM's pre-trained knowledge, RAG lets it use external, up-to-date, domain-specific data.</p>
+      </div>
+
+      <h3 class="sub-h">Limitations of LLMs that RAG addresses</h3>
+      <ul class="list">
+        <li><strong>Hallucination</strong> — LLMs sometimes generate incorrect information confidently.</li>
+        <li><strong>Knowledge cutoff</strong> — models only know what existed until their training cutoff.</li>
+        <li><strong>Private data</strong> — LLMs cannot answer questions about company documents, internal PDFs, hospital records, or college notes unless these documents are provided.</li>
+      </ul>
+    </section>
+
+    <section class="block" id="rag-steps">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">06 · Retrieval Augmented Generation (RAG)</span>
+        <h2>Steps in RAG</h2>
+        <p>There are four steps in a RAG system.</p>
+      </div>
+      <div class="layer-stack">
+        <div class="layer">
+          <span class="num">1</span>
+          <h4>Indexing</h4>
+          <p>The process of creating an external knowledge base from which you will provide context to an LLM.</p>
+        </div>
+        <div class="layer">
+          <span class="num">2</span>
+          <h4>Retrieval</h4>
+          <p>The process of understanding the query and retrieving the similar chunks related to the query from the external knowledge base you created.</p>
+        </div>
+        <div class="layer">
+          <span class="num">3</span>
+          <h4>Augmentation</h4>
+          <p>The process of combining both the query and the context to create a useful prompt that can be sent to an LLM.</p>
+        </div>
+        <div class="layer">
+          <span class="num">4</span>
+          <h4>Generation</h4>
+          <p>The final step where the LLM generates the actual response from the context and prompt sent to it.</p>
+        </div>
+      </div>
+
+      <h3 class="sub-h">Indexing</h3>
+      <p style="color:var(--muted); max-width:680px;">Indexing is the process of preparing your knowledge base so it can be efficiently searched at query time. It consists of 4 sub-steps:</p>
+      <ol class="list">
+        <li>Document loading</li>
+        <li>Chunking</li>
+        <li>Embedding</li>
+        <li>Storing the embeddings in a vector store</li>
+      </ol>
+      <div class="mermaid">
+flowchart LR
+A[Documents] --> B[Chunking]
+B --> C[Embeddings]
+C --> D[Vector Database]
+      </div>
+
+      <h3 class="sub-h">Retrieval</h3>
+      <p style="color:var(--muted);">When the user asks a question:</p>
+      <ol class="list">
+        <li>Convert the query into an embedding.</li>
+        <li>Search the vector database.</li>
+        <li>Retrieve the top-K most relevant chunks.</li>
+      </ol>
+    </section>
+
+    <section class="block" id="rag-pros-cons">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">06 · Retrieval Augmented Generation (RAG)</span>
+        <h2>Advantages & limitations</h2>
+      </div>
+      <div class="grid2">
+        <div class="card accent-green">
+          <h4>Advantages</h4>
+          <ul class="list" style="margin-left:0;">
+            <li>Reduces hallucinations</li>
+            <li>Uses latest information</li>
+            <li>Works with private documents</li>
+            <li>No need to retrain the models</li>
+            <li>Easy to update by changing documents</li>
+          </ul>
+        </div>
+        <div class="card accent-coral">
+          <h4>Limitations</h4>
+          <ul class="list" style="margin-left:0;">
+            <li>Retrieval quality affects answer quality</li>
+            <li>Chunking strategy is important</li>
+            <li>Embedding model quality matters</li>
+            <li>Poor retrieval leads to poor answers</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <a class="back-top" href="#top">↑ Back to top</a>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad:true,
+    theme:'base',
+    themeVariables:{
+      background:'#11151d',
+      primaryColor:'#161c27',
+      primaryTextColor:'#e8eaf0',
+      primaryBorderColor:'#232a38',
+      lineColor:'#5c6478',
+      secondaryColor:'#161c27',
+      tertiaryColor:'#161c27',
+      fontFamily:'JetBrains Mono, monospace',
+      fontSize:'13px'
+    },
+    flowchart:{curve:'basis'},
+    securityLevel:'loose'
+  });
+  hljs.highlightAll();
+
+  // mobile nav toggle
+  const sidebar = document.getElementById('sidebar');
+  const toggle = document.getElementById('menuToggle');
+  toggle.addEventListener('click', ()=> sidebar.classList.toggle('open'));
+  document.querySelectorAll('.navlink').forEach(l=>{
+    l.addEventListener('click', ()=> sidebar.classList.remove('open'));
+  });
+
+  // active link highlighting on scroll
+  const links = Array.from(document.querySelectorAll('.navlink[href^="#"]'));
+  const sections = links.map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
+  function onScroll(){
+    let current = sections[0];
+    const y = window.scrollY + 120;
+    for(const s of sections){
+      if(s.offsetTop <= y) current = s;
+    }
+    links.forEach(l=>l.classList.remove('active'));
+    if(current){
+      const active = links.find(l => l.getAttribute('href') === '#'+current.id);
+      if(active) active.classList.add('active');
+    }
+  }
+  window.addEventListener('scroll', onScroll);
+  onScroll();
+</script>
+</body>
+</html>
