@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>perceptron — AI study notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0d13; --panel:#11151d; --panel-2:#161c27; --border:#232a38;
+  --text:#e8eaf0; --muted:#8b93a7; --muted-2:#5c6478;
+  --amber:#f5a623; --teal:#4fd1c5; --coral:#ff6b6b; --periwinkle:#7c9cff; --green:#7ee787;
+  --mono:'JetBrains Mono', monospace;
+  --display:'Space Grotesk', sans-serif;
+  --body:'Inter', sans-serif;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:var(--body); line-height:1.65; font-size:15.5px;
+}
+::selection{background:rgba(245,166,35,0.3);}
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size:36px 36px;
+}
+a{color:var(--periwinkle); text-decoration:none;}
+a:hover{text-decoration:underline;}
+nav{position:fixed; top:0; left:0; right:0; z-index:50; display:flex; align-items:center; justify-content:space-between;
+  padding:16px 40px; background:rgba(10,13,19,0.82); backdrop-filter:blur(10px); border-bottom:1px solid var(--border);}
+.brand{font-family:var(--display); font-weight:700; font-size:18px; color:var(--text);}
+.brand span{color:var(--amber);}
+nav .nav-links{display:flex; gap:22px; font-family:var(--mono); font-size:12px; letter-spacing:.05em; text-transform:uppercase;}
+nav .nav-links a{color:var(--muted);}
+nav .nav-links a:hover{color:var(--text); text-decoration:none;}
+section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:80px 40px;}
+</style>
+</head>
+<body>
+<nav>
+  <div class="brand">perceptron<span>.</span></div>
+  <div class="nav-links"></div>
+</nav>
+</body>
+</html>
