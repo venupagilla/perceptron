@@ -1,0 +1,2122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevOps — Engineering Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/nord.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js"></script>
+<style>
+:root{
+  --bg:#0a0d13;
+  --panel:#11151d;
+  --panel-2:#161c27;
+  --border:#232a38;
+  --text:#e8eaf0;
+  --muted:#8b93a7;
+  --muted-2:#5c6478;
+  --amber:#f5a623;
+  --teal:#4fd1c5;
+  --coral:#ff6b6b;
+  --periwinkle:#7c9cff;
+  --green:#7ee787;
+  --mono:'JetBrains Mono', monospace;
+  --display:'Space Grotesk', sans-serif;
+  --body:'Inter', sans-serif;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--body);
+  line-height:1.65;
+  font-size:15.5px;
+}
+::selection{background:rgba(245,166,35,0.3);}
+
+/* subtle grid texture */
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size:36px 36px;
+  pointer-events:none;
+  z-index:0;
+}
+
+a{color:var(--periwinkle); text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* ===== Layout ===== */
+.shell{display:flex; min-height:100vh; position:relative; z-index:1;}
+
+.sidebar{
+  width:280px; flex-shrink:0;
+  background:var(--panel);
+  border-right:1px solid var(--border);
+  position:fixed; top:0; left:0; bottom:0;
+  overflow-y:auto;
+  padding:24px 0 40px;
+  z-index:20;
+  transition:transform .25s ease;
+}
+.sidebar::-webkit-scrollbar{width:6px;}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border); border-radius:4px;}
+
+.brand{
+  padding:0 22px 20px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:18px;
+}
+.brand .tag{
+  font-family:var(--mono); font-size:11px; letter-spacing:.12em;
+  color:var(--amber); text-transform:uppercase; display:block; margin-bottom:8px;
+}
+.brand h1{
+  font-family:var(--display); font-size:18px; font-weight:700; line-height:1.3;
+  color:var(--text);
+}
+.brand .sub{font-size:12.5px; color:var(--muted); margin-top:6px;}
+
+.navgroup{margin-bottom:4px;}
+.navgroup > .glabel{
+  display:flex; align-items:center; gap:8px;
+  padding:10px 22px 8px;
+  font-family:var(--mono); font-size:11px; letter-spacing:.08em;
+  color:var(--muted-2); text-transform:uppercase;
+}
+.navgroup .glabel .idx{color:var(--teal); font-weight:600;}
+.navlink{
+  display:block;
+  padding:6px 22px 6px 34px;
+  font-size:13.5px; color:var(--muted);
+  border-left:2px solid transparent;
+}
+.navlink:hover{color:var(--text); text-decoration:none; background:rgba(255,255,255,0.02);}
+.navlink.active{color:var(--text); border-left-color:var(--amber); background:rgba(245,166,35,0.06);}
+
+.menu-toggle{
+  display:none; position:fixed; top:16px; left:16px; z-index:30;
+  background:var(--panel-2); border:1px solid var(--border); color:var(--text);
+  width:40px; height:40px; border-radius:8px; font-size:18px; cursor:pointer;
+}
+
+.main{margin-left:280px; flex:1; min-width:0;}
+
+/* ===== Hero ===== */
+.hero{
+  padding:90px 64px 70px;
+  border-bottom:1px solid var(--border);
+  position:relative;
+  overflow:hidden;
+}
+.hero-inner{max-width:900px; position:relative; z-index:2;}
+.hero .eyebrow{
+  font-family:var(--mono); color:var(--amber); font-size:12px;
+  letter-spacing:.14em; text-transform:uppercase; display:block; margin-bottom:18px;
+}
+.hero h1{
+  font-family:var(--display); font-size:52px; line-height:1.08; font-weight:700;
+  letter-spacing:-.01em; margin-bottom:20px;
+}
+.hero h1 span{color:var(--amber);}
+.hero p.lead{
+  font-size:17px; color:var(--muted); max-width:560px; margin-bottom:36px;
+}
+.pillrow{display:flex; flex-wrap:wrap; gap:10px;}
+.pill{
+  font-family:var(--mono); font-size:11.5px; padding:6px 12px;
+  border:1px solid var(--border); border-radius:100px; color:var(--muted);
+  background:var(--panel);
+}
+
+/* Signature: loop ring */
+.loop-wrap{
+  position:absolute; right:40px; top:50%; transform:translateY(-50%);
+  width:340px; height:340px; z-index:1;
+}
+@media(max-width:1100px){.loop-wrap{display:none;}}
+.loop-ring{width:100%; height:100%; position:relative;}
+.loop-node{
+  position:absolute; width:96px; height:96px; border-radius:50%;
+  border:1px solid var(--border); background:var(--panel-2);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  font-family:var(--mono); font-size:11px; letter-spacing:.04em; text-align:center;
+  animation:pulse 8s ease-in-out infinite;
+}
+.loop-node .n{font-size:9px; color:var(--muted-2); margin-bottom:4px;}
+.loop-node.n1{top:0; left:50%; transform:translateX(-50%); color:var(--amber); border-color:rgba(245,166,35,.4); animation-delay:0s;}
+.loop-node.n2{top:50%; right:0; transform:translateY(-50%); color:var(--teal); border-color:rgba(79,209,197,.4); animation-delay:2s;}
+.loop-node.n3{bottom:0; left:50%; transform:translateX(-50%); color:var(--green); border-color:rgba(126,231,135,.4); animation-delay:4s;}
+.loop-node.n4{top:50%; left:0; transform:translateY(-50%); color:var(--periwinkle); border-color:rgba(124,156,255,.4); animation-delay:6s;}
+@keyframes pulse{
+  0%,88%,100%{box-shadow:none;}
+  4%{box-shadow:0 0 0 6px rgba(255,255,255,0.04);}
+}
+.loop-ring svg{position:absolute; inset:0; width:100%; height:100%;}
+.loop-ring circle.track{fill:none; stroke:var(--border); stroke-width:1;}
+.loop-ring circle.runner{fill:none; stroke:var(--amber); stroke-width:2; stroke-linecap:round;
+  stroke-dasharray:40 900; animation:run 8s linear infinite;}
+@keyframes run{ to { stroke-dashoffset:-940; } }
+
+/* ===== Sections ===== */
+section.block{padding:56px 64px; border-bottom:1px solid var(--border);}
+section.block:target{}
+.block-head{max-width:820px; margin-bottom:36px;}
+.block-head .eyebrow{
+  font-family:var(--mono); font-size:11.5px; letter-spacing:.12em; text-transform:uppercase;
+  display:block; margin-bottom:10px;
+}
+.block-head h2{font-family:var(--display); font-size:30px; font-weight:700; margin-bottom:10px;}
+.block-head p{color:var(--muted); max-width:680px;}
+
+h3.sub-h{
+  font-family:var(--display); font-size:20px; font-weight:600; margin:40px 0 14px;
+  padding-top:4px;
+}
+h3.sub-h .idx{color:var(--muted-2); font-family:var(--mono); font-size:14px; margin-right:8px;}
+h4.mini-h{font-family:var(--display); font-size:15.5px; font-weight:600; margin:24px 0 10px; color:var(--text);}
+
+.card{
+  background:var(--panel); border:1px solid var(--border); border-radius:12px;
+  padding:22px 24px; margin:18px 0;
+}
+.card.accent-amber{border-left:3px solid var(--amber);}
+.card.accent-teal{border-left:3px solid var(--teal);}
+.card.accent-coral{border-left:3px solid var(--coral);}
+.card.accent-peri{border-left:3px solid var(--periwinkle);}
+.card.accent-green{border-left:3px solid var(--green);}
+.card h4{margin-top:0;}
+.card p:last-child{margin-bottom:0;}
+
+.quote{
+  font-family:var(--body); font-style:normal; color:var(--text);
+  border-left:2px solid var(--amber); padding:4px 0 4px 18px; margin:18px 0;
+  color:var(--muted); font-size:14.5px;
+}
+.quote strong{color:var(--text);}
+
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+.grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+@media(max-width:900px){.grid2,.grid3{grid-template-columns:1fr;}}
+
+table{width:100%; border-collapse:collapse; margin:18px 0; font-size:13.5px;}
+thead th{
+  font-family:var(--mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase;
+  color:var(--muted-2); text-align:left; padding:10px 14px; border-bottom:1px solid var(--border);
+}
+tbody td{padding:11px 14px; border-bottom:1px solid var(--border); color:var(--muted); vertical-align:top;}
+tbody td:first-child{color:var(--text); font-weight:600;}
+tbody tr:hover{background:rgba(255,255,255,0.015);}
+.table-wrap{overflow-x:auto; border:1px solid var(--border); border-radius:10px;}
+.table-wrap table{margin:0;}
+
+pre{
+  background:#0d1117 !important; border:1px solid var(--border); border-radius:10px;
+  padding:18px 20px; overflow-x:auto; margin:16px 0; font-size:13px;
+}
+code{font-family:var(--mono);}
+:not(pre) > code{
+  background:var(--panel-2); padding:2px 6px; border-radius:4px; font-size:.9em; color:var(--teal);
+}
+.code-label{
+  font-family:var(--mono); font-size:11px; color:var(--muted-2); letter-spacing:.05em;
+  text-transform:uppercase; margin-bottom:-8px; display:block; margin-top:16px;
+}
+
+ul.list, ol.list{margin:12px 0 12px 20px; color:var(--muted);}
+ul.list li, ol.list li{margin-bottom:8px;}
+ul.list li strong, ol.list li strong{color:var(--text);}
+ul.checklist{list-style:none; margin:12px 0;}
+ul.checklist li{
+  padding-left:26px; position:relative; margin-bottom:9px; color:var(--muted); font-size:14px;
+}
+ul.checklist li::before{
+  content:"✓"; position:absolute; left:0; color:var(--green); font-family:var(--mono); font-weight:600;
+}
+
+.mermaid{background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:20px; margin:18px 0; display:flex; justify-content:center;}
+
+.diagram-box{
+  font-family:var(--mono); font-size:12.5px; white-space:pre; overflow-x:auto;
+  background:#0d1117; border:1px solid var(--border); border-radius:10px; padding:18px 20px; margin:16px 0;
+  color:var(--muted);
+}
+.diagram-box .hl{color:var(--amber);}
+
+.badge-row{display:flex; gap:8px; flex-wrap:wrap; margin:14px 0;}
+.badge{
+  font-family:var(--mono); font-size:11px; padding:4px 10px; border-radius:100px;
+  border:1px solid var(--border); color:var(--muted);
+}
+
+.layer-stack{margin:20px 0;}
+.layer{
+  border:1px solid var(--border); border-radius:10px; padding:18px 20px; margin-bottom:10px;
+  background:var(--panel); position:relative; padding-left:56px;
+}
+.layer .num{
+  position:absolute; left:18px; top:18px; font-family:var(--display); font-weight:700;
+  font-size:20px; color:var(--muted-2); width:28px;
+}
+.layer h4{margin:0 0 6px;}
+.layer p{color:var(--muted); font-size:13.5px; margin-bottom:8px;}
+
+.timeline-attack{
+  border-left:2px solid var(--coral); padding-left:20px; margin:20px 0 20px 8px;
+}
+.timeline-attack .att{margin-bottom:22px;}
+.timeline-attack .att .date{font-family:var(--mono); font-size:11px; color:var(--coral); text-transform:uppercase; letter-spacing:.05em;}
+.timeline-attack .att h4{margin:4px 0 6px;}
+.timeline-attack ol.list{margin-top:6px;}
+
+.footer{
+  padding:50px 64px 70px; color:var(--muted-2); font-size:13px;
+}
+.footer a{color:var(--muted);}
+.back-top{
+  display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:12px;
+  color:var(--muted); border:1px solid var(--border); padding:8px 14px; border-radius:8px; margin-bottom:24px;
+}
+
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .menu-toggle{display:flex; align-items:center; justify-content:center;}
+  .hero, section.block, .footer{padding-left:26px; padding-right:26px;}
+  .hero{padding-top:80px;}
+  .hero h1{font-size:36px;}
+}
+</style>
+</head>
+<body>
+
+<button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">☰</button>
+
+<div class="shell">
+
+  <nav class="sidebar" id="sidebar">
+    <div class="brand">
+      <span class="tag">Reference Notes</span>
+      <h1>DevOps</h1>
+      <div class="sub">Engineering notes — practices &amp; tooling</div>
+    </div>
+
+    <div class="navgroup">
+      <a class="navlink" href="#top" style="padding-left:22px; font-weight:600; color:var(--text);">Overview</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">01</span> DevOps &amp; SDLC</div>
+      <a class="navlink" href="#devops-fundamentals">DevOps fundamentals</a>
+      <a class="navlink" href="#devops-lifecycle">The DevOps lifecycle</a>
+      <a class="navlink" href="#sdlc-evolution">SDLC evolution timeline</a>
+      <a class="navlink" href="#sdlc-def">What is SDLC?</a>
+      <a class="navlink" href="#waterfall">The Waterfall model</a>
+      <a class="navlink" href="#agile-values">Agile values &amp; principles</a>
+      <a class="navlink" href="#agile-frameworks">Agile frameworks</a>
+      <a class="navlink" href="#agile-model">The Agile model</a>
+      <a class="navlink" href="#release-envs">Release environments</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">02</span> Version Control</div>
+      <a class="navlink" href="#vcs-basics">VCS: RCS → SCM → DVCS</a>
+      <a class="navlink" href="#git">Git</a>
+      <a class="navlink" href="#git-commands">Git commands</a>
+      <a class="navlink" href="#github">GitHub</a>
+      <a class="navlink" href="#push-pull">Push &amp; pull</a>
+      <a class="navlink" href="#git-branching">Git branching</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">03</span> CI/CD &amp; Build</div>
+      <a class="navlink" href="#cicd-tools">CI/CD tools</a>
+      <a class="navlink" href="#jenkins">Jenkins</a>
+      <a class="navlink" href="#jenkins-ci">The Jenkins CI process</a>
+      <a class="navlink" href="#artifacts-builds">Artifacts &amp; build tools</a>
+      <a class="navlink" href="#maven">Maven</a>
+      <a class="navlink" href="#jenkins-plugins">Jenkins plugins &amp; items</a>
+      <a class="navlink" href="#jenkins-setup">Jenkins &amp; Maven setup</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">04</span> Containers</div>
+      <a class="navlink" href="#virtualization">Virtualization &amp; its limits</a>
+      <a class="navlink" href="#docker-creation">Creation of Docker</a>
+      <a class="navlink" href="#containerization">Containerization</a>
+      <a class="navlink" href="#docker-concepts">Docker core concepts</a>
+      <a class="navlink" href="#docker-commands">Docker commands</a>
+      <a class="navlink" href="#dockerfile">Dockerfile &amp; instructions</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">05</span> Orchestration</div>
+      <a class="navlink" href="#k8s-features">Kubernetes features</a>
+      <a class="navlink" href="#k8s-setup">Installation &amp; activation</a>
+      <a class="navlink" href="#k8s-commands">Kubernetes commands</a>
+      <a class="navlink" href="#k8s-deploy">Deploy an application</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">06</span> Config Management</div>
+      <a class="navlink" href="#cm-basics">Configuration management</a>
+      <a class="navlink" href="#cm-tools">Configuration tools</a>
+      <a class="navlink" href="#ansible">Ansible</a>
+      <a class="navlink" href="#ansible-bigpicture">How Ansible works</a>
+      <a class="navlink" href="#ansible-setup">Server &amp; client setup</a>
+      <a class="navlink" href="#ansible-playbooks">Playbooks &amp; YAML</a>
+      <a class="navlink" href="#ansible-checks">Config mgmt deep dive</a>
+    </div>
+  </nav>
+
+  <main class="main" id="top">
+
+    <!-- HERO -->
+    <header class="hero">
+      <div class="loop-wrap">
+        <div class="loop-ring">
+          <svg viewBox="0 0 340 340">
+            <circle class="track" cx="170" cy="170" r="150"/>
+            <circle class="runner" cx="170" cy="170" r="150" transform="rotate(-90 170 170)"/>
+          </svg>
+          <div class="loop-node n1"><span class="n">01</span>Plan</div>
+          <div class="loop-node n2"><span class="n">02</span>Build</div>
+          <div class="loop-node n3"><span class="n">03</span>Deploy</div>
+          <div class="loop-node n4"><span class="n">04</span>Monitor</div>
+        </div>
+      </div>
+      <div class="hero-inner">
+        <span class="eyebrow">// DevOps — practices &amp; tooling</span>
+        <h1>Ship faster, <span>fail safer</span>,<br>and <span>automate</span> the pipeline.</h1>
+        <p class="lead">A working reference on the DevOps way of working — from the SDLC and Agile thinking behind it, through version control with Git, CI/CD and build tooling, to containers, orchestration, and configuration management.</p>
+        <div class="pillrow">
+          <span class="pill">SDLC · Agile</span>
+          <span class="pill">Git &amp; GitHub</span>
+          <span class="pill">CI/CD · Jenkins</span>
+          <span class="pill">Docker</span>
+          <span class="pill">Ansible</span>
+          <span class="pill">Kubernetes</span>
+        </div>
+      </div>
+    </header>    <!-- ============ SECTION 01 : DEVOPS & SDLC ============ -->
+    <section class="block" id="devops-fundamentals" style="background:linear-gradient(180deg, rgba(245,166,35,0.03), transparent 200px);">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">01 · DevOps &amp; SDLC</span>
+        <h2>DevOps fundamentals</h2>
+        <p>DevOps is a culture and a software delivery model — a union of people, process, and tools for continuous delivery of value.</p>
+      </div>
+      <div class="card accent-amber">
+        <h4>Definition &amp; origins</h4>
+        <ul class="list">
+          <li><strong>Introduced in 2006</strong>, standardized in <strong>2013</strong>.</li>
+          <li><strong>Definition:</strong> a union of <strong>people</strong>, <strong>processes</strong>, and <strong>tools</strong> that enables <strong>continuous delivery of value</strong> to end users.</li>
+          <li><strong>Core concepts:</strong> People (culture &amp; collaboration), Process (automation &amp; efficiency), Tools (technology &amp; integration).</li>
+        </ul>
+      </div>
+      <h3 class="sub-h">Fundamentals of DevOps</h3>
+      <ul class="list">
+        <li><strong>Culture &amp; SDLC model</strong> — a cultural shift in software development and operations; a modern approach to the software development life cycle.</li>
+        <li><strong>Software delivery approach</strong> — a new methodology for faster, more reliable project delivery.</li>
+        <li><strong>Automation</strong> — leveraging tools to automate manual tasks (CI/CD, Infrastructure as Code, monitoring).</li>
+        <li><strong>Speed &amp; stability</strong> — enables rapid changes while maintaining system stability.</li>
+        <li><strong>Measured by success metrics:</strong></li>
+      </ul>
+      <div class="grid2">
+        <div class="card">
+          <h4>Speed of delivery</h4>
+          <p><strong>Deployment frequency</strong> and <strong>lead time for changes</strong> — how often and how quickly value ships.</p>
+        </div>
+        <div class="card">
+          <h4>Stability of service</h4>
+          <p><strong>Mean time to recovery (MTTR)</strong> and <strong>change failure rate</strong> — how well the system holds up.</p>
+        </div>
+      </div>
+      <div class="quote" style="border-color:var(--amber);"><strong>Bottom line:</strong> Waterfall's main goal is quality; Agile's main goal is quality + performance; DevOps's main goal is agile + automation.</div>
+    </section>
+
+    <section class="block" id="devops-lifecycle">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">01 · DevOps &amp; SDLC</span>
+        <h2>The DevOps lifecycle</h2>
+        <p>A continuous loop from planning through monitoring — feedback from the last phase feeds the next cycle.</p>
+      </div>
+      <div class="mermaid">
+graph LR
+    A[Plan] --> B[Code]
+    B --> C[Build]
+    C --> D[Test]
+    D --> E[Release &amp; Deploy]
+    E --> F[Operate]
+    F --> G[Monitor]
+    G -->|feedback| A
+      </div>
+      <div class="grid2">
+        <div class="card accent-amber"><h4>1 · Plan</h4><p>Teams define business requirements, project scope, and features for the next cycle — creating a roadmap, prioritizing tasks, and managing backlogs.</p></div>
+        <div class="card accent-teal"><h4>2 · Code</h4><p>Developers write the code for planned features. Relies heavily on version control systems like <strong>Git</strong> to manage changes and enable collaboration.</p></div>
+        <div class="card accent-green"><h4>3 · Build</h4><p>Code is compiled and packaged. This is the core of <strong>Continuous Integration (CI)</strong> — automated tools (like Jenkins or GitLab CI) pull the code and create a build, often a container image or executable.</p></div>
+        <div class="card accent-peri"><h4>4 · Test</h4><p>Built software undergoes <strong>continuous testing</strong> — automated unit, integration, and security tests validate the code before it reaches users.</p></div>
+        <div class="card accent-amber"><h4>5 · Release &amp; Deploy</h4><p>After tests pass, the build is released to production via <strong>Continuous Delivery/Deployment (CD)</strong> — faster, more reliable releases.</p></div>
+        <div class="card accent-teal"><h4>6 · Operate</h4><p>The operations team manages the running application — configuring servers, managing infrastructure, scaling resources, and keeping it available.</p></div>
+      </div>
+      <div class="quote" style="border-color:var(--green);"><strong>7 · Monitor:</strong> performance and stability are tracked in production — usage, errors, and system health data is collected, analyzed, and channeled back into the <strong>Plan</strong> phase, restarting the cycle for continuous improvement.</div>
+    </section>
+
+    <section class="block" id="sdlc-evolution">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">01 · DevOps &amp; SDLC</span>
+        <h2>SDLC evolution timeline</h2>
+        <p>How software development processes matured from an unrecognized field into disciplined engineering.</p>
+      </div>
+      <div class="timeline-attack" style="border-color:var(--amber);">
+        <div class="att">
+          <span class="date">1962</span>
+          <h4>The U.S. recognizes IT as a separate industry</h4>
+          <p style="color:var(--muted);">Marked the formal beginning of IT as a field apart from general electronics or telecommunications. Before this, access to computers was largely restricted to government entities.</p>
+        </div>
+        <div class="att">
+          <span class="date">1968</span>
+          <h4>Early discussions on software development methodologies</h4>
+          <p style="color:var(--muted);">The question was raised: <em>"What steps should be taken to formalize and improve the process of software development?"</em> — early debates about managing software complexity, quality, and delivery that laid the groundwork for structured software engineering practices.</p>
+        </div>
+        <div class="att">
+          <span class="date">Pre-SDLC era</span>
+          <h4>Influence of Lean manufacturing</h4>
+          <p style="color:var(--muted);">Before the SDLC, a process known as <strong>Lean</strong> was already in use — but only in manufacturing. It was not directly applicable to software because of the intangible, creative, and iterative nature of software, which highlighted the need for a tailored approach.</p>
+        </div>
+        <div class="att">
+          <span class="date">1970s</span>
+          <h4>Rise of structured programming and SDLC models</h4>
+          <p style="color:var(--muted);">Introduction of <strong>structured programming</strong> and formal <strong>SDLC models</strong>, most notably the <strong>Waterfall model</strong> — bringing discipline, predictability, and clarity, with phases like requirements analysis, design, implementation, testing, and maintenance.</p>
+        </div>
+        <div class="att">
+          <span class="date">1984</span>
+          <h4>India recognizes IT as a separate industry</h4>
+          <p style="color:var(--muted);">More than two decades after the U.S., helping catalyze India's software and services sector and its emergence as a global IT hub.</p>
+        </div>
+        <div class="att">
+          <span class="date">1990s → 2001</span>
+          <h4>Agile Manifesto and DevOps beginnings</h4>
+          <p style="color:var(--muted);">In response to Waterfall's limitations, the <strong>Agile Manifesto</strong> was introduced in 2001 (with roots in the 1990s) — promoting iterative development, customer collaboration, and flexibility. Early <strong>DevOps</strong> concepts emerged, emphasizing collaboration between development and operations teams to improve deployment frequency and software quality.</p>
+        </div>
+        <div class="att">
+          <span class="date">2000s</span>
+          <h4>Cloud computing and globalization</h4>
+          <p style="color:var(--muted);">The rise of <strong>cloud computing</strong>, <strong>SaaS</strong>, and platform-based infrastructures; accelerated global outsourcing of IT services; maturation of open-source software, mobile technologies, and the foundational growth of AI and big data analytics.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="sdlc-def">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">01 · DevOps &amp; SDLC</span>
+        <h2>What is SDLC?</h2>
+      </div>
+      <div class="quote" style="border-color:var(--amber);"><strong>SDLC</strong> (Software Development Life Cycle) is a structured engineering practice followed by developers and operations teams to produce software — ensuring delivery of high-quality software that is completed on time, within budget, and meets user requirements.</div>
+      <p style="color:var(--muted);">SDLC was formally defined in <strong>1968</strong> at the NATO Software Engineering Conference, marking the beginning of software engineering as a disciplined field.</p>
+      <h3 class="sub-h">Key phases</h3>
+      <div class="mermaid">
+graph LR
+    A[Planning &amp; Requirements] --> B[Design]
+    B --> C[Implementation / Coding]
+    C --> D[Testing]
+    D --> E[Deployment]
+    E --> F[Maintenance]
+      </div>
+      <ol class="list">
+        <li><strong>Planning &amp; Requirements</strong> — define objectives and gather requirements.</li>
+        <li><strong>Design</strong> — create system architecture and detailed specifications.</li>
+        <li><strong>Implementation (Coding)</strong> — write the software based on the design.</li>
+        <li><strong>Testing</strong> — ensure the software works as intended through QA.</li>
+        <li><strong>Deployment</strong> — release the software to users.</li>
+        <li><strong>Maintenance</strong> — update and improve the software post-release.</li>
+      </ol>
+      <div class="card">
+        <h4>Why SDLC matters</h4>
+        <p>Provides a clear roadmap for development. Enhances quality, reduces risks, and improves team collaboration. Forms the foundation for modern methodologies like Agile and DevOps.</p>
+      </div>
+      <h3 class="sub-h">Team structure</h3>
+      <div class="grid2">
+        <div class="card accent-teal"><h4>Developer team</h4><p>Includes professionals involved in <strong>planning, designing, coding, and testing</strong>.</p></div>
+        <div class="card accent-peri"><h4>Operations team</h4><p>Handles all activities <strong>after testing</strong> — deployment, monitoring, and maintenance.</p></div>
+      </div>
+    </section>
+
+    <section class="block" id="waterfall">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">01 · DevOps &amp; SDLC</span>
+        <h2>The Waterfall model</h2>
+        <p>The first formal process model for software development — a strict sequential flow.</p>
+      </div>
+      <p style="color:var(--muted);">Introduced in <strong>1972</strong> by <strong>Winston W. Royce</strong>, who initially described it as a flawed model that needed iteration, though it was later adopted as a linear approach.</p>
+      <h3 class="sub-h">Phases of the Waterfall model</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Phase</th><th>Activity</th><th>Participants</th></tr></thead>
+          <tbody>
+            <tr><td>1 · Planning &amp; Requirements</td><td>Gather detailed requirements from stakeholders.</td><td>Project managers, business analysts, senior engineers</td></tr>
+            <tr><td>2 · Design</td><td>Create the software blueprint — system and architectural design.</td><td>System architects and designers</td></tr>
+            <tr><td>3 · Implementation (Coding)</td><td>Developers write code based on the design specifications.</td><td>Programmers and developers</td></tr>
+            <tr><td>4 · Testing</td><td>Functionality checking and bug identification.</td><td>QA engineers and testers</td></tr>
+            <tr><td>5 · Maintenance</td><td>Deliver the software and provide post-release support.</td><td>Operations and maintenance teams</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 class="sub-h">Features</h3>
+      <ul class="list">
+        <li><strong>Simple and easy to implement</strong> — due to its linear and structured nature.</li>
+        <li><strong>Low cost</strong> — minimal overhead in terms of process management.</li>
+        <li><strong>Low usage</strong> — only ~4% of software projects globally use the pure Waterfall model today.</li>
+        <li><strong>Best suited for</strong> small projects with well-understood and stable requirements.</li>
+      </ul>
+      <h3 class="sub-h">Concerns and limitations</h3>
+      <ul class="list">
+        <li><strong>Not suitable for large projects</strong> — rigidity makes large, complex, or evolving projects hard to manage.</li>
+        <li><strong>Outdated ideology by 1985</strong> — lack of flexibility and iteration led to its decline in favor of iterative and agile approaches.</li>
+        <li><strong>No room for changes</strong> — once a phase is completed, revisiting it is difficult or costly.</li>
+        <li><strong>Late testing phase</strong> — defects are only discovered late in the cycle, increasing the cost and effort of fixes.</li>
+      </ul>
+      <div class="quote" style="border-color:var(--amber);"><strong>Average time to complete projects:</strong> Waterfall — 3 to 5 years · Agile — 1 year · DevOps — 3 to 6 months.</div>
+    </section>
+
+    <section class="block" id="agile-values">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">01 · DevOps &amp; SDLC</span>
+        <h2>Agile values &amp; principles</h2>
+        <p>The Agile foundation recommends agile values and agile principles (Manifesto 2001).</p>
+      </div>
+      <h3 class="sub-h">The four core values</h3>
+      <div class="grid2">
+        <div class="card accent-amber"><h4>1 · Individuals and interactions</h4><p>Over processes and tools. People and how they work together matter more than rigidly following tools or processes.</p></div>
+        <div class="card accent-teal"><h4>2 · Working software</h4><p>Over comprehensive documentation. Delivering something functional and valuable beats producing paperwork that does not directly help the customer.</p></div>
+        <div class="card accent-green"><h4>3 · Customer collaboration</h4><p>Over contract negotiation. An ongoing partnership with the customer is more valuable than just sticking to a contract.</p></div>
+        <div class="card accent-peri"><h4>4 · Responding to change</h4><p>Over following a plan. Adapting to change is better than rigidly following a predefined plan.</p></div>
+      </div>
+      <h3 class="sub-h">The 12 Agile principles</h3>
+      <ul class="list">
+        <li><strong>Customer satisfaction</strong> through early and continuous delivery of useful software.</li>
+        <li><strong>Welcome changing requirements</strong>, even late in development — change is an advantage, not a disruption.</li>
+        <li><strong>Deliver working software frequently</strong> — short cycles (weeks, not months) to show progress.</li>
+        <li><strong>Business people and developers work together daily</strong> — collaboration between tech and business is essential.</li>
+        <li><strong>Build projects around motivated individuals</strong> — trust people, support them, and let them self-organize.</li>
+        <li><strong>Face-to-face conversation</strong> is the best way to communicate — direct, clear communication beats endless documents.</li>
+        <li><strong>Working software is the primary measure of progress</strong> — functionality delivered matters more than reports or plans.</li>
+        <li><strong>Sustainable development pace</strong> — teams should maintain a steady, long-term rhythm without burnout.</li>
+        <li><strong>Continuous attention to technical excellence and good design</strong> — high-quality code and design make agility possible.</li>
+        <li><strong>Simplicity</strong> — the art of maximizing the amount of work not done — is essential; do only what adds real value.</li>
+        <li><strong>Best architectures, requirements, and designs emerge from self-organizing teams</strong> — teams that manage themselves make better solutions.</li>
+        <li><strong>Regularly reflect and adjust</strong> — teams pause often to improve how they work (retrospectives).</li>
+      </ul>
+      <div class="card">
+        <h4>Roles in the startup mindset</h4>
+        <ul class="list">
+          <li><strong>Entrepreneur</strong> — an individual who establishes a new business venture.</li>
+          <li><strong>Intrapreneur</strong> — an employee within a company who adopts an entrepreneurial mindset.</li>
+          <li><strong>Extraneur</strong> — an individual within a company who performs tasks outside their formal role or responsibilities.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="block" id="agile-frameworks">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">01 · DevOps &amp; SDLC</span>
+        <h2>Agile frameworks</h2>
+        <p>In December 2001 the Agile foundation launched a model known as the Agile model — a family of frameworks for applying it.</p>
+      </div>
+      <div class="grid2">
+        <div class="card accent-amber">
+          <h4>1 · Scrum</h4>
+          <p><strong>Best for:</strong> big projects, long-term development, and regular updates (typically spanning more than 3 years).<br>
+          <strong>Used by:</strong> product-based companies focusing on iterative delivery and continuous improvement.</p>
+          <ul class="list">
+            <li>Divides work into time-boxed iterations called <strong>sprints</strong> (usually 2–4 weeks).</li>
+            <li>Defined roles: <strong>Product Owner</strong>, <strong>Scrum Master</strong>, and <strong>Development Team</strong>.</li>
+            <li>Emphasizes regular feedback, adaptive planning, and team collaboration.</li>
+          </ul>
+        </div>
+        <div class="card accent-teal">
+          <h4>2 · Kanban</h4>
+          <p><strong>Best for:</strong> small projects, short-term goals, and continuous delivery.<br>
+          <strong>Used by:</strong> service-based companies prioritizing flexibility and workflow efficiency.</p>
+          <ul class="list">
+            <li>Visualizes work using a <strong>Kanban board</strong> (To Do, In Progress, Done).</li>
+            <li>Focuses on <strong>limiting work in progress (WIP)</strong> to improve flow and reduce bottlenecks.</li>
+            <li>Allows <strong>on-demand changes</strong> without fixed iterations.</li>
+          </ul>
+        </div>
+        <div class="card accent-green">
+          <h4>3 · Extreme Programming (XP)</h4>
+          <p><strong>Best for:</strong> complex projects with frequently changing requirements where technical excellence is critical.</p>
+          <ul class="list">
+            <li>Promotes engineering best practices: <strong>pair programming</strong>, <strong>TDD</strong>, and <strong>continuous integration</strong>.</li>
+            <li>Encourages high customer involvement and rapid feedback loops.</li>
+            <li>Example: a startup building an innovative product with uncertain or fast-changing requirements.</li>
+          </ul>
+        </div>
+        <div class="card accent-peri">
+          <h4>4 · SAFe (Scaled Agile Framework)</h4>
+          <p><strong>Best for:</strong> scaling Agile practices across large organizations.<br>
+          <strong>Used by:</strong> enterprises with multiple teams working on the same product or system.</p>
+          <ul class="list">
+            <li>Combines <strong>Agile, Lean, and DevOps</strong> principles to coordinate large-scale software development.</li>
+            <li>Structured approach for aligning teams, managing dependencies, and delivering value across the organization.</li>
+            <li>Similar to Scrum in its iterative nature, but designed for complex, multi-team scenarios.</li>
+          </ul>
+        </div>
+      </div>
+      <h3 class="sub-h">Framework comparison</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Framework</th><th>Best for</th><th>Timeframe</th><th>Team structure</th><th>Key focus</th></tr></thead>
+          <tbody>
+            <tr><td>Scrum</td><td>Big, long-term projects</td><td>&gt; 3 years</td><td>Cross-functional teams</td><td>Iterative delivery, feedback</td></tr>
+            <tr><td>Kanban</td><td>Small, short-term goals</td><td>Continuous</td><td>Flexible roles</td><td>Workflow efficiency, WIP</td></tr>
+            <tr><td>XP</td><td>Complex, changing projects</td><td>Iterative</td><td>Collaborative pairs</td><td>Technical excellence, TDD</td></tr>
+            <tr><td>SAFe</td><td>Large-scale enterprises</td><td>Long-term</td><td>Multiple aligned teams</td><td>Scaling Agile, DevOps integration</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block" id="agile-model">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">01 · DevOps &amp; SDLC</span>
+        <h2>The Agile model</h2>
+        <p>An iterative approach that breaks a project into small, manageable increments so teams can adapt to change quickly.</p>
+      </div>
+      <div class="layer-stack">
+        <div class="layer">
+          <span class="num">1</span>
+          <h4>Plan — Requirements</h4>
+          <p><strong>Objective:</strong> define high-level requirements and prioritize features. <strong>Participants:</strong> product owners, business analysts, stakeholders. Create user stories and product backlogs; plan sprints and set iteration goals.</p>
+        </div>
+        <div class="layer">
+          <span class="num">2</span>
+          <h4>Design — architecture</h4>
+          <p><strong>Objective:</strong> create the technical design and architecture for the current iteration. <strong>Participants:</strong> architects, senior engineers, technical leads. Design system components and workflows; establish coding standards and design patterns (e.g., microservices, MVC).</p>
+        </div>
+        <div class="layer">
+          <span class="num">3</span>
+          <h4>Code — OOP</h4>
+          <p><strong>Objective:</strong> develop the software based on design specifications. <strong>Participants:</strong> developers and programmers. Write clean, modular code following <strong>Object-Oriented Programming (OOP)</strong> principles in languages like <strong>Java</strong>, <strong>.NET</strong>, Python, etc.; conduct code reviews and pair programming.</p>
+        </div>
+        <div class="layer">
+          <span class="num">4</span>
+          <h4>Test — quality gate</h4>
+          <p><strong>Objective:</strong> ensure the software meets requirements and is free of critical defects. <strong>Participants:</strong> QA engineers, testers, and sometimes developers. Perform functional, integration, and regression testing; testers may <strong>fix minor bugs</strong> directly while major issues escalate to developers; use automated testing tools for efficiency.</p>
+        </div>
+        <div class="layer">
+          <span class="num">5</span>
+          <h4>Release — multiple environments</h4>
+          <p><strong>Objective:</strong> prepare software for deployment across various environments. <strong>Participants:</strong> DevOps, release managers, operations teams. Environments include <strong>Dev</strong> (development and initial integration), <strong>Test</strong> (functional and integration testing), <strong>QA</strong> (quality assurance and UAT), <strong>Perf</strong> (performance and load testing — a 6-second response speed is the benchmark), <strong>Staging</strong> (pre-production mirror of production), <strong>Production</strong> (live), and <strong>DR Server</strong> (disaster recovery backup).</p>
+        </div>
+        <div class="layer">
+          <span class="num">6</span>
+          <h4>Deployment — Prod &amp; DR</h4>
+          <p><strong>Objective:</strong> deploy to the live environment and ensure disaster recovery readiness. <strong>Participants:</strong> DevOps engineers, system administrators. Use <strong>CI/CD pipelines</strong> for automated deployment; keep production and DR environments synchronized for high availability.</p>
+        </div>
+        <div class="layer">
+          <span class="num">7</span>
+          <h4>Monitoring</h4>
+          <p><strong>Objective:</strong> continuously monitor performance and user experience post-deployment. <strong>Participants:</strong> DevOps, operations teams, support staff. Track system health, performance metrics, and error logs with tools like <strong>Prometheus</strong>, <strong>Grafana</strong>, <strong>Datadog</strong>, or <strong>New Relic</strong>; respond to incidents and optimize based on user feedback and system behavior.</p>
+        </div>
+      </div>
+
+      <h3 class="sub-h">Approval process before production</h3>
+      <div class="card">
+        <p>A formal approval chain is typically required before software moves from testing to production:</p>
+        <ol class="list">
+          <li><strong>Sponsor</strong> — usually a business or project stakeholder; ensures the software aligns with business goals and is ready for release.</li>
+          <li><strong>Architect</strong> — reviews technical design and infrastructure readiness; ensures the system is scalable, secure, and maintainable.</li>
+          <li><strong>Senior Engineer</strong> — validates implementation quality and resolves technical concerns; confirms the software meets performance and reliability standards.</li>
+        </ol>
+        <p style="color:var(--muted);">If all three approve, the software completes <strong>User Acceptance Testing (UAT)</strong> and is moved to the production server.</p>
+      </div>
+
+      <h3 class="sub-h">Product transfer: Agile vs. DevOps</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th></th><th>Agile approach</th><th>DevOps approach</th></tr></thead>
+          <tbody>
+            <tr><td>Transfer</td><td><strong>Manual</strong> — Build Engineer compiles and packages; Release Engineer manages deployment across environments; Production Engineer ensures the software runs correctly in production.</td><td><strong>Automated</strong> — the entire build, test, deploy, and monitor loop is automated using CI/CD pipelines.</td></tr>
+            <tr><td>Accountability</td><td>Engineers are manually accountable for transferring the product between servers.</td><td>Automation reduces human error and accelerates delivery; engineers focus on pipeline optimization and monitoring.</td></tr>
+            <tr><td>Tools</td><td>—</td><td>Jenkins, GitLab CI, Azure DevOps, GitHub Actions.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block" id="release-envs">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">01 · DevOps &amp; SDLC</span>
+        <h2>Types of release environments</h2>
+      </div>
+      <div class="grid2">
+        <div class="card accent-teal">
+          <h4>Lower environments</h4>
+          <p><strong>Characteristics:</strong> no revenue impact or client access — used for development, testing, and quality assurance.</p>
+          <ul class="list">
+            <li><strong>Dev Server</strong> — initial development and integration.</li>
+            <li><strong>Test Server</strong> — functional and integration testing.</li>
+            <li><strong>QA Server</strong> — quality assurance and bug fixing.</li>
+          </ul>
+        </div>
+        <div class="card accent-amber">
+          <h4>Higher environments</h4>
+          <p><strong>Characteristics:</strong> revenue-generating or client-accessible — closely monitored for performance, uptime, and security.</p>
+          <ul class="list">
+            <li><strong>Production (Prod)</strong> — live environment used by end-users.</li>
+            <li><strong>Performance (Perf)</strong> — used for load and stress testing; access limited to sponsors and technical teams, not accessible to end-users.</li>
+            <li><strong>Disaster Recovery (DR)</strong> — backup environment for failover and recovery.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    <!-- ============ SECTION 02 : VERSION CONTROL ============ -->
+    <section class="block" id="vcs-basics" style="background:linear-gradient(180deg, rgba(79,209,197,0.03), transparent 200px);">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--teal);">02 · Version Control</span>
+        <h2>VCS: RCS → SCM → DVCS</h2>
+        <p>Version control lets developers save, track, and manage their code — from centralized servers to distributed repos.</p>
+      </div>
+      <div class="quote" style="border-color:var(--teal);"><strong>Version control</strong> is used by developers to keep track of their code — <strong>save · track · manage</strong>. It first appeared in the 1960s; everyone who uses code uses a VCS.</div>
+      <div class="diagram-box">EVOLUTION OF VERSION CONTROL
+├── 1960s   RCS  → Revision Control System
+├── Agile   SCM  → Source Code Management (client-server)
+└── DevOps  VCS  → Version Control System (distributed)</div>
+      <h3 class="sub-h">RCS (1960s)</h3>
+      <p style="color:var(--muted);">In the pre-agile era, code was written only on a single computer by each developer — an outdated concept. Client-server architecture was not yet introduced.</p>
+      <h3 class="sub-h">SCM (Source Code Management)</h3>
+      <p style="color:var(--muted);">Client-server architecture is in use. Every developer writes their part of the code and sends it to a <strong>centralized server</strong> where every feature is merged.</p>
+      <div class="card accent-coral">
+        <h4>SCM drawbacks</h4>
+        <ul class="list">
+          <li>Requires being <strong>online</strong>.</li>
+          <li><strong>Latency</strong> problem.</li>
+          <li><strong>No encryption</strong>.</li>
+          <li>If the server is down, <strong>no work can be done</strong>.</li>
+          <li>Cannot use when <strong>offline</strong>.</li>
+        </ul>
+      </div>
+      <h3 class="sub-h">DVCS (Distributed Version Control System)</h3>
+      <p style="color:var(--muted);">Created by <strong>Linus Torvalds</strong> because of the drawbacks in SCM. There is a centralized repo on the server <em>and</em> a local repo on each developer's machine.</p>
+      <ul class="list">
+        <li>Each developer has their own <strong>local repo</strong> on their individual machine.</li>
+        <li>To push code to the remote repo, a developer first pushes to their <strong>local repo</strong>, then to the <strong>remote repo</strong>.</li>
+        <li>The data in the repo is <strong>encrypted</strong>.</li>
+        <li>Examples: <strong>Git</strong>, Tortoise, Mercurial, ClearCase.</li>
+      </ul>
+      <div class="quote" style="border-color:var(--teal);"><strong>Interview staple:</strong> the difference between centralized and distributed VCS.</div>
+      <div class="quote" style="border-color:var(--teal);"><strong>Fun fact:</strong> there was no undo option before 1980.</div>
+      <div class="card">
+        <h4>Key terms</h4>
+        <ul class="list">
+          <li><strong>Repository</strong> — contains all the pieces of code written for the project.</li>
+          <li><strong>Feature</strong> — when a project is being developed, developers are assigned to develop different parts; each part is also known as a feature.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="block" id="git">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--teal);">02 · Version Control</span>
+        <h2>Git</h2>
+      </div>
+      <div class="quote" style="border-color:var(--teal);"><strong>Git</strong> is an open-source VCS by Linus Torvalds — the first tool to implement DVCS.</div>
+      <ul class="list">
+        <li>Contains a <strong>remote repo</strong> and a <strong>local repo</strong>.</li>
+        <li>Encryption via <strong>SHA</strong> (Secure Hash Algorithm).</li>
+        <li>Available for <strong>Windows / Linux / macOS</strong>; supports <strong>32-bit and 64-bit</strong>.</li>
+        <li>Released in <strong>2003</strong> by Linus Torvalds.</li>
+        <li>Written in C → Perl → Python.</li>
+        <li><strong>No system requirements</strong> for installing Git.</li>
+      </ul>
+      <h3 class="sub-h">Git architecture</h3>
+      <div class="diagram-box">WORKING DIRECTORY → STAGING AREA (git add) → LOCAL REPO (git commit) → REMOTE REPO (git push)</div>
+      <p style="color:var(--muted); font-size:14px;">Files move from your working directory into the staging area, are committed to the local repository, then pushed to the shared remote repository — with SHA hashing keeping history tamper-evident.</p>
+    </section>
+
+    <section class="block" id="git-commands">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--teal);">02 · Version Control</span>
+        <h2>Git commands</h2>
+        <p>The day-to-day command set for configuring, staging, committing, and inspecting history.</p>
+      </div>
+      <h4 class="mini-h">1 · Configuration</h4>
+      <span class="code-label">bash</span>
+      <pre><code class="language-bash">git config --global --list                 # check configuration (user name, email, ...)
+git config --global user.name "yourusername"
+git config --global user.email "youremail"</code></pre>
+
+      <h4 class="mini-h">2 · Initialize &amp; commit</h4>
+      <span class="code-label">bash</span>
+      <pre><code class="language-bash">git init                       # create a project on your laptop
+# create the file, edit it, save and exit
+git add "filename"             # stage the file
+git commit -m "message"        # commit it</code></pre>
+
+      <h4 class="mini-h">3 · Status &amp; staging</h4>
+      <span class="code-label">bash</span>
+      <pre><code class="language-bash">git status                     # check the status of git
+git add "filename"             # stage a single file
+git add "file1" "file2" ...    # stage multiple files
+git add .                      # stage all files at once</code></pre>
+
+      <h4 class="mini-h">4 · Committing</h4>
+      <span class="code-label">bash</span>
+      <pre><code class="language-bash">git commit -m "message"        # single file / all staged files
+git commit -m "message" file1 file2   # specific files
+git commit -m "message" .      # all staged files in the current directory</code></pre>
+
+      <h4 class="mini-h">5 · Inspecting history</h4>
+      <span class="code-label">bash</span>
+      <pre><code class="language-bash">git show                      # show the latest commit on the current branch
+git log                       # show all commits
+git log --oneline             # one line per commit: id + message only
+git revert &lt;commit id&gt;         # remove a commit and go back to the previous state
+git ls-files                  # list files available in the commit area</code></pre>
+
+      <div class="quote" style="border-color:var(--teal);"><strong>Note:</strong> never revert the initial commit that created the file. A revert is itself stored as a new commit with its own commit id.</div>
+    </section>
+
+    <section class="block" id="github">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--teal);">02 · Version Control</span>
+        <h2>GitHub</h2>
+        <p>One of the most popular Git platforms — alongside GitLab, Bitbucket, and Assembla.</p>
+      </div>
+      <h3 class="sub-h">Installation</h3>
+      <ol class="list">
+        <li>Go to the official Git download page (<code>git-scm.com/downloads</code>).</li>
+        <li>Download the <strong>Windows installer</strong>.</li>
+        <li>Run the installer → accept defaults (unless you have specific needs).</li>
+        <li>Open <strong>Git Bash</strong> (installed with Git).</li>
+        <li>Verify installation: <code>git --version</code>.</li>
+      </ol>
+
+      <h3 class="sub-h">Repository</h3>
+      <p style="color:var(--muted);">A <strong>repository (repo)</strong> is a storage space on GitHub where you keep project files, code, and version history. It can be <strong>public</strong> (visible to everyone) or <strong>private</strong> (only accessible to you and selected collaborators).</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Component</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td>Code</td><td>Source code files and directories.</td></tr>
+            <tr><td>Commits</td><td>Snapshots of changes made to the repo.</td></tr>
+            <tr><td>Branches</td><td>Parallel versions of the project (default branch is usually <code>main</code> or <code>master</code>).</td></tr>
+            <tr><td>Pull Requests (PRs)</td><td>Proposed changes to merge one branch into another.</td></tr>
+            <tr><td>Issues</td><td>Used to track bugs, tasks, or feature requests.</td></tr>
+            <tr><td>README.md</td><td>Explains the project; appears on the repo homepage.</td></tr>
+            <tr><td>LICENSE</td><td>Defines how others can use your project.</td></tr>
+            <tr><td>.gitignore</td><td>Specifies files/folders Git should ignore (like <code>node_modules</code>, build files, etc.).</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="grid2">
+        <div class="card accent-teal">
+          <h4>Public repo</h4>
+          <p>Visible to everyone. Great for <strong>open-source projects</strong>.</p>
+        </div>
+        <div class="card accent-peri">
+          <h4>Private repo</h4>
+          <p>Visible only to you and collaborators. Free with the GitHub Free plan (unlimited repos).</p>
+        </div>
+      </div>
+      <ul class="list">
+        <li><strong>Version control</strong> with Git — track, revert, and collaborate on code.</li>
+        <li><strong>Collaboration</strong> — multiple developers can contribute.</li>
+        <li><strong>Forking</strong> — copy a repo to your own account to experiment.</li>
+        <li><strong>Cloning</strong> — download a local copy of a repo.</li>
+        <li><strong>GitHub Actions</strong> — automate workflows (CI/CD).</li>
+        <li><strong>Security features</strong> — Dependabot, vulnerability alerts (more advanced in paid plans).</li>
+      </ul>
+      <div class="quote" style="border-color:var(--teal);"><strong>Cloning:</strong> you can clone a repo if it is public, or if it is private and you have access. <strong>Never clone a repo into another repo.</strong></div>
+
+      <h3 class="sub-h">Authentication: tokens &amp; keys</h3>
+      <p style="color:var(--muted);"><strong>Tokens</strong> are like special passwords used to authenticate without using your real GitHub password — they provide secure access to repos, APIs, and CI/CD, with limited, revocable permissions.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Type</th><th>What it is</th><th>Where it is managed</th></tr></thead>
+          <tbody>
+            <tr><td>Personal Access Token (PAT)</td><td>Created manually. Classic PATs are older with wide permissions; fine-grained PATs are newer, repo-specific, and more secure. Used from the CLI and for automation.</td><td>Settings → Developer settings → Personal access tokens</td></tr>
+            <tr><td>OAuth Token</td><td>Created automatically when you sign in through an app (VS Code, GitHub CLI, GitHub Desktop); the app manages it for you.</td><td>Settings → Applications → Authorized OAuth Apps</td></tr>
+            <tr><td>GitHub App Token</td><td>Generated when a GitHub App is installed; apps use them to act with limited access.</td><td>Settings → Applications → Installed GitHub Apps</td></tr>
+            <tr><td>SSH Keys</td><td>Public/private key pairs used instead of tokens for Git operations; password-less push/pull once configured.</td><td>Settings → SSH and GPG keys</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="mini-h">When to use what</h4>
+      <ul class="list">
+        <li><strong>OAuth Token</strong> → for apps (VS Code, GitHub Desktop, GitHub CLI).</li>
+        <li><strong>PAT</strong> → for command-line usage, CI/CD pipelines, automation scripts.</li>
+        <li><strong>SSH Keys</strong> → for developers who want password-less Git push/pull.</li>
+        <li><strong>GitHub App Tokens</strong> → for integrations (bots, automation apps).</li>
+      </ul>
+      <h4 class="mini-h">Security best practices</h4>
+      <ul class="list">
+        <li>Always use <strong>least privilege</strong> (grant only required permissions).</li>
+        <li>Set <strong>expiration dates</strong> for PATs.</li>
+        <li>Store tokens securely (Password Manager, OS Keychain).</li>
+        <li>Revoke tokens immediately if exposed.</li>
+        <li>Prefer <strong>fine-grained PATs</strong> or <strong>OAuth</strong> over classic PATs.</li>
+      </ul>
+      <div class="quote" style="border-color:var(--teal);"><strong>In short:</strong> PAT = manual token you control · OAuth = automatic token apps control · SSH = key-based alternative · App tokens = for GitHub Apps/bots.</div>
+    </section>
+
+    <section class="block" id="push-pull">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--teal);">02 · Version Control</span>
+        <h2>Git push &amp; pull</h2>
+      </div>
+      <div class="grid2">
+        <div class="card accent-teal">
+          <h4>git push</h4>
+          <p><strong>Send (upload)</strong> your local commits to a remote repository (e.g., GitHub), updating the remote branch with your local changes.</p>
+          <span class="code-label">bash</span>
+          <pre><code class="language-bash">git push &lt;remote&gt; &lt;branch&gt;
+git push origin main</code></pre>
+          <ul class="list">
+            <li><code>origin</code> → remote repo name (default is "origin").</li>
+            <li><code>main</code> → branch name.</li>
+            <li>Only pushes commits that exist locally but not remotely.</li>
+            <li>Create a new remote branch with <code>git push -u origin branch_name</code>.</li>
+            <li>Use force (<code>-f</code>) carefully to overwrite remote history.</li>
+          </ul>
+        </div>
+        <div class="card accent-peri">
+          <h4>git pull</h4>
+          <p><strong>Fetch (download)</strong> changes from a remote repository <strong>and merge</strong> them into your local branch — basically a shortcut for <code>git fetch + git merge</code>.</p>
+          <span class="code-label">bash</span>
+          <pre><code class="language-bash">git pull &lt;remote&gt; &lt;branch&gt;
+git pull origin main</code></pre>
+          <ul class="list">
+            <li>Downloads changes from <code>origin/main</code> and merges into the current branch.</li>
+            <li>Keeps your local branch up-to-date with the remote.</li>
+            <li>If conflicts exist, Git asks you to resolve them before merging.</li>
+            <li><code>git pull --rebase</code> avoids merge commits (reapplies your commits on top of the updated remote branch).</li>
+          </ul>
+        </div>
+      </div>
+      <h3 class="sub-h">Common workflow</h3>
+      <span class="code-label">bash</span>
+      <pre><code class="language-bash"># 1. Make changes locally
+git add .
+git commit -m "Message"
+
+# 2. Get the latest updates
+git pull origin main
+
+# 3. Push your changes
+git push origin main</code></pre>
+      <h3 class="sub-h">Differences</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Command</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td>git push</td><td>Uploads local commits → remote repo</td></tr>
+            <tr><td>git pull</td><td>Downloads + merges remote commits → local repo</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 class="sub-h">Best practices</h3>
+      <ul class="list">
+        <li>Always run <code>git pull</code> before <code>git push</code> (to avoid conflicts).</li>
+        <li>Use <code>git status</code> to check branch state before pushing/pulling.</li>
+        <li>Avoid <code>git push -f</code> unless you know what you are doing.</li>
+        <li>Use <code>git pull --rebase</code> for cleaner history.</li>
+      </ul>
+    </section>
+
+    <section class="block" id="git-branching">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--teal);">02 · Version Control</span>
+        <h2>Git branching</h2>
+        <p>A branch is a separate line of development — isolation, collaboration, and clean history.</p>
+      </div>
+      <p style="color:var(--muted);">By default a repository starts with a main branch (<code>main</code> or <code>master</code>). Branching lets multiple developers work on different features or bug fixes <strong>without interfering</strong> with each other, and keeps <code>main</code> safe.</p>
+      <div class="diagram-box">main
+├── feature/login
+├── feature/cart
+├── bugfix/login-error
+├── release/v1.0
+└── hotfix/security-patch</div>
+      <h3 class="sub-h">Common branch commands</h3>
+      <span class="code-label">bash</span>
+      <pre><code class="language-bash">git branch branch_name            # create a branch
+git checkout branch_name         # switch to a branch
+git switch branch_name           # modern way to switch
+git checkout -b branch_name      # create + switch in one step
+git switch -c branch_name        # modern create + switch
+
+git branch                       # list branches (* = current branch)
+git checkout main
+git merge branch_name            # merge a branch into main
+git branch -d branch_name        # safe delete (only if merged)
+git branch -D branch_name        # force delete
+git push origin branch_name      # push a branch to remote</code></pre>
+      <h3 class="sub-h">Branching workflow examples</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Workflow</th><th>Use case</th><th>Example names</th></tr></thead>
+          <tbody>
+            <tr><td>Feature branching</td><td>New features</td><td><code>feature/login</code>, <code>feature/cart</code></td></tr>
+            <tr><td>Bugfix branching</td><td>Small fixes</td><td><code>bugfix/login-error</code></td></tr>
+            <tr><td>Release branching</td><td>Preparing stable releases</td><td><code>release/v1.0</code></td></tr>
+            <tr><td>Hotfix branching</td><td>Urgent fixes on production</td><td><code>hotfix/security-patch</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 class="sub-h">Best practices</h3>
+      <ul class="list">
+        <li>Always create a new branch for features/bugs — do not code directly on <code>main</code>.</li>
+        <li>Use <strong>meaningful branch names</strong> (<code>feature/auth-system</code>, not <code>test123</code>).</li>
+        <li>Keep branches <strong>short-lived</strong> to avoid conflicts.</li>
+        <li>Regularly pull updates from <code>main</code> to keep your branch up-to-date.</li>
+        <li>Delete merged branches to keep the repo clean.</li>
+      </ul>
+      <div class="quote" style="border-color:var(--teal);"><strong>Note:</strong> whenever you create or move branches, always check <code>git status</code> first — it should be clean.</div>
+    </section>
+    <!-- ============ SECTION 03 : CI/CD & BUILD ============ -->
+    <section class="block" id="cicd-tools" style="background:linear-gradient(180deg, rgba(126,231,135,0.03), transparent 200px);">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--green);">03 · CI/CD &amp; Build</span>
+        <h2>CI/CD tools</h2>
+        <p>Continuous Integration and Continuous Delivery/Deployment — the automation backbone of the DevOps lifecycle.</p>
+      </div>
+      <div class="quote" style="border-color:var(--green);"><strong>CI</strong> is about integrating live changes of source code — after being validated and tested — into production systems.</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Tool</th><th>Positioning</th></tr></thead>
+          <tbody>
+            <tr><td>Jenkins</td><td>DevOps rank 1 — ~60% market share</td></tr>
+            <tr><td>Azure DevOps</td><td>2nd most used</td></tr>
+            <tr><td>Bamboo</td><td>Agile focus — 3rd in current demand</td></tr>
+            <tr><td>TeamCity</td><td>Trendy choice</td></tr>
+            <tr><td>GitLab</td><td>Full CI/CD with Git platform</td></tr>
+            <tr><td>Octopus</td><td>Deployment automation</td></tr>
+            <tr><td>uDeploy</td><td>Release automation (IBM UrbanCode)</td></tr>
+            <tr><td>Harness</td><td>CI/CD as a service</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block" id="jenkins">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--green);">03 · CI/CD &amp; Build</span>
+        <h2>Jenkins</h2>
+      </div>
+      <div class="card accent-green">
+        <h4>Why Jenkins</h4>
+        <ul class="list">
+          <li>Leader in the CI/CD market for the last <strong>7 years</strong>.</li>
+          <li>Written in <strong>Java</strong>.</li>
+          <li>Operates on a <strong>plugin concept</strong> (app-like extensions).</li>
+          <li><strong>Best-in-class UI</strong> — easy to use and easy to set up.</li>
+          <li>Fits <strong>99% of IT use cases</strong>.</li>
+          <li>Available for <strong>Linux / Windows / macOS</strong>.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="block" id="jenkins-ci">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--green);">03 · CI/CD &amp; Build</span>
+        <h2>The Jenkins CI process</h2>
+        <p>From a developer commit to packaged artifacts, feedback, and optional deployment.</p>
+      </div>
+      <div class="mermaid">
+graph LR
+    A[Developer Commit] --> B[Jenkins Trigger]
+    B --> C[Source Code Checkout]
+    C --> D[Build]
+    D --> E[Automated Testing]
+    E -->|tests fail| N[Notify team &amp; stop]
+    E -->|tests pass| F[Code Analysis]
+    F --> G[Packaging &amp; Artifacts]
+    G --> H[Deployment]
+    H --> I[Feedback &amp; Notifications]
+      </div>
+      <div class="grid2">
+        <div class="card accent-green">
+          <h4>1 · Developer commit</h4>
+          <p>A developer writes code and pushes it to a version control system (e.g., GitHub, GitLab, Bitbucket).</p>
+        </div>
+        <div class="card accent-green">
+          <h4>2 · Jenkins trigger</h4>
+          <p>Jenkins is connected to the repository via a <strong>webhook</strong> or <strong>polling</strong>; new code automatically triggers a <strong>build job</strong>.</p>
+        </div>
+        <div class="card accent-green">
+          <h4>3 · Source code checkout</h4>
+          <p>Jenkins pulls the latest code from the repository.</p>
+        </div>
+        <div class="card accent-green">
+          <h4>4 · Build process</h4>
+          <p>Build tools like <strong>Maven, Gradle, Ant, npm</strong> compile the code and build the project.</p>
+        </div>
+        <div class="card accent-green">
+          <h4>5 · Automated testing</h4>
+          <p>Unit tests, integration tests, or other automated suites run. Pass → pipeline continues; fail → Jenkins notifies the team and stops.</p>
+        </div>
+        <div class="card accent-green">
+          <h4>6 · Code analysis</h4>
+          <p>Optional: static code analysis tools (like <strong>SonarQube</strong>) check code quality and security issues.</p>
+        </div>
+        <div class="card accent-green">
+          <h4>7 · Packaging &amp; artifacts</h4>
+          <p>On success, the code is packaged (e.g., <code>.jar</code>, <code>.war</code>, <code>.zip</code>, Docker image) and stored in a repository like <strong>Nexus</strong>, <strong>Artifactory</strong>, or <strong>Docker Hub</strong>.</p>
+        </div>
+        <div class="card accent-green">
+          <h4>8 · Deployment</h4>
+          <p>Optional CD step: deploy automatically to a development server, staging environment, or production (if Continuous Delivery/Deployment is enabled).</p>
+        </div>
+        <div class="card accent-green">
+          <h4>9 · Feedback &amp; notifications</h4>
+          <p>Jenkins sends results (success/failure) via email, Slack, or dashboards so developers get quick feedback.</p>
+        </div>
+      </div>
+      <h3 class="sub-h">Simplified Jenkins CI pipeline flow</h3>
+      <div class="diagram-box">Commit → Jenkins Trigger → Build → Test → Package → Deploy (optional) → Feedback</div>
+    </section>
+
+    <section class="block" id="artifacts-builds">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--green);">03 · CI/CD &amp; Build</span>
+        <h2>Artifacts &amp; build tools</h2>
+      </div>
+      <div class="card accent-green">
+        <h4>Artifact</h4>
+        <p>An <strong>artifact</strong> is a piece of software code that is compiled, built, tested, and packaged. In Jenkins, an artifact is the file or set of files created when a program is built — a program (<code>.exe</code>), a package, or reports. Jenkins saves them so they can be used later for testing, sharing, or putting the program into use, without rebuilding everything again.</p>
+      </div>
+      <h3 class="sub-h">Build tools by language</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Language</th><th>Build tools</th></tr></thead>
+          <tbody>
+            <tr><td>Java</td><td>ANT, SBT, Maven, Groovy</td></tr>
+            <tr><td>JavaScript</td><td>Maven, Broccoli</td></tr>
+            <tr><td>C# / .NET</td><td>MSBuild, NANT</td></tr>
+            <tr><td>Python</td><td>Gradle — used when multiple languages are involved</td></tr>
+            <tr><td>C</td><td>TurboC, MakeC</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="quote" style="border-color:var(--green);"><strong>What to know about a build tool:</strong> lifecycle, commands, configuration, and purpose — then set up Jenkins around it.</div>
+    </section>
+
+    <section class="block" id="maven">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--green);">03 · CI/CD &amp; Build</span>
+        <h2>Maven</h2>
+        <p>A build automation and project management tool primarily used for Java-based projects.</p>
+      </div>
+      <p style="color:var(--muted);">Maven simplifies building, testing, packaging, and managing Java applications through standardized conventions and automation. It uses an XML file called <code>pom.xml</code> (Project Object Model) to configure project settings, dependencies, and build instructions.</p>
+      <h3 class="sub-h">Key features</h3>
+      <ul class="list">
+        <li><strong>Dependency management</strong> — automatically downloads and manages external libraries.</li>
+        <li><strong>Standard project structure</strong> — consistent folder layout for source, tests, and resources.</li>
+        <li><strong>Build lifecycle</strong> — predefined phases: compile, test, package, deploy.</li>
+        <li><strong>Plugins</strong> — rich ecosystem for compiling, testing, reporting, and more.</li>
+        <li><strong>Repositories</strong> — downloads dependencies from central or remote repositories and caches them locally.</li>
+        <li><strong>Build profiles</strong> — customizes builds for different environments (development, testing, production).</li>
+      </ul>
+      <h3 class="sub-h">Benefits</h3>
+      <ul class="list">
+        <li>Streamlines the build process with minimal manual intervention.</li>
+        <li>Encourages best practices and consistency across projects.</li>
+        <li>Standardizes project structure and dependency management for easier collaboration.</li>
+        <li>Generates project documentation and reports automatically.</li>
+        <li>Integrates with IDEs (Eclipse, IntelliJ, VSCode) and CI/CD tools like Jenkins.</li>
+      </ul>
+      <h3 class="sub-h">Maven lifecycle</h3>
+      <div class="mermaid">
+graph LR
+    A[Validate] --> B[Compile]
+    B --> C[Test]
+    C --> D[Package]
+    D --> E[Verify]
+    E --> F[Install]
+    F --> G[Deploy]
+      </div>
+    </section>
+
+    <section class="block" id="jenkins-plugins">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--green);">03 · CI/CD &amp; Build</span>
+        <h2>Jenkins plugins &amp; item types</h2>
+      </div>
+      <h3 class="sub-h">Installing plugins</h3>
+      <div class="grid3">
+        <div class="card accent-green"><h4>Case 1 · Install</h4><p>Just install the plugin.</p></div>
+        <div class="card accent-green"><h4>Case 2 · Install + configure</h4><p>Install and then configure it. To know whether a plugin needs configuration, click the plugin name while downloading and read its docs.</p></div>
+        <div class="card accent-green"><h4>Case 3 · Install + reboot</h4><p>Some plugins require a Jenkins restart or they will not work.</p></div>
+      </div>
+      <div class="quote" style="border-color:var(--green);"><strong>Format:</strong> a plugin deployed to Jenkins must be a <code>.jpi</code> or <code>.hpi</code> file.</div>
+      <h3 class="sub-h">Common Jenkins item types</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Item type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>Freestyle Project</td><td>Flexible, general-purpose job — build steps, post-build actions, plugins. Great for simple tasks.</td></tr>
+            <tr><td>Pipeline</td><td>Defines jobs using a <code>Jenkinsfile</code> written in Groovy. Supports complex workflows, version control, and automation — ideal for CI/CD.</td></tr>
+            <tr><td>Multi-configuration Project (Matrix)</td><td>Runs the same job with different configurations — useful for testing across environments (OS, JDK versions).</td></tr>
+            <tr><td>Folder</td><td>Organizes jobs into groups — helps manage large Jenkins instances.</td></tr>
+            <tr><td>GitHub Organization</td><td>Automatically scans a GitHub org and creates jobs for each repo with a <code>Jenkinsfile</code>.</td></tr>
+            <tr><td>Multibranch Pipeline</td><td>Automatically creates jobs for each branch in a repo — great for feature-branch teams.</td></tr>
+            <tr><td>External Job</td><td>Monitors jobs run outside Jenkins — rarely used now.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block" id="jenkins-setup">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--green);">03 · CI/CD &amp; Build</span>
+        <h2>Jenkins &amp; Maven setup</h2>
+        <p>Hands-on steps for a full Jenkins server with a Maven build pipeline.</p>
+      </div>
+      <h3 class="sub-h">Full setup</h3>
+      <ol class="list">
+        <li>Download and install the <strong>Jenkins server</strong>.</li>
+        <li>Configure the Jenkins server machine.</li>
+        <li>Configure <strong>build tools</strong> in Jenkins settings.</li>
+      </ol>
+      <h3 class="sub-h">Setup Maven</h3>
+      <span class="code-label">bash</span>
+      <pre><code class="language-bash"># 1. Download the binary version from the Maven Apache website
+#    (binary = ready to use; source = for customization)
+wget &lt;url&gt;            # 2. download the tar file directly
+ls -l                 # 3. list files
+tar -xvf tarfile.name # 4. extract
+vi /etc/profile       # 5. insert the paths into the profile
+source /etc/profile   # 6. reload the profile
+# 7. start the Jenkins server from root
+# 8. go to Manage Tools and add the path and everything</code></pre>
+      <h3 class="sub-h">Job setup</h3>
+      <ol class="list">
+        <li>Select <strong>freestyle project</strong>.</li>
+        <li>Select the git repo that contains <code>pom.xml</code>.</li>
+        <li>In <strong>Source Code Management</strong>, set up the git link and enter the <strong>token</strong> in the credentials.</li>
+        <li>Use <strong>crontab guru</strong> to enter time in a structured format for periodic triggers.</li>
+      </ol>
+      <div class="quote" style="border-color:var(--green);"><strong>Practice assignment:</strong> set up a VM with Git (show pull and push), set up Jenkins, build a Maven pipeline, then create a pipeline program that checks whether a number is prime or not.</div>
+    </section>
+    <!-- ============ SECTION 04 : CONTAINERS ============ -->
+    <section class="block" id="virtualization" style="background:linear-gradient(180deg, rgba(124,156,255,0.03), transparent 200px);">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--periwinkle);">04 · Containers</span>
+        <h2>Virtualization &amp; its limits</h2>
+        <p>Running different operating systems on the same hardware — and why that gets heavy.</p>
+      </div>
+      <div class="card accent-peri">
+        <h4>Virtualization</h4>
+        <ul class="list">
+          <li>Came into use in the <strong>year 2000</strong>, invented by <strong>VMware</strong>.</li>
+          <li>All about running <strong>different OSes on the same hardware</strong>.</li>
+          <li>Types: <strong>bare metal</strong> and <strong>hosted</strong>.</li>
+          <li>Benefits: <strong>cost cutting</strong>, <strong>scaling</strong>, <strong>efficient use of resources</strong>.</li>
+        </ul>
+      </div>
+      <h3 class="sub-h">Drawbacks of virtualization</h3>
+      <div class="grid2">
+        <div class="card accent-coral">
+          <h4>Heavy resource overhead</h4>
+          <p>VMs require a full guest OS per instance, consuming significant CPU, memory, and disk — limiting scalability and slowing boot times.</p>
+        </div>
+        <div class="card accent-coral">
+          <h4>Slow startup &amp; shutdown</h4>
+          <p>VMs initialize an entire OS to start. Containers start almost instantly because they share the host OS kernel.</p>
+        </div>
+        <div class="card accent-coral">
+          <h4>Limited portability</h4>
+          <p>VM images are tightly coupled to hypervisors and host configurations; Docker containers are portable across cloud, local, and CI/CD environments via standardized images.</p>
+        </div>
+        <div class="card accent-coral">
+          <h4>Complex configuration &amp; maintenance</h4>
+          <p>Managing VMs means configuring hypervisors, networking, storage, and OS updates; Docker simplifies this with declarative <code>Dockerfiles</code> and isolated environments.</p>
+        </div>
+        <div class="card accent-coral">
+          <h4>Inefficient DevOps workflows</h4>
+          <p>VMs are less suited to rapid iteration, testing, and deployment; Docker enables reproducible builds, versioned containers, and seamless CI/CD integration.</p>
+        </div>
+        <div class="card accent-coral">
+          <h4>Security isolation trade-offs</h4>
+          <p>VMs offer strong isolation via hardware abstraction but are slower and harder to patch; Docker uses process-level isolation — faster but needing careful security practices.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="docker-creation">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--periwinkle);">04 · Containers</span>
+        <h2>Creation of Docker</h2>
+      </div>
+      <div class="timeline-attack" style="border-color:var(--periwinkle);">
+        <div class="att">
+          <span class="date">2003</span>
+          <h4>The idea</h4>
+        </div>
+        <div class="att">
+          <span class="date">2013</span>
+          <h4>Docker is released as open source</h4>
+          <p style="color:var(--muted);">Released by <strong>Solomon Hykes</strong> at <strong>dotCloud</strong> (a PaaS company).</p>
+        </div>
+        <div class="att">
+          <span class="date">2014</span>
+          <h4>Docker Inc. is founded</h4>
+          <p style="color:var(--muted);">The project gained massive traction in the developer and DevOps communities.</p>
+        </div>
+        <div class="att">
+          <span class="date">2015</span>
+          <h4>Docker Compose &amp; Docker Swarm</h4>
+          <p style="color:var(--muted);">Introduced for multi-container orchestration.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="containerization">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--periwinkle);">04 · Containers</span>
+        <h2>Containerization</h2>
+      </div>
+      <div class="quote" style="border-color:var(--periwinkle);"><strong>Containerization</strong> is a lightweight form of virtualization that packages an application and all its dependencies into a single unit called a <strong>container</strong> — ensuring the app runs consistently across environments.</div>
+      <div class="grid3">
+        <div class="card accent-peri"><h4>Isolation</h4><p>Each container runs independently with its own libraries and configuration.</p></div>
+        <div class="card accent-peri"><h4>Portability</h4><p>Containers run on any system with a container runtime (like Docker), regardless of OS or hardware.</p></div>
+        <div class="card accent-peri"><h4>Efficiency</h4><p>Containers share the host OS kernel, making them faster and more resource-efficient than virtual machines.</p></div>
+      </div>
+      <h3 class="sub-h">Containers vs. virtual machines</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th></th><th>Virtual machines</th><th>Containers</th></tr></thead>
+          <tbody>
+            <tr><td>Guest OS</td><td>Full guest OS per instance</td><td>Share the host OS kernel</td></tr>
+            <tr><td>Startup</td><td>Slow — initializes an entire OS</td><td>Almost instant</td></tr>
+            <tr><td>Overhead</td><td>High CPU, memory, disk usage</td><td>Lightweight</td></tr>
+            <tr><td>Portability</td><td>Tied to hypervisor/host config</td><td>Portable via standardized images</td></tr>
+            <tr><td>Isolation</td><td>Strong (hardware abstraction)</td><td>Process-level — faster but needs care</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="quote" style="border-color:var(--periwinkle);"><strong>Speed:</strong> an app works <strong>6 times faster</strong> on containers compared to running on the OS itself.</div>
+    </section>
+
+    <section class="block" id="docker-concepts">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--periwinkle);">04 · Containers</span>
+        <h2>Docker core concepts</h2>
+      </div>
+      <div class="quote" style="border-color:var(--periwinkle);"><strong>Docker</strong> is an open-source platform that automates the deployment, scaling, and management of containerized applications.</div>
+      <div class="grid2">
+        <div class="card accent-peri">
+          <h4>What Docker provides</h4>
+          <ul class="list">
+            <li><strong>Docker Engine</strong> — the runtime that builds and runs containers.</li>
+            <li><strong>Docker Images</strong> — read-only templates used to create containers.</li>
+            <li><strong>Dockerfile</strong> — a script that defines how to build a Docker image.</li>
+            <li><strong>Docker Hub</strong> — a registry for sharing and downloading container images.</li>
+            <li><strong>Docker Compose</strong> — defines and runs multi-container applications.</li>
+          </ul>
+          <p>Docker has <strong>2 versions</strong>: a free version and a paid Enterprise version.</p>
+        </div>
+        <div class="card accent-teal">
+          <h4>Real-world analogy</h4>
+          <p>Containers are like <strong>shipping containers</strong>: no matter what's inside (cars, electronics, clothes), they're standardized and can be transported by ship, train, or truck. Docker is the system that builds, loads, and moves those containers efficiently.</p>
+        </div>
+      </div>
+      <h3 class="sub-h">The building blocks</h3>
+      <div class="layer-stack">
+        <div class="layer">
+          <span class="num">1</span>
+          <h4>Image</h4>
+          <p>A <strong>read-only template</strong> used to create containers — the blueprint. Contains the application and all dependencies (e.g., <code>ubuntu:22.04</code>, or a custom image built for your web app).</p>
+        </div>
+        <div class="layer">
+          <span class="num">2</span>
+          <h4>Container</h4>
+          <p>A <strong>runnable instance</strong> of an image — a lightweight, isolated process on the host kernel. You can start, stop, and delete them. If the image is a class, the container is an object.</p>
+        </div>
+        <div class="layer">
+          <span class="num">3</span>
+          <h4>Dockerfile</h4>
+          <p>A text file with instructions for <strong>building a Docker image</strong> — the recipe that automates image creation.</p>
+        </div>
+        <div class="layer">
+          <span class="num">4</span>
+          <h4>Docker Daemon</h4>
+          <p>The background service on the host that manages building, running, and distributing containers — it does the heavy lifting.</p>
+        </div>
+        <div class="layer">
+          <span class="num">5</span>
+          <h4>Docker Client</h4>
+          <p>The CLI tool (<code>docker</code>) you use to talk to the daemon. <code>docker run</code> sends the command to the daemon, which executes it.</p>
+        </div>
+        <div class="layer">
+          <span class="num">6</span>
+          <h4>Registry</h4>
+          <p>A storage system for Docker images — the most common public one is <strong>Docker Hub</strong>, like an app store for images. You can <code>pull</code> images from it and <code>push</code> your own.</p>
+        </div>
+      </div>
+      <h3 class="sub-h">Role of DevOps engineers</h3>
+      <ul class="list">
+        <li><strong>Creation of images</strong>.</li>
+        <li><strong>Maintaining containers</strong> — this can be automated by Kubernetes.</li>
+      </ul>
+      <h3 class="sub-h">Installing Docker</h3>
+      <ul class="list">
+        <li>Requires a Linux kernel version <strong>≥ 3.10</strong>.</li>
+        <li>Create a virtual machine to install Docker on.</li>
+      </ul>
+    </section>
+
+    <section class="block" id="docker-commands">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--periwinkle);">04 · Containers</span>
+        <h2>Docker commands</h2>
+        <p>The essential CLI for images, containers, and interactive sessions.</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td>docker info</td><td>Shows the properties of Docker</td></tr>
+            <tr><td>docker images</td><td>Lists available Docker images</td></tr>
+            <tr><td>docker pull &lt;image-name&gt;</td><td>Downloads an image from the registry</td></tr>
+            <tr><td>docker ps -a</td><td>Shows all containers (running and stopped)</td></tr>
+            <tr><td>docker run &lt;image_id&gt;</td><td>Creates a container</td></tr>
+            <tr><td>docker run -it &lt;img_id&gt; /bin/bash</td><td>Creates a container and gets inside it (create and login)</td></tr>
+            <tr><td>exit</td><td>Get out of a container</td></tr>
+            <tr><td>docker run -it &lt;img_id&gt; /bin/bash → Ctrl+P Q</td><td>Creates a container, logs in, and exits with Ctrl+P Q — the container keeps running after exit</td></tr>
+            <tr><td>docker stop &lt;container_id&gt;</td><td>Turns off a running container</td></tr>
+            <tr><td>docker start &lt;container_id&gt;</td><td>Turns on a stopped container</td></tr>
+            <tr><td>docker rm &lt;container_id&gt;</td><td>Deletes a container</td></tr>
+            <tr><td>docker exec &lt;container_id&gt;</td><td>Logs in to an existing container</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block" id="dockerfile">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--periwinkle);">04 · Containers</span>
+        <h2>Dockerfile &amp; instructions</h2>
+      </div>
+      <div class="card accent-peri">
+        <h4>About the Dockerfile</h4>
+        <ul class="list">
+          <li>Helps us <strong>create images</strong> — it contains the instructions.</li>
+          <li>Instructions look similar to Linux commands.</li>
+          <li>The Dockerfile has <strong>no extension</strong>.</li>
+          <li>The logic of Docker image coding must be written in <strong>sequential order</strong>.</li>
+          <li><strong>Docker image build</strong> (or <code>docker build</code>) is the process of executing the Dockerfile — an interpretation process.</li>
+          <li>Instructions follow the format <code>X y</code> — X is the instruction in capitals, y the arguments in small.</li>
+        </ul>
+      </div>
+      <h3 class="sub-h">Building an image</h3>
+      <span class="code-label">bash</span>
+      <pre><code class="language-bash">touch Dockerfile          # create a Dockerfile
+vi Dockerfile             # open it, enter the code, save
+docker image build --tag &lt;image-name&gt; .   # build it
+# if the instructions are correct, the image is built</code></pre>
+      <h3 class="sub-h">Docker instructions reference</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Instruction</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>ADD</td><td>Add local or remote files and directories.</td></tr>
+            <tr><td>ARG</td><td>Use build-time variables.</td></tr>
+            <tr><td>CMD</td><td>Specify default commands.</td></tr>
+            <tr><td>COPY</td><td>Copy files and directories.</td></tr>
+            <tr><td>ENTRYPOINT</td><td>Specify the default executable.</td></tr>
+            <tr><td>ENV</td><td>Set environment variables.</td></tr>
+            <tr><td>EXPOSE</td><td>Describe which ports your application listens on.</td></tr>
+            <tr><td>FROM</td><td>Create a new build stage from a base image.</td></tr>
+            <tr><td>HEALTHCHECK</td><td>Check a container's health on startup.</td></tr>
+            <tr><td>LABEL</td><td>Add metadata to an image.</td></tr>
+            <tr><td>MAINTAINER</td><td>Specify the author of an image (deprecated).</td></tr>
+            <tr><td>ONBUILD</td><td>Specify instructions for when the image is used in a build.</td></tr>
+            <tr><td>RUN</td><td>Execute build commands.</td></tr>
+            <tr><td>SHELL</td><td>Set the default shell of an image.</td></tr>
+            <tr><td>STOPSIGNAL</td><td>Specify the system call signal for exiting a container.</td></tr>
+            <tr><td>USER</td><td>Set the user and group ID.</td></tr>
+            <tr><td>VOLUME</td><td>Create volume mounts.</td></tr>
+            <tr><td>WORKDIR</td><td>Change the working directory.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="grid3">
+        <div class="card accent-peri"><h4>RUN</h4><p>Gets executed <strong>while building</strong> the image.</p></div>
+        <div class="card accent-peri"><h4>CMD</h4><p>Gets executed <strong>when the container is created</strong>.</p></div>
+        <div class="card accent-peri"><h4>EXPOSE</h4><p>Opens ports of the Docker image during runtime — syntax: <code>EXPOSE &lt;port_value&gt;</code>.</p></div>
+      </div>
+      <div class="card">
+        <h4>ADD vs. COPY</h4>
+        <ul class="list">
+          <li><strong>ADD</strong> — copies a file/directory into the image from the Docker host: <code>ADD &lt;source_path&gt; &lt;destination_path&gt;</code>. The source path can also be a <strong>URL</strong>.</li>
+          <li><strong>COPY</strong> — the same as ADD, but <strong>cannot handle URLs</strong>.</li>
+        </ul>
+      </div>
+    </section>
+    <!-- ============ SECTION 05 : ORCHESTRATION ============ -->
+    <section class="block" id="k8s-features" style="background:linear-gradient(180deg, rgba(255,107,107,0.03), transparent 200px);">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--coral);">05 · Orchestration</span>
+        <h2>Kubernetes features</h2>
+        <p>Container orchestration tools manage thousands of containers in the form of clusters.</p>
+      </div>
+      <div class="quote" style="border-color:var(--coral);"><strong>Orchestration</strong> manages <strong>1000s of containers</strong> in the form of <strong>clusters</strong>. The first orchestration tool to come into existence was <strong>Docker Swarm</strong>.</div>
+      <h3 class="sub-h">Kubernetes at a glance</h3>
+      <ul class="list">
+        <li>Works <strong>on-premises and in public cloud</strong> — popular providers: AWS, Azure, GCP, PCF.</li>
+        <li><strong>Highly modular</strong> with a <strong>self-healing mechanism</strong>.</li>
+        <li><strong>Great community support</strong>.</li>
+        <li>Currently <strong>dependent on a container engine</strong> — the default is Docker.</li>
+        <li>Provides <strong>higher-density resource utilization</strong>.</li>
+        <li>Works on <strong>Linux, Windows, and macOS</strong>.</li>
+        <li>Operates in a <strong>client/server methodology</strong> — a <strong>2-tier architecture</strong>.</li>
+      </ul>
+      <h3 class="sub-h">Kubernetes profiles</h3>
+      <div class="grid2">
+        <div class="card accent-coral"><h4>Developer</h4><p>Builds and containerizes applications for the cluster.</p></div>
+        <div class="card accent-coral"><h4>System admin</h4><p>Manages the cluster infrastructure and nodes.</p></div>
+        <div class="card accent-coral"><h4>Network engineer</h4><p>Handles networking between pods, services, and external traffic.</p></div>
+        <div class="card accent-coral"><h4>DevOps</h4><p><strong>Deploy the application and maintain it.</strong></p></div>
+      </div>
+      <h3 class="sub-h">Using Kubernetes on a laptop</h3>
+      <p style="color:var(--muted);">To simulate Kubernetes on a laptop, use either of these tools:</p>
+      <div class="badge-row">
+        <span class="badge" style="color:var(--teal);">Kind</span>
+        <span class="badge" style="color:var(--teal);">minikube</span>
+      </div>
+    </section>
+
+    <section class="block" id="k8s-setup">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--coral);">05 · Orchestration</span>
+        <h2>Installation &amp; activation</h2>
+      </div>
+      <h3 class="sub-h">Installation process</h3>
+      <ol class="list">
+        <li>Install <strong>Docker Desktop</strong> software.</li>
+        <li>Install <strong>VirtualBox</strong>.</li>
+        <li>Install <strong>minikube</strong>.</li>
+        <li>Install <strong>kubectl</strong>.</li>
+      </ol>
+      <h3 class="sub-h">Activating Kubernetes</h3>
+      <ol class="list">
+        <li>Open Docker Desktop.</li>
+        <li>Open the minikube folder and run <strong>Git Bash</strong>.</li>
+        <li>Enter the command: <code>minikube start --kubernetes-version=latest</code>.</li>
+      </ol>
+      <div class="quote" style="border-color:var(--coral);"><strong>Reference:</strong> official Kubernetes tool installation docs at kubernetes.io/docs/tasks/tools.</div>
+      <h3 class="sub-h">Core components of a Kubernetes cluster</h3>
+      <div class="card accent-coral">
+        <h4>API server</h4>
+        <p>The control plane's front end — it accepts incoming requests from <code>kubectl</code> and the rest of the cluster.</p>
+      </div>
+    </section>
+
+    <section class="block" id="k8s-commands">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--coral);">05 · Orchestration</span>
+        <h2>Kubernetes commands</h2>
+      </div>
+      <h3 class="sub-h">Status &amp; pods</h3>
+      <span class="code-label">bash</span>
+      <pre><code class="language-bash">minikube status      # check the status of Kubernetes
+kubectl get pods     # list pods</code></pre>
+      <h3 class="sub-h">kubectl essentials</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Command</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td>kubectl get pods / pod</td><td>Verify whether a pod was created</td></tr>
+            <tr><td>kubectl get deployments</td><td>Check deployments</td></tr>
+            <tr><td>kubectl create deployment &lt;app&gt; --image=&lt;image&gt;</td><td>Create a deployment / pod</td></tr>
+            <tr><td>kubectl expose deployment &lt;app&gt; --type=NodePort --port=&lt;port&gt;</td><td>Create ports for the deployment / pod</td></tr>
+            <tr><td>minikube service &lt;app&gt; --url</td><td>Create a service URL / endpoint for the deployment / pod</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="quote" style="border-color:var(--coral);"><strong>Note:</strong> for <code>--type=NodePort</code>, the N and P are capitals.</div>
+    </section>
+
+    <section class="block" id="k8s-deploy">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--coral);">05 · Orchestration</span>
+        <h2>Deploy an application</h2>
+        <p>Four steps: create the deployment/pod, verify it, expose ports, then create the service URL.</p>
+      </div>
+      <div class="mermaid">
+graph LR
+    A[Create deployment / POD] --> B[Verify deployment / POD]
+    B --> C[Create ports for deployment / POD]
+    C --> D[Create service URLs / endpoints]
+      </div>
+      <h3 class="sub-h">Step 1 · Create a pod</h3>
+      <span class="code-label">bash</span>
+      <pre><code class="language-bash"># syntax
+kubectl create deployment &lt;app_name&gt; --image=Registry_info/image_name
+
+# examples
+kubectl create deployment vnr-b2 --image=k8s.gcr.io/echoserver:1.10
+kubectl create deployment vnr-b2 --image=docker.io/centos:centos7</code></pre>
+      <h3 class="sub-h">Step 2 · Verify if the pod was created</h3>
+      <p style="color:var(--muted);">By default, a deployment will create a pod.</p>
+      <span class="code-label">bash</span>
+      <pre><code class="language-bash">kubectl get pod       # or: kubectl get pods
+kubectl get deployments
+# this can also be checked in the dashboard</code></pre>
+      <h3 class="sub-h">Step 3 · Create ports for the pod</h3>
+      <span class="code-label">bash</span>
+      <pre><code class="language-bash">kubectl expose deployment &lt;App_name&gt; --type=NodePort --port=&lt;port_number&gt;
+
+# example
+kubectl expose deployment vnr-b2 --type=NodePort --port=8080</code></pre>
+      <h3 class="sub-h">Step 4 · Create the service URL</h3>
+      <p style="color:var(--muted);">After exposing, create the service URL / endpoint for the pod.</p>
+      <span class="code-label">bash</span>
+      <pre><code class="language-bash">minikube service &lt;Application_name&gt; --url
+# or
+kubectl service &lt;Application_name&gt; --url
+
+# example
+minikube service vnr-b2 --url</code></pre>
+    </section>
+    <!-- ============ SECTION 06 : CONFIG MANAGEMENT ============ -->
+    <section class="block" id="cm-basics" style="background:linear-gradient(180deg, rgba(245,166,35,0.03), transparent 200px);">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">06 · Config Management</span>
+        <h2>Configuration management</h2>
+      </div>
+      <div class="quote" style="border-color:var(--amber);"><strong>Configuration management</strong> was first introduced by the <strong>Puppet</strong> tool. Its main focus is <strong>deployment</strong> — keeping systems consistent and controlling the deployment tool's configuration file.</div>
+      <h3 class="sub-h">What configuration management does</h3>
+      <ul class="list">
+        <li>Checks whether an application is deployed or not.</li>
+        <li>Checks for any <strong>deviations</strong> after deployment.</li>
+        <li>Sends <strong>alerts</strong> to the user.</li>
+        <li>Configurations are managed by a <strong>configuration file</strong>.</li>
+        <li>Helps <strong>quickly fix problems</strong>.</li>
+        <li>Configuration management code is written to manage; you can also write code to <strong>check the configurations</strong>.</li>
+      </ul>
+      <h3 class="sub-h">If someone changes the configuration file</h3>
+      <ol class="list">
+        <li><strong>Restart the server</strong> — on boot it checks the default config; if deviations are found, it discards the changes and reverts to default.</li>
+        <li><strong>Rerun the configuration file</strong>.</li>
+      </ol>
+      <div class="quote" style="border-color:var(--amber);"><strong>Key point:</strong> the deployment tool controls the whole configuration file — after it is deployed, no one can change it.</div>
+    </section>
+
+    <section class="block" id="cm-tools">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">06 · Config Management</span>
+        <h2>Configuration tools</h2>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Tool</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Chef (2008)</td><td>Most banks use it — considered the <strong>most secure</strong> tool.</td></tr>
+            <tr><td>Puppet (2003)</td><td>First tool to introduce configuration management. Not widely used now because it is not user-friendly.</td></tr>
+            <tr><td>Ansible</td><td>Simple, agentless configuration management.</td></tr>
+            <tr><td>SCCM</td><td>System Center Configuration Manager — from Microsoft.</td></tr>
+            <tr><td>Tivoli</td><td>From IBM.</td></tr>
+            <tr><td>Terraform</td><td>Infrastructure as Code / provisioning.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="quote" style="border-color:var(--amber);"><strong>Note:</strong> GitLab can do deployment, but it <strong>cannot</strong> do configuration management — which is very important.</div>
+      <h3 class="sub-h">Two types of configuration management tools</h3>
+      <div class="grid2">
+        <div class="card accent-teal">
+          <h4>Agent based</h4>
+          <p>Client copy and server copy are different. Provides <strong>high control and security</strong>.</p>
+        </div>
+        <div class="card accent-coral">
+          <h4>Agentless</h4>
+          <p>Only a server copy is present, which must be installed on the server only. Security is <strong>weaker</strong> compared to agent-based.</p>
+        </div>
+      </div>
+      <div class="quote" style="border-color:var(--amber);"><strong>Tool selection:</strong> if all servers are in the cloud → <strong>Terraform</strong>; if all servers are Microsoft → <strong>SCCM</strong>; if all servers are Linux → <strong>Ansible</strong>.</div>
+    </section>
+
+    <section class="block" id="ansible">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">06 · Config Management</span>
+        <h2>Ansible</h2>
+      </div>
+      <div class="quote" style="border-color:var(--amber);"><strong>Ansible</strong> is an open-source automation tool used for <strong>deployment on servers</strong> — it automates provisioning, configuration management, and deployment.</div>
+      <ul class="list">
+        <li>Introduced in <strong>2008</strong> as an independent company.</li>
+        <li>Purchased by <strong>Red Hat in 2015</strong>.</li>
+        <li>The only configuration management tool that works with <strong>32-bit servers</strong>.</li>
+        <li>Developed using <strong>Python</strong>.</li>
+        <li>Two versions: a <strong>free version</strong> and a <strong>licensed Enterprise edition</strong>.</li>
+      </ul>
+      <div class="quote" style="border-color:var(--amber);"><strong>History:</strong> both Red Hat and IBM tried to purchase Ansible; Red Hat won. About two years later, IBM purchased Red Hat.</div>
+    </section>
+
+    <section class="block" id="ansible-bigpicture">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">06 · Config Management</span>
+        <h2>How Ansible works</h2>
+        <p>Ansible's magic lies in simplicity — agentless, idempotent, and SSH-based.</p>
+      </div>
+      <div class="grid2">
+        <div class="card accent-amber">
+          <h4>Agentless</h4>
+          <p>Needs no special software on the servers it manages — it uses a standard protocol already present on almost every server: <strong>SSH</strong> (Linux) or <strong>WinRM</strong> (Windows).</p>
+        </div>
+        <div class="card accent-teal">
+          <h4>Idempotent</h4>
+          <p>Running an Ansible task multiple times always produces the same result. If a task ensures a web server is installed, running it once installs it; running it again does nothing because the server is already there — making Ansible safe, predictable, and reliable.</p>
+        </div>
+      </div>
+      <h3 class="sub-h">The Ansible automation cycle</h3>
+      <div class="mermaid">
+graph LR
+    A[Control Machine] --> B[Playbooks + Inventory]
+    B --> C[SSH connection]
+    C --> D[Managed Nodes]
+    D --> E[Modules run &amp; clean up]
+    E --> F[Results back to Control Machine]
+      </div>
+      <div class="layer-stack">
+        <div class="layer">
+          <span class="num">1</span>
+          <h4>Control Machine</h4>
+          <p>The only place Ansible needs to be installed. From here you write <strong>Playbooks</strong>, define the <strong>Inventory</strong>, and run <code>ansible-playbook</code>.</p>
+        </div>
+        <div class="layer">
+          <span class="num">2</span>
+          <h4>Playbooks</h4>
+          <p>The heart of Ansible — a <strong>YAML file</strong> containing tasks to execute. Human-readable and <strong>declarative</strong>: you declare the desired state of the system, not the step-by-step process. Example: "I want the Nginx web server to be running."</p>
+        </div>
+        <div class="layer">
+          <span class="num">3</span>
+          <h4>Inventory</h4>
+          <p>A simple file (usually INI or YAML) listing all servers (<strong>nodes</strong> or <strong>hosts</strong>) to manage, which can be grouped for easier management.</p>
+        </div>
+        <div class="layer">
+          <span class="num">4</span>
+          <h4>SSH connection</h4>
+          <p>When you run a playbook, the control machine uses <strong>SSH</strong> to connect to each node, authenticating with SSH keys or passwords. No agents to install on target servers.</p>
+        </div>
+        <div class="layer">
+          <span class="num">5</span>
+          <h4>Managed nodes</h4>
+          <p>The target servers to configure — physical servers, VMs, or cloud instances, reachable via SSH.</p>
+        </div>
+        <div class="layer">
+          <span class="num">6</span>
+          <h4>Modules</h4>
+          <p>Ansible uses small, single-purpose programs called <strong>modules</strong> (pushed to the node) instead of running commands directly. After a module runs it is removed, keeping nodes clean. Examples: <code>yum</code>/<code>apt</code> (packages), <code>service</code> (services), <code>copy</code> (files), <code>user</code> (accounts), <code>git</code> (repos).</p>
+        </div>
+      </div>
+      <h3 class="sub-h">Example playbook &amp; inventory</h3>
+      <div class="grid2">
+        <div>
+          <span class="code-label">playbook.yml</span>
+          <pre><code class="language-yaml">---
+- name: Ensure web server is running
+  hosts: webservers
+  tasks:
+    - name: Install the latest version of Apache
+      ansible.builtin.yum:
+        name: httpd
+        state: latest
+
+    - name: Make sure Apache is running
+      ansible.builtin.service:
+        name: httpd
+        state: started</code></pre>
+        </div>
+        <div>
+          <span class="code-label">inventory</span>
+          <pre><code>[webservers]
+web1.example.com
+web2.example.com
+
+[database]
+db1.example.com</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="ansible-setup">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">06 · Config Management</span>
+        <h2>Ansible server &amp; client setup</h2>
+      </div>
+      <h3 class="sub-h">Steps to create the Ansible server</h3>
+      <ol class="list">
+        <li>Create a VM — machine for the server.</li>
+        <li>VM → New Machine → <strong>Full clone</strong> → create a machine.</li>
+        <li><strong>Design the Ansible network:</strong> get the default gateway using <code>ipconfig</code>; both server and client should be on the same network.</li>
+        <li>Start the VM.</li>
+        <li>Change the server name: <code>hostnamectl set-hostname ansible-server</code>.</li>
+        <li>Change IPv4 to static using <code>nmtui</code> — set IP type to manual, set the IP address per your default gateway, set the default gateway, set DNS to <code>8.8.8.8</code>.</li>
+        <li>Restart networking: <code>nmcli networking off</code> then <code>nmcli networking on</code>.</li>
+        <li>Restart the VM.</li>
+        <li>Install Python and Ansible: <code>sudo yum update -y</code>, <code>sudo yum install epel-release -y</code>, <code>sudo yum install ansible-core -y</code>.</li>
+        <li>Verify: <code>ansible --version</code>.</li>
+      </ol>
+      <h3 class="sub-h">Steps to create the Ansible client</h3>
+      <ol class="list">
+        <li>Create a VM — machine for the client.</li>
+        <li>VM → New Machine → <strong>Full clone</strong> → create a machine.</li>
+        <li>Design the Ansible network (same network as the server).</li>
+        <li>Start the VM.</li>
+        <li>Change the client name: <code>hostnamectl set-hostname ansible-client</code>.</li>
+        <li>Change IPv4 to static using <code>nmtui</code> (manual IP, default gateway, DNS <code>8.8.8.8</code>).</li>
+        <li>Restart networking: <code>nmcli networking off</code> / <code>on</code>.</li>
+        <li>Restart the VM.</li>
+      </ol>
+      <h3 class="sub-h">Point Ansible at the client</h3>
+      <span class="code-label">bash</span>
+      <pre><code class="language-bash"># feed the client details into the inventory parameters
+# inventory file location: /etc/ansible/hosts
+vi /etc/ansible/hosts
+ansible_hosts=
+
+yum install sshpass
+ansible node1 -m ping -i /etc/ansible/hosts</code></pre>
+    </section>
+
+    <section class="block" id="ansible-playbooks">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">06 · Config Management</span>
+        <h2>Playbooks &amp; YAML</h2>
+      </div>
+      <div class="quote" style="border-color:var(--amber);"><strong>Playbooks</strong> are YAML files defining a sequence of tasks to be executed on managed nodes — automating configurations, deployments, and orchestrations. Playbooks use <strong>modules</strong> to carry out tasks.</div>
+      <h3 class="sub-h">YAML essentials</h3>
+      <ul class="list">
+        <li>To write playbooks in Ansible, <strong>YML</strong> is used — file extension <code>.yml</code> or <code>.yaml</code>.</li>
+        <li>Three core concepts: <strong>key-value pairs</strong>, <strong>lists</strong>, and <strong>maps</strong>. Lists follow the order of elements.</li>
+        <li>Playbooks contain the deployment script — written on the server, executed from the server, implemented on the client.</li>
+      </ul>
+      <h3 class="sub-h">Playbook structure</h3>
+      <ul class="list">
+        <li>Should start with a hyphen (<code>-</code>), with a single space of indentation.</li>
+        <li><code>name:</code> — the name of the playbook.</li>
+        <li><code>hosts: all</code> — addresses of all hosts on which the implementation should be done; <code>all</code> indicates every available host.</li>
+        <li><code>tasks:</code> — each task starts with a hyphen and can be named; each uses a module.</li>
+      </ul>
+      <h3 class="sub-h">Flow of Ansible execution</h3>
+      <div class="diagram-box">write playbooks in VSCode → push to GitHub → pull the repo in the Ansible server → implement on the client</div>
+      <h3 class="sub-h">Execute a playbook</h3>
+      <span class="code-label">bash</span>
+      <pre><code class="language-bash">ansible-playbook &lt;playbook_name&gt; -i &lt;location of inventory file&gt;
+ansible-playbook &lt;playbook_name&gt; -i &lt;location&gt; --check   # dry-run: verify the playbook is correct</code></pre>
+      <div class="quote" style="border-color:var(--amber);"><strong>Steps to create and execute a playbook:</strong> write the code in VSCode → commit and push to GitHub → pull the repo in the Ansible server → run with <code>--check</code> (inventory at <code>/etc/ansible/hosts</code>) → run the command to execute the playbook.</div>
+
+      <h3 class="sub-h">Example playbooks</h3>
+      <span class="code-label">create a directory on the client</span>
+      <pre><code class="language-yaml">---
+- name: sample playbook
+  hosts: all
+  tasks:
+    - name: module1
+      command:
+        cmd: mkdir /opt/vnr-b3</code></pre>
+      <span class="code-label">install git</span>
+      <pre><code class="language-yaml">---
+- name: installing git
+  hosts: all
+  tasks:
+    - name: code to install git
+      yum:
+        name: git
+        state: present</code></pre>
+      <span class="code-label">multiple tasks</span>
+      <pre><code class="language-yaml">---
+- name: create directory
+  hosts: all
+  tasks:
+    - name: create directory
+      command:
+        cmd: mkdir /opt/hyderabad
+
+    - name: creating text file
+      command:
+        cmd: touch /opt/hyderabad/india.txt</code></pre>
+      <span class="code-label">file module</span>
+      <pre><code class="language-yaml">---
+- name: Create a folder named asia and a file named delhi.txt
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create the folder 'asia'
+      file:
+        path: /opt/asia
+        state: directory
+        mode: '0755'
+
+    - name: Create the file 'delhi.txt' inside asia folder
+      file:
+        path: /opt/asia/delhi.txt
+        state: touch
+        mode: '0644'</code></pre>
+      <span class="code-label">lineinfile module</span>
+      <pre><code class="language-yaml">---
+- name: Create folder 'university' and file 'vnr.txt' with a line using lineinfile
+  hosts: all
+  tasks:
+    - name: Create the folder 'university'
+      file:
+        path: /opt/university
+        state: directory
+
+    - name: Ensure the file 'vnr.txt' exists
+      file:
+        path: /opt/university/vnr.txt
+        state: touch
+
+    - name: Add line "Welcome to VNR" to vnr.txt
+      lineinfile:
+        path: /opt/university/vnr.txt
+        line: "Welcome to VNR"
+        state: present</code></pre>
+      <span class="code-label">replace &amp; install</span>
+      <pre><code class="language-yaml">---
+- name: Replace text and install software
+  hosts: client
+  become: yes
+  tasks:
+    - name: Replace 'welcome to vnr' with 'hello world'
+      replace:
+        path: /path/to/file.txt
+        regexp: 'welcome to vnr'
+        replace: 'hello world'
+
+    - name: Download software from Google Drive
+      get_url:
+        url: "https://drive.google.com/uc?export=download&id=<FILE_ID>"
+        dest: /tmp/software.sh
+        mode: '0755'
+
+    - name: Install software
+      command: sh /tmp/software.sh</code></pre>
+    </section>
+
+    <section class="block" id="ansible-checks">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">06 · Config Management</span>
+        <h2>Config management deep dive</h2>
+        <p>Clarifying the core goals behind configuration management and how Ansible enforces them.</p>
+      </div>
+      <h3 class="sub-h">The real focus of configuration management</h3>
+      <p style="color:var(--muted);">While deployment is an <em>outcome</em> of good configuration management, the primary goals are:</p>
+      <ol class="list">
+        <li><strong>Automate</strong> the setup and maintenance of systems.</li>
+        <li><strong>Enforce consistency</strong> across all environments (dev, staging, production).</li>
+        <li><strong>Prevent "configuration drift"</strong> — when servers become different from each other over time due to manual changes.</li>
+      </ol>
+      <div class="grid2">
+        <div class="card accent-teal">
+          <h4>Declarative &amp; idempotent</h4>
+          <p>A playbook task like <code>state: present</code> ensures an application is deployed. Ansible checks the current state: if already present it does nothing; if missing, it deploys it.</p>
+        </div>
+        <div class="card accent-teal">
+          <h4>Preventing configuration drift</h4>
+          <p>If someone manually changes a config file, the next playbook run detects the deviation and <strong>reverts the server</strong> to the correct state defined in the code.</p>
+        </div>
+        <div class="card accent-amber">
+          <h4>Alerting</h4>
+          <p>Ansible has no built-in alerting like a monitoring tool (Prometheus or Datadog), but it integrates — modules like <code>mail</code> or <code>uri</code> can send email or call a webhook (e.g., Slack, PagerDuty) on failure or change.</p>
+        </div>
+        <div class="card accent-amber">
+          <h4>Infrastructure as Code</h4>
+          <p>The playbook <em>is</em> the configuration file — the single source of truth. Store it in version control (Git) for history, code reviews, and an audit trail. This practice is known as <strong>Infrastructure as Code (IaC)</strong>.</p>
+        </div>
+        <div class="card accent-teal">
+          <h4>Fast recovery</h4>
+          <p>If a server fails, provision a new blank server and run the playbook against it — in minutes you have an identical, fully configured replacement, speeding up disaster recovery.</p>
+        </div>
+        <div class="card accent-teal">
+          <h4>Verification tooling</h4>
+          <p><code>ansible-playbook --check</code> simulates a run ("dry run") and reports what would change; <strong>Ansible Lint</strong> checks playbooks for best practices and errors; <strong>Molecule</strong> tests Ansible roles.</p>
+        </div>
+      </div>
+      <h3 class="sub-h">Summary</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Concept</th><th>Detail</th></tr></thead>
+          <tbody>
+            <tr><td>Ansible's role</td><td>A broader tool for <strong>Provisioning, Configuration Management, and Deployment</strong> — a complete automation engine.</td></tr>
+            <tr><td>Workflow</td><td>Control Machine uses <strong>Playbooks</strong> and an <strong>Inventory</strong>, connects via <strong>SSH</strong> to <strong>Nodes</strong>, and executes <strong>Modules</strong>.</td></tr>
+            <tr><td>Config mgmt origin</td><td>The concept is older, but <strong>Puppet</strong> was a key popularizer; other tools include Chef, SaltStack, and Ansible.</td></tr>
+            <tr><td>Config mgmt focus</td><td><strong>Consistency, control, and preventing configuration drift</strong> — deployment is a result.</td></tr>
+            <tr><td>Checking state</td><td>This is <strong>idempotency</strong> — Ansible ensures the desired state and fixes any deviations.</td></tr>
+            <tr><td>Configuration file</td><td>The <strong>Playbook</strong> — your Infrastructure as Code and single source of truth.</td></tr>
+            <tr><td>Fixing problems</td><td>By codifying your setup, you can rebuild or recover a server in an automated, repeatable way.</td></tr>
+            <tr><td>Checking configs</td><td>Via <code>--check</code> mode, linting, and testing tools like Molecule.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <a class="back-top" href="#top">↑ Back to top</a>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad:true,
+    theme:'base',
+    themeVariables:{
+      background:'#11151d',
+      primaryColor:'#161c27',
+      primaryTextColor:'#e8eaf0',
+      primaryBorderColor:'#232a38',
+      lineColor:'#5c6478',
+      secondaryColor:'#161c27',
+      tertiaryColor:'#161c27',
+      fontFamily:'JetBrains Mono, monospace',
+      fontSize:'13px'
+    },
+    flowchart:{curve:'basis'},
+    securityLevel:'loose'
+  });
+  hljs.highlightAll();
+
+  // mobile nav toggle
+  const sidebar = document.getElementById('sidebar');
+  const toggle = document.getElementById('menuToggle');
+  toggle.addEventListener('click', ()=> sidebar.classList.toggle('open'));
+  document.querySelectorAll('.navlink').forEach(l=>{
+    l.addEventListener('click', ()=> sidebar.classList.remove('open'));
+  });
+
+  // active link highlighting on scroll
+  const links = Array.from(document.querySelectorAll('.navlink[href^="#"]'));
+  const sections = links.map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
+  function onScroll(){
+    let current = sections[0];
+    const y = window.scrollY + 120;
+    for(const s of sections){
+      if(s.offsetTop <= y) current = s;
+    }
+    links.forEach(l=>l.classList.remove('active'));
+    if(current){
+      const active = links.find(l => l.getAttribute('href') === '#'+current.id);
+      if(active) active.classList.add('active');
+    }
+  }
+  window.addEventListener('scroll', onScroll);
+  onScroll();
+</script>
+</body>
+</html>
