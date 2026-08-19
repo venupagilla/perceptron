@@ -64,6 +64,46 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
   font-family:var(--mono); font-size:11.5px; padding:6px 12px; border:1px solid var(--border);
   border-radius:100px; color:var(--muted); background:var(--panel);
 }
+.feature-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:16px;}
+.feature-card{background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:20px;}
+.feature-card h3{font-family:var(--display); font-size:16px; font-weight:600; margin-bottom:10px;}
+.feature-card .fnum{font-family:var(--mono); font-size:10px; color:var(--teal); display:block; margin-bottom:8px; letter-spacing:.1em;}
+.feature-card p{color:var(--muted); font-size:13.5px;}
+.block-head{margin-bottom:36px;}
+.block-head .eyebrow{font-family:var(--mono); font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; display:block; margin-bottom:10px;}
+.block-head .eyebrow.amber{color:var(--amber);}
+.block-head .eyebrow.teal{color:var(--teal);}
+.block-head h2{font-family:var(--display); font-size:32px; font-weight:700; margin-bottom:10px;}
+.block-head p{color:var(--muted); max-width:680px;}
+.notes-grid{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+.note-card{
+  background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:28px;
+  display:flex; flex-direction:column; gap:16px; transition:border-color .15s, transform .15s;
+}
+.note-card:hover{border-color:var(--amber); transform:translateY(-3px);}
+.note-card .tag{font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; display:block;}
+.note-card .tag.amber{color:var(--amber);}
+.note-card .tag.teal{color:var(--teal);}
+.note-card h3{font-family:var(--display); font-size:22px; font-weight:700;}
+.note-card p{color:var(--muted); font-size:14px;}
+.note-card .open{margin-top:auto; font-family:var(--mono); font-size:13px; color:var(--periwinkle); display:inline-flex; align-items:center; gap:6px;}
+.note-card:hover .open{color:var(--amber);}
+.cta-band{text-align:center; padding:100px 40px;}
+.cta-band h2{font-family:var(--display); font-size:34px; font-weight:700; margin-bottom:14px;}
+.cta-band p{color:var(--muted); max-width:520px; margin:0 auto 32px;}
+.footer{max-width:1080px; margin:0 auto; padding:30px 40px 60px; border-top:1px solid var(--border); color:var(--muted-2); font-size:12.5px; font-family:var(--mono); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+@media(max-width:900px){
+  nav{padding:14px 20px;}
+  nav .nav-links{display:none;}
+  .hero h1{font-size:36px;}
+  .hero-inner{padding:110px 22px 60px;}
+  section.block{padding:60px 22px;}
+  .feature-grid{grid-template-columns:1fr 1fr;}
+  .notes-grid{grid-template-columns:1fr;}
+  .cta-band{padding:70px 22px;}
+  .footer{padding:24px 22px 50px;}
+}
+@media(max-width:520px){ .feature-grid{grid-template-columns:1fr;} }
 </style>
 </head>
 <body>
@@ -167,5 +207,63 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
   resize(); seed(); step();
 })();
 </script>
+<section class="block" id="features">
+  <div class="block-head">
+    <span class="eyebrow teal">// what's inside</span>
+    <h2>Two courses, one mental model.</h2>
+    <p>Notes that connect the dots — from the token up to the agent that acts.</p>
+  </div>
+  <div class="feature-grid">
+    <div class="feature-card"><span class="fnum">01</span><h3>Embeddings</h3><p>Words as vectors — Word2Vec, GloVe, and the geometry of meaning.</p></div>
+    <div class="feature-card"><span class="fnum">02</span><h3>Attention</h3><p>Transformers, self-attention, and why the whole field pivoted to them.</p></div>
+    <div class="feature-card"><span class="fnum">03</span><h3>Agents</h3><p>The agentic loop, LangChain, MCP, and building systems that act.</p></div>
+    <div class="feature-card"><span class="fnum">04</span><h3>Guardrails</h3><p>Prompt injection, threat models, and defense in depth.</p></div>
+  </div>
+</section>
+<section class="block" id="notes">
+  <div class="block-head">
+    <span class="eyebrow amber">// the notes</span>
+    <h2>Pick where to start.</h2>
+    <p>Two full reference pages — open either one directly.</p>
+  </div>
+  <div class="notes-grid">
+    <a class="note-card" href="introduction-to-llm.html">
+      <span class="tag teal">NPTEL · Study Notes</span>
+      <h3>Introduction to LLM</h3>
+      <p>From statistical language models to transformers — tokenization, embeddings, attention, and RAG, lecture by lecture.</p>
+      <div class="pillrow">
+        <span class="pill">Statistical LMs</span>
+        <span class="pill">Word2Vec · GloVe</span>
+        <span class="pill">Attention</span>
+        <span class="pill">RLHF</span>
+      </div>
+      <span class="open">Open notes →</span>
+    </a>
+    <a class="note-card" href="agentic-ai-foundations.html">
+      <span class="tag amber">Oracle · Field Notes</span>
+      <h3>Agentic AI Foundations</h3>
+      <p>How agents perceive, reason, and act — the agentic loop, frameworks, Model Context Protocol, and safety guardrails.</p>
+      <div class="pillrow">
+        <span class="pill">Agentic Loop</span>
+        <span class="pill">LangChain</span>
+        <span class="pill">MCP</span>
+        <span class="pill">Guardrails</span>
+      </div>
+      <span class="open">Open notes →</span>
+    </a>
+  </div>
+</section>
+<section class="cta-band" id="cta">
+  <h2>Start with the <span style="color:var(--amber);">LLM foundations</span><br>or dive straight into <span style="color:var(--teal);">agents</span>.</h2>
+  <p>Both pages are self-contained and open instantly in your browser.</p>
+  <div class="cta-row" style="justify-content:center;">
+    <a class="btn primary" href="introduction-to-llm.html">Introduction to LLM</a>
+    <a class="btn ghost" href="agentic-ai-foundations.html">Agentic AI Foundations</a>
+  </div>
+</section>
+<footer class="footer" id="footer">
+  <span>perceptron — study notes</span>
+  <span>LLM · Agents · Guardrails</span>
+</footer>
 </body>
 </html>
