@@ -3,6 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="From perceptrons to transformers — backprop, CNNs, LSTMs, attention, diffusion.">
+<meta property="og:title" content="Neural Networks — From Neurons to Generative AI">
+<meta property="og:description" content="From perceptrons to transformers — backprop, CNNs, LSTMs, attention, diffusion.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://venupagilla.github.io/perceptron/neural-networks.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Neural Networks — From Neurons to Generative AI">
+<meta name="twitter:description" content="From perceptrons to transformers — backprop, CNNs, LSTMs, attention, diffusion.">
+<link rel="stylesheet" href="css/main.css">
 <title>Neural Networks — From Neurons to Generative AI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -331,6 +340,16 @@ ul.checklist li::before{
         <span class="eyebrow">// Neural Networks — From Neurons to Generative AI</span>
         <h1>From <span>perceptrons</span> to <span>transformers</span> — the full journey.</h1>
         <p class="lead">A visual and mathematical journey through neural network foundations, modern architectures, attention mechanisms, and the generative models behind today's AI.</p>
+        <div class="lesson-meta">
+          <div class="lm-row"><strong>Prerequisites:</strong> Basic Python, linear algebra &amp; calculus basics</div>
+          <div class="lm-row"><span class="lm-badge intermediate">Intermediate · ~35 min</span></div>
+          <h2>What you will learn</h2>
+          <ul>
+            <li><strong>Derive</strong> the perceptron update rule and backpropagation step by step.</li>
+            <li><strong>Contrast</strong> CNNs, RNNs/LSTMs, and Transformers — when each wins.</li>
+            <li><strong>Explain</strong> VAEs, GANs, and diffusion models in one paragraph each.</li>
+          </ul>
+        </div>
         <div class="pillrow">
           <span class="pill">Perceptrons</span>
           <span class="pill">Backpropagation</span>
@@ -1496,6 +1515,13 @@ flowchart LR
       </div>
     </section>
 
+    <section class="checkpoint" aria-labelledby="chk-nn">
+      <h2 id="chk-nn">Check Your Understanding</h2>
+      <p>Active recall — try answering before expanding.</p>
+      <details><summary>Why can't a single perceptron solve XOR?</summary><p>XOR is not linearly separable — no single hyperplane separates the (0,1)/(1,0) cases from (0,0)/(1,1). You need a hidden layer (MLP) to learn the non-linear boundary.</p></details>
+      <details><summary>What does scaled dot-product attention compute?</summary><p>A weighted sum of Values, where weights = softmax(QKᵀ/√d). Queries match Keys for relevance; the result routes information between positions.</p></details>
+      <details><summary>VAE vs GAN vs diffusion — in one line each?</summary><p>VAE: encoder-decoder with KL-regularized latent space, stable but blurry. GAN: generator vs discriminator game, sharp but unstable. Diffusion: iterative denoising, best quality at higher sampling cost.</p></details>
+    </section>
     <footer class="footer">
       <a class="back-top" href="#top">↑ Back to top</a>
     </footer>
@@ -1567,5 +1593,6 @@ flowchart LR
   window.addEventListener('scroll', onScroll);
   onScroll();
 </script>
+<script src="js/app.js" defer></script>
 </body>
 </html>

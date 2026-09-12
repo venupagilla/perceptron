@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Java — Language Notes</title>
+<meta name="description" content="Syntax, OOP, collections, streams, concurrency — Java for interviews and everyday use.">
+<meta property="og:title" content="Java — Language Notes">
+<meta property="og:description" content="Syntax, OOP, collections, streams, concurrency — Java for interviews and everyday use.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://venupagilla.github.io/perceptron/java.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Java — Language Notes">
+<meta name="twitter:description" content="Syntax, OOP, collections, streams, concurrency — Java for interviews and everyday use.">
+<link rel="stylesheet" href="css/main.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/nord.min.css">
@@ -392,6 +401,16 @@ ul.checklist li::before{
         <span class="eyebrow">// Java — from basics to advanced</span>
         <h1>Write once,<br><span>run anywhere.</span></h1>
         <p class="lead">A working reference on the Java language — from getting started and data types, through object-oriented programming, memory management and the JVM, to testing, recursion, and regular expressions. Built for interviews and everyday use.</p>
+        <div class="lesson-meta">
+          <div class="lm-row"><strong>Prerequisites:</strong> Programming basics (any language)</div>
+          <div class="lm-row"><span class="lm-badge beginner">Beginner · ~35 min</span></div>
+          <h2>What you will learn</h2>
+          <ul>
+            <li><strong>Write</strong> OOP Java with classes, interfaces, and exceptions.</li>
+            <li><strong>Use</strong> collections and streams for everyday data tasks.</li>
+            <li><strong>Apply</strong> threads and synchronization basics safely.</li>
+          </ul>
+        </div>
         <div class="pillrow">
           <span class="pill">OOP · Inheritance</span>
           <span class="pill">Type Conversion</span>
@@ -3067,6 +3086,14 @@ if (m.find()) {
       </div>
     </section>
 
+    <section class="checkpoint" aria-labelledby="chk-java">
+      <h2 id="chk-java">Check Your Understanding</h2>
+      <p>Active recall — try answering before expanding.</p>
+      <details><summary>Interface vs abstract class — how to choose?</summary><p>Interface: capability contract, multiple allowed. Abstract class: shared state + template behavior for one family. Prefer interfaces for polymorphism.</p></details>
+      <details><summary>ArrayList vs LinkedList?</summary><p>ArrayList: O(1) indexed access, amortized append; LinkedList: O(1) head/tail insert, slow index. Default to ArrayList.</p></details>
+      <details><summary>What does synchronized do?</summary><p>Mutual exclusion on a monitor — only one thread enters the block/method at a time, giving visibility + atomicity for shared state.</p></details>
+    </section>
+
     <footer class="footer">
       <a class="back-top" href="#top">↑ Back to top</a>
     </footer>
@@ -3127,5 +3154,6 @@ if (m.find()) {
   window.addEventListener('scroll', onScroll);
   onScroll();
 </script>
+<script src="js/app.js" defer></script>
 </body>
 </html>

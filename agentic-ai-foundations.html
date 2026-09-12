@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agentic AI Foundations — Field Notes</title>
+<meta name="description" content="Agentic loop, frameworks, Model Context Protocol, guardrails — systems that reason and act.">
+<meta property="og:title" content="Agentic AI Foundations — Field Notes">
+<meta property="og:description" content="Agentic loop, frameworks, Model Context Protocol, guardrails — systems that reason and act.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://venupagilla.github.io/perceptron/agentic-ai-foundations.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Agentic AI Foundations — Field Notes">
+<meta name="twitter:description" content="Agentic loop, frameworks, Model Context Protocol, guardrails — systems that reason and act.">
+<link rel="stylesheet" href="css/main.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/nord.min.css">
@@ -392,6 +401,16 @@ ul.checklist li::before{
         <span class="eyebrow">// Field notes on agentic AI</span>
         <h1>Agents don't <span>answer</span>.<br>They <span>act</span>, observe, and try again.</h1>
         <p class="lead">A working reference on how AI agents perceive, reason, and act — the loop underneath them, the frameworks that run it, the protocol that lets tools plug in anywhere, and the guardrails that keep it from going sideways.</p>
+        <div class="lesson-meta">
+          <div class="lm-row"><strong>Prerequisites:</strong> LLM basics, basic Python</div>
+          <div class="lm-row"><span class="lm-badge advanced">Advanced · ~30 min</span></div>
+          <h2>What you will learn</h2>
+          <ul>
+            <li><strong>Describe</strong> the perceive → reason → act loop and the ReAct pattern.</li>
+            <li><strong>Wire</strong> tools via the Model Context Protocol (MCP) client/server shape.</li>
+            <li><strong>Apply</strong> input/output guardrails and monitoring for safe agents.</li>
+          </ul>
+        </div>
         <div class="pillrow">
           <span class="pill">Agentic Loop</span>
           <span class="pill">ReAct · CoT · ToT</span>
@@ -1637,6 +1656,14 @@ OCI Usage / Cost Analysis REST API</div>
       </div>
     </section>
 
+    <section class="checkpoint" aria-labelledby="chk-agents">
+      <h2 id="chk-agents">Check Your Understanding</h2>
+      <p>Active recall — try answering before expanding.</p>
+      <details><summary>What are the steps of the ReAct loop?</summary><p>Thought → Action (tool call) → Observation → repeat until the answer or a stop condition. The trace grounds reasoning in real tool outputs.</p></details>
+      <details><summary>MCP vs wiring tools directly — what's the win?</summary><p>MCP standardizes tool discovery, schemas, and transport, so one client works with many servers. Direct wiring is faster for one-offs but doesn't compose.</p></details>
+      <details><summary>Name one input and one output guardrail.</summary><p>Input: PII/prompt-injection filter before the model. Output: policy + grounding check (e.g. must cite retrieved docs, block disallowed content).</p></details>
+    </section>
+
     <footer class="footer">
       <a class="back-top" href="#top">↑ Back to top</a>
     </footer>
@@ -1697,5 +1724,6 @@ OCI Usage / Cost Analysis REST API</div>
   window.addEventListener('scroll', onScroll);
   onScroll();
 </script>
+<script src="js/app.js" defer></script>
 </body>
 </html>

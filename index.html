@@ -4,19 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>perceptron — study notes on AI, Software & Cloud</title>
-<meta name="description" content="Hand-written study notes on AI, software engineering, and cloud — Neural Networks, LLMs, LangChain, AI Agents & MCP, Java, FastAPI, DevOps, and AWS. Two guided tracks, eight self-contained modules.">
+<meta name="description" content="Hand-written study notes on AI, software engineering, and cloud — Neural Networks, LLMs, LangChain, AI Agents & MCP, Java, FastAPI, DevOps, and AWS. One curriculum, eight self-contained modules.">
 <link rel="canonical" href="https://venupagilla.github.io/perceptron/">
 <meta name="theme-color" content="#0a0d13">
 <meta name="color-scheme" content="dark">
 
-<!-- OpenGraph -->
+<!-- OpenGraph / Twitter -->
 <meta property="og:title" content="perceptron — study notes on AI, Software & Cloud">
-<meta property="og:description" content="Two guided tracks, eight self-contained modules: Neural Networks → LLMs → LangChain → AI Agents, plus Java, FastAPI, DevOps & AWS.">
+<meta property="og:description" content="One curriculum, eight modules: Neural Networks → LLMs → LangChain → AI Agents, plus Java, FastAPI, DevOps & AWS.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://venupagilla.github.io/perceptron/">
 <meta property="og:site_name" content="perceptron">
-
-<!-- Twitter -->
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="perceptron — study notes on AI, Software & Cloud">
 <meta name="twitter:description" content="From tokens to agents to cloud — one connected library of hand-written technical notes.">
@@ -24,6 +22,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
 
 <!-- Structured data: curriculum as ItemList of Courses -->
 <script type="application/ld+json">
@@ -47,155 +46,81 @@
 </script>
 
 <style>
+/* Landing-specific layout (shared components live in css/main.css) */
 :root{
   --bg:#0a0d13; --panel:#11151d; --panel-2:#161c27; --border:#2a3346;
-  --text:#e8eaf0;
-  /* a11y: lightened to guarantee >=4.5:1 on --bg (#0a0d13) and --panel (#11151d) */
-  --muted:#a9b1c5; --muted-2:#9aa5bd;
+  --text:#e8eaf0; --muted:#a9b1c5; --muted-2:#9aa5bd;
   --amber:#f5a623; --teal:#4fd1c5; --coral:#ff6b6b; --periwinkle:#7c9cff; --green:#7ee787;
-  --mono:'JetBrains Mono', monospace;
-  --display:'Space Grotesk', sans-serif;
-  --body:'Inter', sans-serif;
+  --mono:'JetBrains Mono', monospace; --display:'Space Grotesk', sans-serif; --body:'Inter', sans-serif;
   --focus:var(--amber);
 }
 *{box-sizing:border-box; margin:0; padding:0;}
 html{scroll-behavior:smooth;}
-body{
-  background:var(--bg); color:var(--text);
-  font-family:var(--body); line-height:1.65; font-size:15.5px;
-}
+body{background:var(--bg); color:var(--text); font-family:var(--body); line-height:1.65; font-size:15.5px;}
 ::selection{background:rgba(245,166,35,0.3);}
-body::before{
-  content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
-  background-size:36px 36px;
-}
+body::before{content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image:linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size:36px 36px;}
 a{color:var(--periwinkle); text-decoration:none;}
 a:hover{text-decoration:underline;}
-
-/* Skip link for keyboard users */
-.skip-link{
-  position:absolute; left:-9999px; top:0; z-index:100;
-  background:var(--amber); color:#0a0d13; font-family:var(--mono);
-  font-size:13px; font-weight:600; padding:12px 18px; border-radius:0 0 10px 0;
-}
-.skip-link:focus{left:0;}
-
-/* Visible keyboard focus everywhere */
-a:focus-visible, button:focus-visible, input:focus-visible{
-  outline:2px solid var(--focus); outline-offset:3px; border-radius:8px;
-}
-.note-card:focus-visible{outline:2px solid var(--amber); outline-offset:4px;}
-
-nav{position:fixed; top:0; left:0; right:0; z-index:50; display:flex; align-items:center; justify-content:space-between;
+nav{position:fixed; top:0; left:0; right:0; z-index:50; display:flex; align-items:center; justify-content:space-between; gap:12px;
   padding:8px 40px; background:rgba(10,13,19,0.82); backdrop-filter:blur(10px); border-bottom:1px solid var(--border);}
-.brand{font-family:var(--display); font-weight:700; font-size:18px; color:var(--text);}
+.brand{font-family:var(--display); font-weight:700; font-size:18px; color:var(--text); white-space:nowrap;}
 .brand span{color:var(--amber);}
 nav .nav-links{display:flex; gap:6px; font-family:var(--mono); font-size:12px; letter-spacing:.05em; text-transform:uppercase; align-items:center;}
-/* a11y: 44px minimum hit targets */
-nav .nav-links a{
-  color:var(--muted); display:inline-flex; align-items:center;
-  min-height:44px; min-width:44px; padding:10px 12px; border-radius:8px;
-}
-nav .nav-links a:hover{color:var(--text); text-decoration:none; background:var(--panel);}
-
+nav .nav-links a{color:var(--muted); display:inline-flex; align-items:center; min-height:44px; min-width:44px; padding:10px 12px; border-radius:8px;}
+nav .nav-links a:hover, nav .nav-links a.active{color:var(--text); text-decoration:none; background:var(--panel);}
+nav .nav-actions{display:flex; align-items:center; gap:8px;}
 section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:80px 40px;}
 .hero{position:relative; min-height:100vh; display:flex; align-items:center; overflow:hidden; z-index:1;}
 #neuralCanvas{position:absolute; inset:0; width:100%; height:100%; z-index:0;}
 .hero-inner{position:relative; z-index:2; max-width:900px; padding:140px 48px 90px;}
-.hero .eyebrow{
-  font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase;
-  color:var(--amber); display:block; margin-bottom:20px;
-}
+.hero .eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--amber); display:block; margin-bottom:20px;}
 .hero h1{font-family:var(--display); font-size:60px; line-height:1.08; font-weight:700; letter-spacing:-.01em; margin-bottom:22px;}
 .hero h1 span{color:var(--amber);}
 .hero p.lead{font-size:17px; color:var(--muted); max-width:580px; margin-bottom:36px;}
 .cta-row{display:flex; flex-wrap:wrap; gap:14px; margin-bottom:40px;}
-.btn{
-  font-family:var(--mono); font-size:13px; letter-spacing:.04em; padding:13px 22px; border-radius:10px;
-  border:1px solid var(--border); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
-  min-height:44px; /* a11y touch target */
-}
+.btn{font-family:var(--mono); font-size:13px; letter-spacing:.04em; padding:13px 22px; border-radius:10px;
+  border:1px solid var(--border); cursor:pointer; display:inline-flex; align-items:center; justify-content:center; min-height:44px;}
 .btn.primary{background:var(--amber); color:#0a0d13; font-weight:600; border-color:transparent;}
 .btn.primary:hover{background:#ffb53d; text-decoration:none;}
 .btn.ghost{background:var(--panel); color:var(--text);}
 .btn.ghost:hover{border-color:var(--periwinkle); color:var(--periwinkle); text-decoration:none;}
 .pillrow{display:flex; flex-wrap:wrap; gap:10px;}
-.pill{
-  font-family:var(--mono); font-size:11.5px; padding:6px 12px; border:1px solid var(--border);
-  border-radius:100px; color:var(--muted); background:var(--panel);
-}
-
+.pill{font-family:var(--mono); font-size:11.5px; padding:6px 12px; border:1px solid var(--border); border-radius:100px; color:var(--muted); background:var(--panel);}
 .block-head{margin-bottom:28px;}
 .block-head .eyebrow{font-family:var(--mono); font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; display:block; margin-bottom:10px;}
 .block-head .eyebrow.amber{color:var(--amber);}
 .block-head .eyebrow.teal{color:var(--teal);}
 .block-head h2{font-family:var(--display); font-size:32px; font-weight:700; margin-bottom:10px;}
 .block-head p{color:var(--muted); max-width:680px;}
-
-/* ---- Search ---- */
 .search-wrap{position:relative; margin:0 0 12px;}
-.search-wrap label.sr-only{
-  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
-  overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
-}
-#search{
-  width:100%; min-height:48px; padding:13px 52px 13px 16px;
-  background:var(--panel); border:1px solid var(--border); border-radius:12px;
-  color:var(--text); font-family:var(--mono); font-size:14px;
-}
+#search{width:100%; min-height:48px; padding:13px 52px 13px 16px; background:var(--panel); border:1px solid var(--border);
+  border-radius:12px; color:var(--text); font-family:var(--mono); font-size:14px;}
 #search::placeholder{color:var(--muted-2);}
 #search:hover{border-color:var(--periwinkle);}
-.kbd-hint{
-  position:absolute; right:14px; top:50%; transform:translateY(-50%);
-  font-family:var(--mono); font-size:11px; color:var(--muted);
-  border:1px solid var(--border); border-radius:6px; padding:2px 8px;
-  background:var(--panel-2); pointer-events:none;
-}
-.result-meta{
-  font-family:var(--mono); font-size:12px; color:var(--muted);
-  margin:0 0 28px; min-height:1.5em;
-}
-.empty-state{
-  border:1px dashed var(--border); border-radius:14px; padding:36px 28px;
-  text-align:center; color:var(--muted); background:var(--panel);
-}
+.kbd-hint{position:absolute; right:14px; top:50%; transform:translateY(-50%); font-family:var(--mono); font-size:11px; color:var(--muted);
+  border:1px solid var(--border); border-radius:6px; padding:2px 8px; background:var(--panel-2); pointer-events:none;}
+.result-meta{font-family:var(--mono); font-size:12px; color:var(--muted); margin:0 0 18px; min-height:1.5em;}
+.empty-state{border:1px dashed var(--border); border-radius:14px; padding:36px 28px; text-align:center; color:var(--muted); background:var(--panel);}
 .empty-state strong{display:block; font-family:var(--display); font-size:18px; color:var(--text); margin-bottom:8px;}
-.empty-state button{
-  margin-top:16px; background:transparent; color:var(--periwinkle);
-  border:1px solid var(--border); border-radius:10px; padding:10px 18px;
-  font-family:var(--mono); font-size:13px; cursor:pointer; min-height:44px;
-}
+.empty-state button{margin-top:16px; background:transparent; color:var(--periwinkle); border:1px solid var(--border);
+  border-radius:10px; padding:10px 18px; font-family:var(--mono); font-size:13px; cursor:pointer; min-height:44px;}
 .empty-state button:hover{border-color:var(--amber); color:var(--amber);}
 [hidden]{display:none !important;}
-
-/* ---- Curriculum tracks ---- */
 .track{margin-bottom:44px;}
 .track:last-child{margin-bottom:0;}
-.track-label{
-  display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;
-  border-bottom:1px solid var(--border); padding-bottom:14px; margin-bottom:20px;
-}
+.track-label{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; border-bottom:1px solid var(--border); padding-bottom:14px; margin-bottom:20px;}
 .track-label h3{font-family:var(--display); font-size:20px; font-weight:700;}
-.track-label .track-tag{
-  font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase;
-  padding:4px 10px; border-radius:100px; border:1px solid var(--border);
-}
+.track-label .track-tag{font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; padding:4px 10px; border-radius:100px; border:1px solid var(--border);}
 .track-a .track-tag{color:var(--amber); border-color:rgba(245,166,35,.4);}
 .track-b .track-tag{color:var(--teal); border-color:rgba(79,209,197,.4);}
 .track-label p{width:100%; color:var(--muted); font-size:13.5px;}
-
 .notes-grid{display:grid; grid-template-columns:1fr 1fr; gap:20px; list-style:none; padding:0; margin:0;}
 .notes-grid > li{display:flex;}
-.note-card{
-  flex:1; background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:28px;
-  display:flex; flex-direction:column; gap:12px; transition:border-color .15s, transform .15s;
-  color:inherit;
-}
+.note-card{flex:1; background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:28px;
+  display:flex; flex-direction:column; gap:12px; transition:border-color .15s, transform .15s; color:inherit;}
 .note-card:hover{border-color:var(--amber); transform:translateY(-3px); text-decoration:none;}
-.track-a .note-card:hover{border-color:var(--amber);}
 .track-b .note-card:hover{border-color:var(--teal);}
 .note-card .eyebrow-row{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;}
 .note-card .step{font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; display:block;}
@@ -204,24 +129,19 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
 .note-card .readtime{font-family:var(--mono); font-size:11px; color:var(--muted);}
 .note-card h3{font-family:var(--display); font-size:22px; font-weight:700; line-height:1.25;}
 .note-card p.desc{color:var(--muted); font-size:14px;}
-.note-card .open{
-  margin-top:auto; padding-top:8px; font-family:var(--mono); font-size:13px;
-  color:var(--periwinkle); display:inline-flex; align-items:center; gap:6px;
-  min-height:44px; /* a11y: comfortable tap target inside large card link */
-}
+.note-card .open{margin-top:auto; padding-top:8px; font-family:var(--mono); font-size:13px; color:var(--periwinkle);
+  display:inline-flex; align-items:center; gap:6px; min-height:44px;}
 .note-card:hover .open{color:var(--amber);}
 .track-b .note-card:hover .open{color:var(--teal);}
-
 .cta-band{text-align:center; padding:120px 48px;}
 .cta-band h2{font-family:var(--display); font-size:36px; font-weight:700; margin-bottom:14px; line-height:1.15;}
 .cta-band p{color:var(--muted); max-width:520px; margin:0 auto 32px;}
-.footer{max-width:1080px; margin:0 auto; padding:36px 48px 60px; border-top:1px solid var(--border); color:var(--muted-2); font-size:12.5px; font-family:var(--mono); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;}
+.footer{max-width:1080px; margin:0 auto; padding:36px 48px 60px; border-top:1px solid var(--border); color:var(--muted-2);
+  font-size:12.5px; font-family:var(--mono); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;}
 .footer a{color:var(--muted); transition:color .15s; display:inline-flex; align-items:center; min-height:44px; padding:6px 8px;}
 .footer a:hover{color:var(--amber);}
-
 @media(max-width:900px){
   nav{padding:8px 20px;}
-  nav .nav-links a:not(:last-child){display:none;} /* keep at least Curriculum visible */
   .hero h1{font-size:38px;}
   .hero-inner{padding:120px 24px 60px;}
   section.block{padding:60px 24px;}
@@ -230,20 +150,24 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
   .cta-band h2{font-size:28px;}
   .footer{padding:28px 24px 50px;}
 }
-@media (prefers-reduced-motion: reduce){
-  html{scroll-behavior:auto;}
-  *{transition:none !important;}
-}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} *{transition:none !important;} }
 </style>
+<script src="js/app.js" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#notes">Skip to curriculum</a>
 <nav aria-label="Primary">
   <div class="brand">perceptron<span>.</span></div>
-  <div class="nav-links">
+  <div class="nav-links" id="navLinks">
     <a href="#notes">Curriculum</a>
     <a href="#track-a">AI Systems</a>
     <a href="#track-b">Infrastructure</a>
+  </div>
+  <div class="nav-actions">
+    <button class="search-trigger" type="button" data-open-search aria-label="Search notes (Ctrl K)">
+      Search notes… <kbd aria-hidden="true">⌘K</kbd>
+    </button>
+    <button class="nav-toggle" id="navToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">☰</button>
   </div>
 </nav>
 
@@ -269,8 +193,7 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
 </header>
 
 <script>
-/* Hero canvas: pause off-screen via IntersectionObserver to save GPU/battery.
-   Retains reduced-motion fallback. Canvas stays aria-hidden="true". */
+/* Hero canvas: pause off-screen via IntersectionObserver. Canvas stays aria-hidden="true". */
 (function(){
   var canvas = document.getElementById('neuralCanvas');
   var hero = document.getElementById('hero');
@@ -282,103 +205,59 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
   var W, H, nodes = [], mouse = {x:-9999, y:-9999};
   var COUNT = 55, DIST = 130, MOUSE_DIST = 170;
   var rafId = null, isVisible = true;
-
-  function resize(){
-    var rect = canvas.parentElement.getBoundingClientRect();
-    W = canvas.width = rect.width;
-    H = canvas.height = rect.height;
-  }
-  function seed(){
-    nodes = [];
-    for(var i = 0; i < COUNT; i++){
-      nodes.push({
-        x: Math.random() * W,
-        y: Math.random() * H,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
-        r: 1.5 + Math.random() * 1.5,
-        hue: Math.random()
-      });
-    }
-  }
+  function resize(){ var r = canvas.parentElement.getBoundingClientRect(); W = canvas.width = r.width; H = canvas.height = r.height; }
+  function seed(){ nodes = []; for(var i=0;i<COUNT;i++){ nodes.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,r:1.5+Math.random()*1.5,hue:Math.random()}); } }
   function step(){
     rafId = null;
-    if(!isVisible || document.hidden){ return; } /* paused — do not schedule */
-    ctx.clearRect(0, 0, W, H);
-    for(var i = 0; i < nodes.length; i++){
-      var n = nodes[i];
-      n.x += n.vx; n.y += n.vy;
-      if(n.x < 0 || n.x > W) n.vx *= -1;
-      if(n.y < 0 || n.y > H) n.vy *= -1;
-    }
-    for(var a = 0; a < nodes.length; a++){
-      var p = nodes[a];
-      for(var b = a + 1; b < nodes.length; b++){
-        var q = nodes[b];
-        var dx = p.x - q.x, dy = p.y - q.y;
-        var d = Math.sqrt(dx*dx + dy*dy);
-        if(d < DIST){
-          var alpha = (1 - d / DIST) * 0.5;
-          ctx.strokeStyle = 'rgba(124,156,255,' + alpha + ')';
-          ctx.lineWidth = 1;
-          ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
-        }
-      }
-      var mdx = p.x - mouse.x, mdy = p.y - mouse.y;
-      var md = Math.sqrt(mdx*mdx + mdy*mdy);
-      if(md < MOUSE_DIST){
-        ctx.strokeStyle = 'rgba(245,166,35,' + (1 - md / MOUSE_DIST) + ')';
-        ctx.lineWidth = 1.2;
-        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(mouse.x, mouse.y); ctx.stroke();
-      }
-    }
-    for(var c = 0; c < nodes.length; c++){
-      var s = nodes[c];
-      ctx.fillStyle = s.hue < 0.5 ? 'rgba(79,209,197,0.8)' : 'rgba(245,166,35,0.8)';
-      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx.fill();
-    }
+    if(!isVisible || document.hidden) return;
+    ctx.clearRect(0,0,W,H);
+    var i,a,b,p,q,dx,dy,d,alpha;
+    for(i=0;i<nodes.length;i++){ var n=nodes[i]; n.x+=n.vx; n.y+=n.vy; if(n.x<0||n.x>W)n.vx*=-1; if(n.y<0||n.y>H)n.vy*=-1; }
+    for(a=0;a<nodes.length;a++){ p=nodes[a];
+      for(b=a+1;b<nodes.length;b++){ q=nodes[b]; dx=p.x-q.x; dy=p.y-q.y; d=Math.sqrt(dx*dx+dy*dy);
+        if(d<DIST){ alpha=(1-d/DIST)*0.5; ctx.strokeStyle='rgba(124,156,255,'+alpha+')'; ctx.lineWidth=1;
+          ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y); ctx.stroke(); } }
+      var mdx=p.x-mouse.x, mdy=p.y-mouse.y, md=Math.sqrt(mdx*mdx+mdy*mdy);
+      if(md<MOUSE_DIST){ ctx.strokeStyle='rgba(245,166,35,'+(1-md/MOUSE_DIST)+')'; ctx.lineWidth=1.2;
+        ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(mouse.x,mouse.y); ctx.stroke(); } }
+    for(var c=0;c<nodes.length;c++){ var s=nodes[c]; ctx.fillStyle=s.hue<0.5?'rgba(79,209,197,0.8)':'rgba(245,166,35,0.8)';
+      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fill(); }
     rafId = requestAnimationFrame(step);
   }
-  function start(){ if(rafId === null && isVisible && !document.hidden){ rafId = requestAnimationFrame(step); } }
-  function stop(){ if(rafId !== null){ cancelAnimationFrame(rafId); rafId = null; } }
-
-  /* Pause when hero scrolls out of view, resume when visible */
+  function start(){ if(rafId===null&&isVisible&&!document.hidden) rafId=requestAnimationFrame(step); }
+  function stop(){ if(rafId!==null){ cancelAnimationFrame(rafId); rafId=null; } }
   if('IntersectionObserver' in window && hero){
-    new IntersectionObserver(function(entries){
-      isVisible = entries[0].isIntersecting;
-      if(isVisible){ start(); } else { stop(); }
-    }, {threshold: 0}).observe(hero);
+    new IntersectionObserver(function(e){ isVisible=e[0].isIntersecting; if(isVisible)start(); else stop(); },{threshold:0}).observe(hero);
   }
-  document.addEventListener('visibilitychange', function(){
-    if(document.hidden){ stop(); } else { start(); }
-  });
+  document.addEventListener('visibilitychange', function(){ if(document.hidden)stop(); else start(); });
   window.addEventListener('resize', function(){ resize(); seed(); start(); });
-  document.addEventListener('mousemove', function(e){
-    var rect = canvas.getBoundingClientRect();
-    mouse.x = e.clientX - rect.left;
-    mouse.y = e.clientY - rect.top;
-  });
+  document.addEventListener('mousemove', function(e){ var r=canvas.getBoundingClientRect(); mouse.x=e.clientX-r.left; mouse.y=e.clientY-r.top; });
   resize(); seed(); start();
 })();
 </script>
 
-<!-- Single consolidated curriculum: replaces the old duplicate #features + #notes lists -->
+<!-- Consolidated Curriculum & Notes (was: duplicate What's inside + The notes) -->
 <section class="block" id="notes" aria-labelledby="curriculum-heading">
   <div class="block-head">
-    <span class="eyebrow teal">// curriculum</span>
-    <h2 id="curriculum-heading">One curriculum, two tracks.</h2>
-    <p>Follow the sequence — Neural Networks first, then LLMs, LangChain, and Agents. Or jump to infrastructure with Java, FastAPI, DevOps, and AWS.</p>
+    <span class="eyebrow teal">// curriculum &amp; notes</span>
+    <h2 id="curriculum-heading">Curriculum &amp; Notes</h2>
+    <p>Follow the sequence — Neural Networks first, then LLMs, LangChain, and Agents. Or jump to infrastructure with Java, FastAPI, DevOps, and AWS. Filter by category or search.</p>
   </div>
 
-  <!-- Client-side search: zero-dependency, filters by title + summary + tags -->
+  <div class="filter-row" role="group" aria-label="Filter by category">
+    <button class="filter-btn" type="button" data-filter="all" aria-pressed="true">All</button>
+    <button class="filter-btn" type="button" data-filter="ai" aria-pressed="false">AI &amp; ML</button>
+    <button class="filter-btn" type="button" data-filter="backend" aria-pressed="false">Backend</button>
+    <button class="filter-btn" type="button" data-filter="cloud" aria-pressed="false">Cloud &amp; DevOps</button>
+  </div>
+
   <div class="search-wrap">
-    <label class="sr-only" for="search" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">Search notes</label>
-    <input id="search" type="search" placeholder="Search notes by title, topic, or tag…  ( / to focus )" autocomplete="off" aria-describedby="result-count" aria-controls="track-a track-b empty-state">
+    <label for="search" class="skip-link">Filter cards</label>
+    <input id="search" type="search" placeholder="Filter cards…  ( / focuses, ⌘K searches site )" autocomplete="off" aria-describedby="result-count" aria-controls="track-a track-b empty-state">
     <span class="kbd-hint" aria-hidden="true">/</span>
   </div>
   <p class="result-meta" id="result-count" role="status" aria-live="polite">Showing 8 of 8 modules</p>
 
-  <!-- Track A -->
   <div class="track track-a" id="track-a" aria-labelledby="track-a-heading">
     <div class="track-label">
       <span class="track-tag">Track A</span>
@@ -387,8 +266,8 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
     </div>
     <ul class="notes-grid">
       <li>
-        <a class="note-card" href="neural-networks.html" data-title="neural networks" data-summary="perceptrons backprop backpropagation cnns lstms transformers diffusion generative ai fundamentals" data-tags="perceptrons backprop cnns transformers">
-          <span class="eyebrow-row"><span class="step">AI Track · 01</span><span class="readtime">20 min read</span></span>
+        <a class="note-card" href="neural-networks.html" data-category="ai" data-title="neural networks" data-summary="perceptrons backprop backpropagation cnns lstms transformers diffusion generative ai fundamentals" data-tags="perceptrons backprop cnns transformers">
+          <span class="eyebrow-row"><span class="step">01 · AI</span><span class="card-meta"><span class="diff intermediate">Intermediate</span><span class="readtime">~20 min read</span></span></span>
           <h3>Neural Networks</h3>
           <p class="desc">Prerequisite fundamentals — perceptrons, backprop, CNNs, and transformers that everything else builds on.</p>
           <div class="pillrow"><span class="pill">Perceptrons</span><span class="pill">Backprop</span><span class="pill">CNNs</span><span class="pill">Transformers</span></div>
@@ -396,8 +275,8 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
         </a>
       </li>
       <li>
-        <a class="note-card" href="introduction-to-llm.html" data-title="llm foundations introduction to llm" data-summary="tokenization embeddings attention rag statistical models transformers word2vec glove rlhf" data-tags="tokenization attention embeddings rag">
-          <span class="eyebrow-row"><span class="step">AI Track · 02</span><span class="readtime">18 min read</span></span>
+        <a class="note-card" href="introduction-to-llm.html" data-category="ai" data-title="llm foundations introduction to llm" data-summary="tokenization embeddings attention rag statistical models transformers word2vec glove rlhf" data-tags="tokenization attention embeddings rag">
+          <span class="eyebrow-row"><span class="step">02 · AI</span><span class="card-meta"><span class="diff intermediate">Intermediate</span><span class="readtime">~18 min read</span></span></span>
           <h3>LLM Foundations</h3>
           <p class="desc">Tokenization, attention, embeddings, and RAG — from statistical models to modern transformers.</p>
           <div class="pillrow"><span class="pill">Tokenization</span><span class="pill">Attention</span><span class="pill">Embeddings</span><span class="pill">RAG</span></div>
@@ -405,8 +284,8 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
         </a>
       </li>
       <li>
-        <a class="note-card" href="langchain.html" data-title="langchain" data-summary="chains memory retrieval orchestration agents rag llm applications end to end" data-tags="chains memory retrieval orchestration">
-          <span class="eyebrow-row"><span class="step">AI Track · 03</span><span class="readtime">15 min read</span></span>
+        <a class="note-card" href="langchain.html" data-category="ai" data-title="langchain" data-summary="chains memory retrieval orchestration agents rag llm applications end to end" data-tags="chains memory retrieval orchestration">
+          <span class="eyebrow-row"><span class="step">03 · AI</span><span class="card-meta"><span class="diff intermediate">Intermediate</span><span class="readtime">~15 min read</span></span></span>
           <h3>LangChain</h3>
           <p class="desc">Chains, memory, retrieval, and orchestration — building LLM applications end to end.</p>
           <div class="pillrow"><span class="pill">Chains</span><span class="pill">Memory</span><span class="pill">Retrieval</span><span class="pill">Orchestration</span></div>
@@ -414,8 +293,8 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
         </a>
       </li>
       <li>
-        <a class="note-card" href="agentic-ai-foundations.html" data-title="ai agents mcp agentic ai foundations" data-summary="autonomous loops model context protocol guardrails frameworks reasoning acting" data-tags="autonomous loops model context protocol guardrails">
-          <span class="eyebrow-row"><span class="step">AI Track · 04</span><span class="readtime">16 min read</span></span>
+        <a class="note-card" href="agentic-ai-foundations.html" data-category="ai" data-title="ai agents mcp agentic ai foundations" data-summary="autonomous loops model context protocol guardrails frameworks reasoning acting" data-tags="autonomous loops model context protocol guardrails">
+          <span class="eyebrow-row"><span class="step">04 · AI</span><span class="card-meta"><span class="diff advanced">Advanced</span><span class="readtime">~16 min read</span></span></span>
           <h3>AI Agents &amp; MCP</h3>
           <p class="desc">Autonomous loops, Model Context Protocol, and guardrails — systems that reason and act.</p>
           <div class="pillrow"><span class="pill">Autonomous loops</span><span class="pill">MCP</span><span class="pill">Guardrails</span></div>
@@ -425,7 +304,6 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
     </ul>
   </div>
 
-  <!-- Track B -->
   <div class="track track-b" id="track-b" aria-labelledby="track-b-heading">
     <div class="track-label">
       <span class="track-tag">Track B</span>
@@ -434,8 +312,8 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
     </div>
     <ul class="notes-grid">
       <li>
-        <a class="note-card" href="java.html" data-title="java" data-summary="oop concurrency collections modern features streams syntax" data-tags="oop concurrency collections modern features">
-          <span class="eyebrow-row"><span class="step">Infra Track · 05</span><span class="readtime">22 min read</span></span>
+        <a class="note-card" href="java.html" data-category="backend" data-title="java" data-summary="oop concurrency collections modern features streams syntax" data-tags="oop concurrency collections modern features">
+          <span class="eyebrow-row"><span class="step">05 · Backend</span><span class="card-meta"><span class="diff beginner">Beginner</span><span class="readtime">~22 min read</span></span></span>
           <h3>Java</h3>
           <p class="desc">OOP, concurrency, collections, and modern features — the full language journey.</p>
           <div class="pillrow"><span class="pill">OOP</span><span class="pill">Concurrency</span><span class="pill">Collections</span><span class="pill">Streams</span></div>
@@ -443,8 +321,8 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
         </a>
       </li>
       <li>
-        <a class="note-card" href="fastapi.html" data-title="fastapi" data-summary="async apis pydantic http requests parameters validation python" data-tags="async apis pydantic http">
-          <span class="eyebrow-row"><span class="step">Infra Track · 06</span><span class="readtime">12 min read</span></span>
+        <a class="note-card" href="fastapi.html" data-category="backend" data-title="fastapi" data-summary="async apis pydantic http requests parameters validation python" data-tags="async apis pydantic http">
+          <span class="eyebrow-row"><span class="step">06 · Backend</span><span class="card-meta"><span class="diff beginner">Beginner</span><span class="readtime">~12 min read</span></span></span>
           <h3>FastAPI</h3>
           <p class="desc">Async APIs, Pydantic validation, and HTTP — building fast APIs in Python.</p>
           <div class="pillrow"><span class="pill">Async APIs</span><span class="pill">Pydantic</span><span class="pill">HTTP</span></div>
@@ -452,8 +330,8 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
         </a>
       </li>
       <li>
-        <a class="note-card" href="devops.html" data-title="devops" data-summary="git ci cd docker containers sdlc agile ansible orchestration" data-tags="git ci/cd docker containers">
-          <span class="eyebrow-row"><span class="step">Infra Track · 07</span><span class="readtime">14 min read</span></span>
+        <a class="note-card" href="devops.html" data-category="cloud" data-title="devops" data-summary="git ci cd docker containers sdlc agile ansible orchestration" data-tags="git ci/cd docker containers">
+          <span class="eyebrow-row"><span class="step">07 · Cloud &amp; DevOps</span><span class="card-meta"><span class="diff intermediate">Intermediate</span><span class="readtime">~14 min read</span></span></span>
           <h3>DevOps</h3>
           <p class="desc">Git, CI/CD, Docker, and containers — from SDLC to shipping reliably.</p>
           <div class="pillrow"><span class="pill">Git</span><span class="pill">CI/CD</span><span class="pill">Docker</span><span class="pill">Containers</span></div>
@@ -461,8 +339,8 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
         </a>
       </li>
       <li>
-        <a class="note-card" href="aws.html" data-title="aws cloud" data-summary="vpc iam ec2 s3 cloud architecture compute storage networking" data-tags="vpc iam ec2 s3 cloud architecture">
-          <span class="eyebrow-row"><span class="step">Infra Track · 08</span><span class="readtime">17 min read</span></span>
+        <a class="note-card" href="aws.html" data-category="cloud" data-title="aws cloud" data-summary="vpc iam ec2 s3 cloud architecture compute storage networking" data-tags="vpc iam ec2 s3 cloud architecture">
+          <span class="eyebrow-row"><span class="step">08 · Cloud &amp; DevOps</span><span class="card-meta"><span class="diff intermediate">Intermediate</span><span class="readtime">~17 min read</span></span></span>
           <h3>AWS Cloud</h3>
           <p class="desc">VPC, IAM, EC2, S3, and cloud architecture — core services and foundations.</p>
           <div class="pillrow"><span class="pill">VPC</span><span class="pill">IAM</span><span class="pill">EC2</span><span class="pill">S3</span></div>
@@ -470,6 +348,7 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
         </a>
       </li>
     </ul>
+    <p style="color:var(--muted);font-size:13.5px;margin-top:16px">Tip: press <kbd style="font-family:var(--mono);border:1px solid var(--border);border-radius:6px;padding:1px 7px;background:var(--panel-2)">⌘K</kbd> anywhere to search all notes.</p>
   </div>
 
   <div class="empty-state" id="empty-state" hidden>
@@ -478,57 +357,6 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
     <button type="button" id="clear-search">Clear search</button>
   </div>
 </section>
-
-<script>
-/* Zero-dependency curriculum search: filter by title + summary + tags, live. */
-(function(){
-  var input = document.getElementById('search');
-  var count = document.getElementById('result-count');
-  var empty = document.getElementById('empty-state');
-  var clearBtn = document.getElementById('clear-search');
-  if(!input) return;
-  var cards = Array.prototype.slice.call(document.querySelectorAll('.note-card'));
-  var tracks = Array.prototype.slice.call(document.querySelectorAll('.track'));
-
-  function applyFilter(){
-    var q = input.value.trim().toLowerCase();
-    var visible = 0;
-    cards.forEach(function(card){
-      var hay = ((card.getAttribute('data-title')||'') + ' ' +
-                 (card.textContent||'') + ' ' +
-                 (card.getAttribute('data-summary')||'') + ' ' +
-                 (card.getAttribute('data-tags')||'')).toLowerCase();
-      var match = !q || hay.indexOf(q) !== -1;
-      var li = card.closest('li');
-      if(li) li.hidden = !match;
-      card.setAttribute('aria-hidden', match ? 'false' : 'true');
-      if(match) visible++;
-    });
-    /* Hide whole track headings with zero visible cards */
-    tracks.forEach(function(t){
-      var anyVisible = t.querySelectorAll('li:not([hidden])').length > 0;
-      t.hidden = !anyVisible;
-    });
-    empty.hidden = visible !== 0;
-    count.textContent = q
-      ? ('Showing ' + visible + ' of ' + cards.length + ' modules for “' + input.value.trim() + '”')
-      : ('Showing ' + visible + ' of ' + cards.length + ' modules');
-  }
-
-  input.addEventListener('input', applyFilter);
-  if(clearBtn) clearBtn.addEventListener('click', function(){ input.value=''; applyFilter(); input.focus(); });
-
-  /* Keyboard: "/" or Cmd/Ctrl+K focuses search; Esc clears + blurs */
-  document.addEventListener('keydown', function(e){
-    var inField = /^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement||{}).tagName||'');
-    if((e.key === '/' && !inField) || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k')){
-      e.preventDefault(); input.focus();
-    } else if(e.key === 'Escape' && document.activeElement === input){
-      input.value=''; applyFilter(); input.blur();
-    }
-  });
-})();
-</script>
 
 <section class="cta-band" id="cta">
   <h2>Every page is <span style="color:var(--amber);">self-contained</span>.<br>Pick a subject and start reading.</h2>
