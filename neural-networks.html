@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neural Networks — From Neurons to Generative AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/nord.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js"></script>
+<style>
+:root{
+  --bg:#0a0d13;
+  --panel:#11151d;
+  --panel-2:#161c27;
+  --border:#232a38;
+  --text:#e8eaf0;
+  --text-soft:#c6ccd9;
+  --muted:#8b93a7;
+  --muted-2:#5c6478;
+  --amber:#f5a623;
+  --teal:#4fd1c5;
+  --coral:#ff6b6b;
+  --periwinkle:#7c9cff;
+  --green:#7ee787;
+  --mono:'JetBrains Mono', monospace;
+  --display:'Space Grotesk', sans-serif;
+  --body:'Inter', sans-serif;
+  --code-bg:#0d1117;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--body);
+  line-height:1.65;
+  font-size:15.5px;
+}
+::selection{background:rgba(245,166,35,0.3);}
+
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size:36px 36px;
+  pointer-events:none;
+  z-index:0;
+}
+
+a{color:var(--periwinkle); text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* ===== Layout ===== */
+.shell{display:flex; min-height:100vh; position:relative; z-index:1;}
+
+.sidebar{
+  width:280px; flex-shrink:0;
+  background:var(--panel);
+  border-right:1px solid var(--border);
+  position:fixed; top:0; left:0; bottom:0;
+  overflow-y:auto;
+  padding:24px 0 40px;
+  z-index:20;
+  transition:transform .25s ease;
+}
+.sidebar::-webkit-scrollbar{width:6px;}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border); border-radius:4px;}
+
+.brand{
+  padding:0 22px 20px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:18px;
+}
+.brand .tag{
+  font-family:var(--mono); font-size:11px; letter-spacing:.12em;
+  color:var(--amber); text-transform:uppercase; display:block; margin-bottom:8px;
+}
+.brand h1{
+  font-family:var(--display); font-size:18px; font-weight:700; line-height:1.3;
+  color:var(--text);
+}
+.brand .sub{font-size:12.5px; color:var(--muted); margin-top:6px;}
+
+.navgroup{margin-bottom:4px;}
+.navgroup > .glabel{
+  display:flex; align-items:center; gap:8px;
+  padding:10px 22px 8px;
+  font-family:var(--mono); font-size:11px; letter-spacing:.08em;
+  color:var(--muted-2); text-transform:uppercase;
+}
+.navgroup .glabel .idx{color:var(--teal); font-weight:600;}
+.navlink{
+  display:block;
+  padding:6px 22px 6px 34px;
+  font-size:13.5px; color:var(--muted);
+  border-left:2px solid transparent;
+}
+.navlink:hover{color:var(--text); text-decoration:none; background:rgba(255,255,255,0.02);}
+.navlink.active{color:var(--text); border-left-color:var(--amber); background:rgba(245,166,35,0.06);}
+
+.menu-toggle{
+  display:none; position:fixed; top:16px; left:16px; z-index:30;
+  background:var(--panel-2); border:1px solid var(--border); color:var(--text);
+  width:44px; height:44px; border-radius:8px; font-size:18px; cursor:pointer;
+}
+
+.main{margin-left:280px; flex:1; min-width:0;}
+
+/* ===== Hero ===== */
+.hero{
+  padding:90px 64px 70px;
+  border-bottom:1px solid var(--border);
+  position:relative;
+  overflow:hidden;
+}
+.hero-inner{max-width:900px; position:relative; z-index:2;}
+.hero .eyebrow{
+  font-family:var(--mono); color:var(--amber); font-size:12px;
+  letter-spacing:.14em; text-transform:uppercase; display:block; margin-bottom:18px;
+}
+.hero h1{
+  font-family:var(--display); font-size:52px; line-height:1.08; font-weight:700;
+  letter-spacing:-.01em; margin-bottom:20px;
+}
+.hero h1 span{color:var(--amber);}
+.hero p.lead{
+  font-size:17px; color:var(--muted); max-width:560px; margin-bottom:36px;
+}
+.pillrow{display:flex; flex-wrap:wrap; gap:10px;}
+.pill{
+  font-family:var(--mono); font-size:11.5px; padding:6px 12px;
+  border:1px solid var(--border); border-radius:100px; color:var(--muted);
+  background:var(--panel);
+}
+
+/* ===== Sections ===== */
+section.block{padding:56px 64px; border-bottom:1px solid var(--border);}
+.block-head{max-width:820px; margin-bottom:36px;}
+.block-head .eyebrow{
+  font-family:var(--mono); font-size:11.5px; letter-spacing:.12em; text-transform:uppercase;
+  display:block; margin-bottom:10px;
+}
+.block-head h2{font-family:var(--display); font-size:30px; font-weight:700; margin-bottom:10px;}
+.block-head p{color:var(--muted); max-width:680px;}
+
+h3.sub-h{
+  font-family:var(--display); font-size:20px; font-weight:600; margin:32px 0 14px;
+  padding-top:4px;
+}
+h3.sub-h .idx{color:var(--muted-2); font-family:var(--mono); font-size:14px; margin-right:8px;}
+h4.mini-h{font-family:var(--display); font-size:15.5px; font-weight:600; margin:24px 0 10px; color:var(--text);}
+
+p{margin:10px 0; color:var(--text-soft);}
+ul, ol{margin:10px 0; padding-left:26px; color:var(--text-soft);}
+li{margin:6px 0; line-height:1.7;}
+strong{color:var(--text); font-weight:600;}
+em{color:var(--text-soft); font-style:italic;}
+
+.card{
+  background:var(--panel); border:1px solid var(--border); border-radius:12px;
+  padding:22px 24px; margin:18px 0;
+}
+.card.accent-amber{border-left:3px solid var(--amber);}
+.card.accent-teal{border-left:3px solid var(--teal);}
+.card.accent-coral{border-left:3px solid var(--coral);}
+.card.accent-peri{border-left:3px solid var(--periwinkle);}
+.card.accent-green{border-left:3px solid var(--green);}
+.card h4{margin-top:0;}
+.card p:last-child{margin-bottom:0;}
+
+.quote{
+  font-family:var(--body); font-style:normal;
+  border-left:2px solid var(--amber); padding:4px 0 4px 18px; margin:18px 0;
+  color:var(--muted); font-size:14.5px;
+}
+.quote strong{color:var(--text);}
+
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+.grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+@media(max-width:900px){.grid2,.grid3{grid-template-columns:1fr;}}
+
+table{width:100%; border-collapse:collapse; margin:18px 0; font-size:13.5px;}
+thead th{
+  font-family:var(--mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase;
+  color:var(--muted-2); text-align:left; padding:10px 14px; border-bottom:1px solid var(--border); font-weight:600;
+}
+tbody td{padding:11px 14px; border-bottom:1px solid var(--border); color:var(--muted); vertical-align:top;}
+tbody td:first-child{color:var(--text); font-weight:600;}
+tbody tr:hover{background:rgba(255,255,255,0.015);}
+.table-wrap{overflow-x:auto; border:1px solid var(--border); border-radius:10px;}
+.table-wrap table{margin:0;}
+
+pre{
+  background:var(--code-bg) !important; border:1px solid var(--border); border-radius:10px;
+  padding:20px 24px; overflow-x:auto; margin:16px 0; font-size:13px;
+}
+code{font-family:var(--mono);}
+:not(pre) > code{
+  background:var(--panel-2); padding:2px 6px; border-radius:4px; font-size:.9em; color:var(--teal);
+}
+
+.formula{
+  margin:18px 0; padding:16px 18px; overflow-x:auto;
+  background:var(--code-bg); border:1px solid var(--border);
+  border-left:3px solid var(--amber); border-radius:10px;
+}
+.formula .katex-display{margin:.2em 0;}
+.formula .katex{color:var(--text);}
+
+ul.list, ol.list{margin:12px 0 12px 20px; color:var(--muted);}
+ul.list li, ol.list li{margin-bottom:8px;}
+ul.list li strong, ol.list li strong{color:var(--text);}
+ul.checklist{list-style:none; margin:12px 0;}
+ul.checklist li{
+  padding-left:26px; position:relative; margin-bottom:9px; color:var(--muted); font-size:14px;
+}
+ul.checklist li::before{
+  content:"✓"; position:absolute; left:0; color:var(--green); font-family:var(--mono); font-weight:600;
+}
+
+.mermaid{background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:24px; margin:20px 0; display:flex; justify-content:center; position:relative; overflow:hidden;}
+.mermaid::before{content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, var(--amber), var(--teal), var(--periwinkle));}
+.diagram-label{font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.14em; color:var(--muted-2); text-align:center; margin-bottom:8px;}
+
+.callout{
+  position:relative; margin:20px 0; padding:18px 22px 18px 48px;
+  border:1px solid var(--border); border-left:3px solid var(--teal); border-radius:12px;
+  background:var(--panel);
+}
+.callout::before{content:attr(data-icon); position:absolute; left:14px; top:15px; font-size:16px; line-height:1;}
+.callout.good{border-left-color:var(--green); background:linear-gradient(180deg, rgba(126,231,135,0.05), transparent 140px), var(--panel);}
+.callout.warn{border-left-color:var(--amber); background:linear-gradient(180deg, rgba(245,166,35,0.05), transparent 140px), var(--panel);}
+.callout.note{border-left-color:var(--periwinkle); background:linear-gradient(180deg, rgba(124,156,255,0.05), transparent 140px), var(--panel);}
+.callout .callout-title{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.1em; color:var(--amber); margin-bottom:6px;}
+.callout p, .callout ul, .callout ol{margin:4px 0; font-size:14px;}
+.callout p:first-child{margin-top:0;}
+.callout ul, .callout ol{padding-left:20px;}
+
+.footer{
+  padding:50px 64px 70px; color:var(--muted-2); font-size:13px;
+}
+.footer a{color:var(--muted);}
+.back-top{
+  display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:12px;
+  color:var(--muted); border:1px solid var(--border); padding:8px 14px; border-radius:8px; margin-bottom:24px;
+}
+
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .menu-toggle{display:flex; align-items:center; justify-content:center;}
+  .hero, section.block, .footer{padding-left:26px; padding-right:26px;}
+  .hero{padding-top:80px;}
+  .hero h1{font-size:36px;}
+}
+
+@media print{
+  .sidebar, .menu-toggle{display:none !important;}
+  .main{margin-left:0;}
+  body{background:#fff; color:#000; font-family:serif;}
+  a{color:#000;}
+  .callout{background:#f3f4f6; border:1px solid #ccc;}
+}
+</style>
+</head>
+<body>
+
+<button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">☰</button>
+
+<div class="shell">
+
+  <nav class="sidebar" id="sidebar">
+    <div class="brand">
+      <span class="tag">// Study Notes</span>
+      <h1>Neural Networks</h1>
+      <div class="sub">From Neurons to Generative AI</div>
+    </div>
+
+    <div class="navgroup">
+      <a class="navlink" href="#top" style="padding-left:22px; font-weight:600; color:var(--text);">Overview</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">01</span> Foundations</div>
+      <a class="navlink" href="#mcp-neuron">McCulloch-Pitts Neuron</a>
+      <a class="navlink" href="#perceptron">Perceptron</a>
+      <a class="navlink" href="#mlp">Multi-Layer Perceptron</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">02</span> Training</div>
+      <a class="navlink" href="#backprop">Backpropagation</a>
+      <a class="navlink" href="#optimizers">Optimizers</a>
+      <a class="navlink" href="#regularization">Regularization</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">03</span> Architectures</div>
+      <a class="navlink" href="#activations">Activation Functions</a>
+      <a class="navlink" href="#cnn">CNNs</a>
+      <a class="navlink" href="#rnn">RNNs &amp; LSTMs</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">04</span> Attention &amp; Transformers</div>
+      <a class="navlink" href="#attention">Attention Mechanism</a>
+      <a class="navlink" href="#transformer">Transformer Architecture</a>
+      <a class="navlink" href="#positional-encoding">Positional Encoding</a>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel"><span class="idx">05</span> Generative AI</div>
+      <a class="navlink" href="#vae">Variational Autoencoders</a>
+      <a class="navlink" href="#gan">GANs</a>
+      <a class="navlink" href="#diffusion">Diffusion Models</a>
+    </div>
+  </nav>
+
+  <main class="main" id="top">
+
+    <section class="hero">
+      <div class="hero-inner">
+        <span class="eyebrow">// Neural Networks — From Neurons to Generative AI</span>
+        <h1>From <span>perceptrons</span> to <span>transformers</span> — the full journey.</h1>
+        <p class="lead">A visual and mathematical journey through neural network foundations, modern architectures, attention mechanisms, and the generative models behind today's AI.</p>
+        <div class="pillrow">
+          <span class="pill">Perceptrons</span>
+          <span class="pill">Backpropagation</span>
+          <span class="pill">CNNs</span>
+          <span class="pill">RNNs &amp; LSTMs</span>
+          <span class="pill">Attention</span>
+          <span class="pill">Transformers</span>
+          <span class="pill">VAEs &amp; GANs</span>
+          <span class="pill">Diffusion Models</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 01 · FOUNDATIONS ============ -->
+    <section class="block" id="mcp-neuron">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">// 01 — Foundations</span>
+        <h2>McCulloch-Pitts Neuron (1943)</h2>
+        <p>The first mathematical model of a biological neuron — proving that networks of simple units can compute any logical function.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">01</span>Biology to Math</h3>
+      <p>Warren McCulloch and Walter Pitts proposed that a biological neuron fires when it receives enough excitatory input. They modeled this as a simple threshold logic unit:</p>
+      <ul>
+        <li><strong>Inputs:</strong> binary signals from other neurons (0 or 1)</li>
+        <li><strong>Synaptic weights:</strong> each input has a weight wᵢ representing connection strength</li>
+        <li><strong>Summation:</strong> compute the weighted sum <code>Σ(wᵢ · xᵢ)</code></li>
+        <li><strong>Threshold θ:</strong> if the sum ≥ θ, the neuron "fires" (output = 1); otherwise output = 0</li>
+      </ul>
+
+      <div class="formula">
+        \[y = \begin{cases} 1 & \text{if } \sum_{i=1}^{n} w_i x_i \geq \theta \\ 0 & \text{otherwise} \end{cases}\]
+      </div>
+
+      <div class="mermaid">
+flowchart LR
+    X1["x₁ (0 or 1)"] --> W1["× w₁"]
+    X2["x₂ (0 or 1)"] --> W2["× w₂"]
+    X3["x₃ (0 or 1)"] --> W3["× w₃"]
+    W1 --> SUM["Σ(wᵢ·xᵢ)"]
+    W2 --> SUM
+    W3 --> SUM
+    SUM --> T{"≥ θ ?"}
+    T -->|Yes| Y["Output = 1<br/>(fires)"]
+    T -->|No| N["Output = 0<br/>(silent)"]
+      </div>
+
+      <h3 class="sub-h"><span class="idx">02</span>What It Can Compute</h3>
+      <p>By choosing appropriate weights and thresholds, a single M-C neuron implements basic logic gates:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Gate</th><th>Weights</th><th>Threshold</th><th>Truth Table</th></tr></thead>
+          <tbody>
+            <tr><td><strong>AND</strong></td><td>w₁=1, w₂=1</td><td>θ=2</td><td>1 only when both inputs are 1</td></tr>
+            <tr><td><strong>OR</strong></td><td>w₁=1, w₂=1</td><td>θ=1</td><td>1 when at least one input is 1</td></tr>
+            <tr><td><strong>NAND</strong></td><td>w₁=-1, w₂=-1</td><td>θ=-1</td><td>0 only when both inputs are 1</td></tr>
+            <tr><td><strong>NOR</strong></td><td>w₁=-1, w₂=-1</td><td>θ=0</td><td>1 only when both inputs are 0</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout note" data-icon="💡">
+        <div class="callout-title">Universal computation (in theory)</div>
+        <p>Since NAND is functionally complete, networks of M-C neurons can compute <strong>any Boolean function</strong>. This was the first proof that simple neural units can, in principle, compute anything computable.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">03</span>Limitations</h3>
+      <div class="callout warn" data-icon="⚠️">
+        <div class="callout-title">Critical limitations</div>
+        <ul>
+          <li><strong>Binary only:</strong> inputs and outputs are 0/1 — no continuous values.</li>
+          <li><strong>No learning:</strong> weights are set by hand, not learned from data.</li>
+          <li><strong>Linear separability:</strong> can only solve problems where classes can be separated by a hyperplane.</li>
+          <li><strong>No XOR:</strong> the XOR function (output 1 when inputs differ) is not linearly separable — a single M-C neuron cannot compute it.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="block" id="perceptron">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--teal);">// 01 — Foundations</span>
+        <h2>The Perceptron (Rosenblatt, 1957)</h2>
+        <p>A network that <strong>learns</strong> its weights from data — the first trainable neural network.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">01</span>Architecture</h3>
+      <p>Frank Rosenblatt's perceptron added a crucial ingredient to the M-C neuron: <strong>learning from examples</strong>. The network takes real-valued inputs, applies learned weights and a bias, and passes the result through a step function:</p>
+      <div class="formula">
+        \[\hat{y} = \text{step}(w \cdot x + b) = \begin{cases} 1 & \text{if } w \cdot x + b \geq 0 \\ 0 & \text{otherwise} \end{cases}\]
+      </div>
+
+      <div class="mermaid">
+flowchart LR
+    X["Input vector x"] --> W["Weighted sum<br/>w·x + b"]
+    W --> STEP["Step function"]
+      </div>
+
+      <h3 class="sub-h"><span class="idx">02</span>The Perceptron Learning Rule</h3>
+      <p>When the perceptron misclassifies an example, update the weights to correct the error:</p>
+      <div class="formula">
+        \[w_i \leftarrow w_i + \eta \cdot (y - \hat{y}) \cdot x_i\]
+        \[b \leftarrow b + \eta \cdot (y - \hat{y})\]
+      </div>
+      <p>Where:</p>
+      <ul>
+        <li><code>η</code> is the <strong>learning rate</strong> (small positive constant, e.g. 0.01–0.1)</li>
+        <li><code>y</code> is the true label (0 or 1)</li>
+        <li><code>ŷ</code> is the predicted output (0 or 1)</li>
+        <li><code>(y - ŷ)</code> is the error signal: +1 for false negatives, -1 for false positives, 0 when correct</li>
+      </ul>
+
+      <div class="mermaid">
+flowchart LR
+    X["Input x, label y"] --> P["Perceptron<br/>predict ŷ"]
+    P --> C{"y = ŷ ?"}
+    C -->|Yes| OK["No update — correct!"]
+      </div>
+
+      <h3 class="sub-h"><span class="idx">03</span>The Perceptron Convergence Theorem</h3>
+      <div class="callout good" data-icon="✅">
+        <div class="callout-title">Guaranteed convergence</div>
+        <p>If the data is <strong>linearly separable</strong>, the perceptron learning algorithm is guaranteed to find a separating hyperplane in a finite number of steps. This was a landmark result — the first proof that a learning algorithm converges.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">04</span>The XOR Problem &amp; AI Winter</h3>
+      <p>The XOR function outputs 1 when inputs differ:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>x₁</th><th>x₂</th><th>XOR output</th></tr></thead>
+          <tbody>
+            <tr><td>0</td><td>0</td><td>0</td></tr>
+            <tr><td>0</td><td>1</td><td>1</td></tr>
+            <tr><td>1</td><td>0</td><td>1</td></tr>
+            <tr><td>1</td><td>1</td><td>0</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>No single line can separate the 0s from the 1s in XOR — the problem is <strong>not linearly separable</strong>.</p>
+
+      <div class="callout warn" data-icon="⚠️">
+        <div class="callout-title">Minsky &amp; Papert's critique (1969)</div>
+        <p>In their book <em>Perceptrons</em>, Marvin Minsky and Seymour Papert proved that single-layer perceptrons cannot solve XOR or any non-linearly separable problem. They argued multi-layer networks were impractical. This triggered the first <strong>"AI Winter"</strong> — neural network research funding dried up for over a decade.</p>
+      </div>
+
+      <p>The solution was obvious in hindsight: stack multiple layers. But training a multi-layer network required a new algorithm — <strong>backpropagation</strong>.</p>
+    </section>
+
+    <section class="block" id="mlp">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--periwinkle);">// 01 — Foundations</span>
+        <h2>Multi-Layer Perceptron (MLP)</h2>
+        <p>Stacking layers to solve non-linear problems — the foundation of all deep learning.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">01</span>Architecture</h3>
+      <p>An MLP consists of:</p>
+      <ul>
+        <li><strong>Input layer:</strong> one neuron per feature (e.g., 784 for 28×28 images)</li>
+        <li><strong>Hidden layer(s):</strong> one or more layers of neurons, each with weights, bias, and activation</li>
+        <li><strong>Output layer:</strong> one neuron per class (classification) or one neuron (regression)</li>
+      </ul>
+
+      <div class="mermaid">
+flowchart LR
+    subgraph INPUT["Input Layer (d_in)"]
+        I1["x₁"]
+        IX["..."]
+        ID["x_d"]
+    end
+    subgraph HIDDEN["Hidden Layer (d_h)"]
+        H1["h₁"]
+        HX["..."]
+        HD["h_d"]
+    end
+    subgraph OUTPUT["Output Layer (d_out)"]
+        O1["ŷ₁"]
+        OX["..."]
+        OD["ŷ_c"]
+    end
+    I1 --> H1
+    ID --> HD
+    H1 --> O1
+    HD --> OD
+      </div>
+
+      <h3 class="sub-h"><span class="idx">02</span>The Forward Pass</h3>
+      <p>Each layer transforms the input through a linear operation followed by a non-linear activation:</p>
+      <div class="formula">
+        \[z^{(l)} = W^{(l)} a^{(l-1)} + b^{(l)}\]
+        \[a^{(l)} = \sigma(z^{(l)})\]
+      </div>
+      <p>Where <code>a⁽⁰⁾ = x</code> (input), and the final layer's output is the prediction. The chain of matrix multiplications and activations computes a complex non-linear function of the input.</p>
+
+      <h3 class="sub-h"><span class="idx">03</span>Universal Approximation Theorem</h3>
+      <div class="callout good" data-icon="✅">
+        <div class="callout-title">Theoretical power</div>
+        <p>A single hidden layer with a finite number of neurons can approximate any continuous function on a compact subset to arbitrary precision (Cybenko 1989, Hornik 1991). The key requirement is a non-linear activation function.</p>
+      </div>
+      <div class="callout warn" data-icon="⚠️">
+        <div class="callout-title">But width is not practical</div>
+        <p>The theorem guarantees existence but says nothing about how many neurons are needed. In practice, the required width may be exponentially large. <strong>Depth</strong> (stacking layers) is exponentially more efficient — this is why deep learning works. A deep network with O(n) parameters can represent functions that would require O(2ⁿ) neurons in a single layer.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">04</span>Computing an XOR with an MLP</h3>
+      <p>A 2-layer MLP with hidden neurons can solve XOR. Here's a concrete construction:</p>
+      <div class="formula">
+        \[h_1 = \text{ReLU}(x_1 + x_2 - 0.5)\]
+        \[h_2 = \text{ReLU}(-x_1 - x_2 + 1.5)\]
+        \[\hat{y} = \text{ReLU}(h_1 + h_2 - 1)\]
+      </div>
+      <p>Verification: XOR(0,0)=0, XOR(0,1)=1, XOR(1,0)=1, XOR(1,1)=0. The hidden layer creates a non-linear decision boundary that separates the classes.</p>
+
+      <h3 class="sub-h"><span class="idx">05</span>Loss Functions</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Task</th><th>Loss Function</th><th>Formula</th><th>When to Use</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Binary Classification</strong></td><td>Binary Cross-Entropy</td><td>-[y log(ŷ) + (1-y) log(1-ŷ)]</td><td>Two classes, sigmoid output</td></tr>
+            <tr><td><strong>Multi-class Classification</strong></td><td>Cross-Entropy</td><td>-Σ yₖ log(ŷₖ)</td><td>C classes, softmax output</td></tr>
+            <tr><td><strong>Regression</strong></td><td>Mean Squared Error</td><td>Σ(y - ŷ)² / n</td><td>Continuous output</td></tr>
+            <tr><td><strong>Regression (robust)</strong></td><td>Mean Absolute Error</td><td>Σ|y - ŷ| / n</td><td>Outlier-robust regression</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ 02 · TRAINING ============ -->
+    <section class="block" id="backprop">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">// 02 — Training</span>
+        <h2>Backpropagation (Rumelhart, Hinton &amp; Williams, 1986)</h2>
+        <p>The algorithm that made deep learning practical — computing gradients efficiently via the chain rule.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">01</span>The Training Loop</h3>
+      <div class="mermaid">
+flowchart LR
+    A["1. Forward pass<br/>compute predictions"] --> B["2. Compute loss<br/>measure error"]
+    B --> C["3. Backward pass<br/>compute gradients via chain rule"]
+    C --> D["4. Update weights<br/>w ← w - η·∂L/∂w"]
+    D -->|"repeat for epochs"| A
+      </div>
+
+      <h3 class="sub-h"><span class="idx">02</span>The Chain Rule</h3>
+      <p>Backpropagation is just the chain rule applied systematically. For a weight w in any layer:</p>
+      <div class="formula">
+        \[\frac{\partial L}{\partial w} = \frac{\partial L}{\partial \hat{y}} \cdot \frac{\partial \hat{y}}{\partial z^{(L)}} \cdot \frac{\partial z^{(L)}}{\partial a^{(L-1)}} \cdot \frac{\partial a^{(L-1)}}{\partial z^{(L-1)}} \cdots \frac{\partial z^{(l)}}{\partial w}\]
+      </div>
+      <p>Instead of computing this product for every weight independently (which would be O(n²) per layer), backpropagation computes all gradients in a single forward + backward pass in O(n) time by reusing intermediate results.</p>
+
+      <h3 class="sub-h"><span class="idx">03</span>Concrete Example: 2-Layer Network</h3>
+      <p>Consider a network with input <code>x</code>, one hidden layer, and output <code>ŷ</code>:</p>
+      <div class="formula">
+        \[h = \sigma(W_1 x + b_1) \quad \text{(hidden layer)}\]
+        \[\hat{y} = \text{softmax}(W_2 h + b_2) \quad \text{(output)}\]
+        \[L = -\sum_k y_k \log \hat{y}_k \quad \text{(cross-entropy loss)}\]
+      </div>
+      <p><strong>Backward pass (gradients):</strong></p>
+      <div class="formula">
+        \[\frac{\partial L}{\partial W_2} = (\hat{y} - y) \cdot h^T\]
+        \[\frac{\partial L}{\partial b_2} = \hat{y} - y\]
+        \[\frac{\partial L}{\partial W_1} = (W_2^T (\hat{y} - y) \odot \sigma'(z_1)) \cdot x^T\]
+      </div>
+      <p>The error signal propagates backward — each layer receives the gradient from the layer above, multiplied by the local derivative of its activation function.</p>
+
+      <h3 class="sub-h"><span class="idx">04</span>Gradient Descent Variants</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Variant</th><th>Batch Size</th><th>Pros</th><th>Cons</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Batch GD</strong></td><td>Entire dataset</td><td>Stable gradient estimate, smooth convergence</td><td>Very slow for large datasets, high memory</td></tr>
+            <tr><td><strong>Stochastic GD (SGD)</strong></td><td>1 sample</td><td>Fast updates, can escape local minima via noise</td><td>Noisy convergence, may not reach minimum</td></tr>
+            <tr><td><strong>Mini-Batch GD</strong></td><td>32–512 samples</td><td>GPU-friendly, good gradient estimate, fast</td><td>Requires tuning batch size</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">05</span>The Vanishing &amp; Exploding Gradient Problem</h3>
+      <p>In deep networks, gradients are computed as a product of many terms. If these terms are consistently &lt;1, the gradient <strong>vanishes</strong> exponentially. If consistently &gt;1, it <strong>explodes</strong>.</p>
+
+      <div class="mermaid">
+flowchart TB
+    L["Loss at output"] -->|"∂L/∂h_L"| HL["Layer L gradients OK"]
+    HL -->|"∂h_L/∂h_{L-1}"| HL1["Layer L-1 gradients smaller"]
+    HL1 -->|"..."| HL2["Layer 1 gradients ≈ 0<br/>(vanishing)"]
+      </div>
+
+      <div class="callout warn" data-icon="⚠️">
+        <div class="callout-title">Why this matters</div>
+        <ul>
+          <li><strong>Vanishing gradients:</strong> early layers learn extremely slowly or not at all. This is why deep sigmoid/tanh networks were hard to train before ReLU.</li>
+          <li><strong>Exploding gradients:</strong> weights diverge, producing NaN losses. Fixed by <strong>gradient clipping</strong>: if ‖g‖ > threshold, scale g down to the threshold.</li>
+          <li><strong>Solutions:</strong> ReLU activations, residual connections, batch normalization, careful initialization (Xavier/He), gradient clipping.</li>
+        </ul>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">06</span>Weight Initialization</h3>
+      <p>Poor initialization can cause vanishing/exploding gradients from the start. Two key strategies:</p>
+      <div class="grid2">
+        <div class="card accent-amber">
+          <h4>Xavier/Glorot Initialization</h4>
+          <p><code>W ~ N(0, 2/(n_in + n_out))</code>. Keeps variance stable across layers for sigmoid/tanh. Assumes linear activation.</p>
+        </div>
+        <div class="card accent-teal">
+          <h4>He Initialization</h4>
+          <p><code>W ~ N(0, 2/n_in)</code>. Accounts for ReLU halving the variance. The default choice for ReLU networks.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="optimizers">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--teal);">// 02 — Training</span>
+        <h2>Optimizers</h2>
+        <p>Algorithms that go beyond plain gradient descent to train faster and converge better.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">01</span>Momentum</h3>
+      <p>SGD with momentum accumulates a velocity vector from past gradients, damping oscillations and accelerating convergence:</p>
+      <div class="formula">
+        \[v_t = \beta v_{t-1} + g_t\]
+        \[\theta_t = \theta_{t-1} - \eta v_t\]
+      </div>
+      <p><code>β</code> (typically 0.9) controls how much past gradients influence the current update. Think of it as a ball rolling downhill — it gains momentum in consistent directions and slows down in oscillating ones.</p>
+
+      <h3 class="sub-h"><span class="idx">02</span>RMSProp</h3>
+      <p>Adapts the learning rate per parameter using a running average of squared gradients. Parameters with large gradients get smaller learning rates, and vice versa:</p>
+      <div class="formula">
+        \[v_t = \beta v_{t-1} + (1-\beta) g_t^2\]
+        \[\theta_t = \theta_{t-1} - \frac{\eta}{\sqrt{v_t} + \epsilon} g_t\]
+      </div>
+      <p>Particularly useful for RNNs and non-stationary objectives where different parameters need different learning rates at different times.</p>
+
+      <h3 class="sub-h"><span class="idx">03</span>Adam (Adaptive Moment Estimation)</h3>
+      <p>Combines momentum (first moment) with RMSProp (second moment) and adds bias correction for the early training steps:</p>
+      <div class="formula">
+        \[m_t = \beta_1 m_{t-1} + (1-\beta_1) g_t \quad \text{(first moment / momentum)}\]
+        \[v_t = \beta_2 v_{t-1} + (1-\beta_2) g_t^2 \quad \text{(second moment / adaptive LR)}\]
+        \[\hat{m}_t = \frac{m_t}{1-\beta_1^t}, \quad \hat{v}_t = \frac{v_t}{1-\beta_2^t} \quad \text{(bias correction)}\]
+        \[\theta_t = \theta_{t-1} - \eta \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}\]
+      </div>
+      <p>Default hyperparameters: <code>β₁=0.9</code>, <code>β₂=0.999</code>, <code>ε=1e-8</code>. The default optimizer for most deep learning tasks.</p>
+
+      <h3 class="sub-h"><span class="idx">04</span>AdamW (Decoupled Weight Decay)</h3>
+      <p>Standard Adam applies L2 regularization inside the gradient, which couples weight decay with the adaptive learning rate. AdamW decouples them — weight decay is applied directly to the weights, not through the gradient. This gives more consistent regularization and is the <strong>standard optimizer for training Transformers and LLMs</strong>.</p>
+
+      <h3 class="sub-h"><span class="idx">05</span>Optimizer Comparison</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Optimizer</th><th>Adaptive LR?</th><th>Momentum?</th><th>Weight Decay</th><th>Best For</th></tr></thead>
+          <tbody>
+            <tr><td><strong>SGD</strong></td><td>No</td><td>No</td><td>L2</td><td>Computer vision, well-tuned problems</td></tr>
+            <tr><td><strong>SGD + Momentum</strong></td><td>No</td><td>Yes (β=0.9)</td><td>L2</td><td>Image classification (ResNet etc.)</td></tr>
+            <tr><td><strong>RMSProp</strong></td><td>Yes</td><td>No</td><td>No</td><td>RNNs, non-stationary objectives</td></tr>
+            <tr><td><strong>Adam</strong></td><td>Yes</td><td>Yes</td><td>L2</td><td>Default choice, NLP, GANs</td></tr>
+            <tr><td><strong>AdamW</strong></td><td>Yes</td><td>Yes</td><td>Decoupled</td><td>Transformers, LLMs, fine-tuning</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout note" data-icon="💡">
+        <div class="callout-title">Learning rate schedules</div>
+        <p>Almost all optimizers benefit from a <strong>learning rate schedule</strong>: start with a warmup phase (linearly increase LR), then decay (cosine annealing, linear decay, or step decay). This is essential for training Transformers — use warmup for the first 5–10% of training, then cosine decay to near zero.</p>
+      </div>
+    </section>
+
+    <section class="block" id="regularization">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--coral);">// 02 — Training</span>
+        <h2>Regularization</h2>
+        <p>Techniques to prevent overfitting — when the model memorizes training data but fails on new data.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">01</span>The Overfitting Problem</h3>
+      <p>A model with too much capacity (too many parameters) can memorize the training set perfectly, including its noise. The training loss goes to zero but validation loss increases. Regularization constrains the model to prefer simpler solutions.</p>
+
+      <div class="mermaid">
+flowchart LR
+    T["Training loss"] -->|"decreases steadily"| OK["Good fit zone"]
+    V["Validation loss"] -->|"decreases then increases"| OVER["Overfitting begins"]
+    OK -.->|"sweet spot"| STOP["Early stopping point"]
+      </div>
+
+      <h3 class="sub-h"><span class="idx">02</span>Dropout (Srivastava et al., 2014)</h3>
+      <p>During each training step, randomly set a fraction of neurons to zero (typically 20–50%). This forces the network to learn redundant representations — no single neuron can be relied upon.</p>
+      <div class="formula">
+        \[\hat{y} = \frac{1}{1-p} \cdot f(x) \odot m, \quad m_i \sim \text{Bernoulli}(1-p)\]
+      </div>
+      <p>At inference time, dropout is disabled and weights are scaled by <code>(1-p)</code> to compensate. Dropout acts as an implicit ensemble — it's like training 2ⁿ different sub-networks and averaging their predictions.</p>
+
+      <h3 class="sub-h"><span class="idx">03</span>L1 and L2 Regularization</h3>
+      <div class="grid2">
+        <div class="card accent-amber">
+          <h4>L2 Regularization (Weight Decay)</h4>
+          <p>Add <code>λ Σw²</code> to the loss. Penalizes large weights, pushing them toward zero. Produces smooth, small weights. The most common regularizer.</p>
+          <div class="formula" style="margin:12px 0 0;">\[L_{reg} = L + \lambda \sum_i w_i^2\]</div>
+        </div>
+        <div class="card accent-teal">
+          <h4>L1 Regularization (Lasso)</h4>
+          <p>Add <code>λ Σ|w|</code> to the loss. Produces sparse weights (many exactly zero). Useful for feature selection — identifies which inputs actually matter.</p>
+          <div class="formula" style="margin:12px 0 0;">\[L_{reg} = L + \lambda \sum_i |w_i|\]</div>
+        </div>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">04</span>Batch Normalization (Ioffe &amp; Szegedy, 2015)</h3>
+      <p>Normalize the inputs to each layer to have zero mean and unit variance, then scale and shift with learned parameters:</p>
+      <div class="formula">
+        \[\hat{x}_i = \frac{x_i - \mu_B}{\sqrt{\sigma_B^2 + \epsilon}}\]
+        \[y_i = \gamma \hat{x}_i + \beta\]
+      </div>
+      <ul>
+        <li><strong>Stabilizes training:</strong> reduces internal covariate shift (changing input distributions between layers).</li>
+        <li><strong>Allows higher learning rates:</strong> gradients are better conditioned.</li>
+        <li><strong>Acts as a regularizer:</strong> the noise from mini-batch statistics provides implicit dropout-like regularization.</li>
+        <li><strong>Placement:</strong> after linear layer, before activation (originally); or after activation (more common now).</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">05</span>Layer Normalization</h3>
+      <p>Normalizes across the feature dimension (not the batch dimension). Independent of batch size — crucial for Transformers and sequence models where batch sizes may be small or variable.</p>
+      <div class="formula">
+        \[\text{LayerNorm}(x) = \gamma \odot \frac{x - \mu}{\sqrt{\sigma^2 + \epsilon}} + \beta\]
+      </div>
+
+      <h3 class="sub-h"><span class="idx">06</span>Early Stopping</h3>
+      <p>Monitor validation loss during training and stop when it stops improving (or starts increasing). Save the checkpoint with the best validation performance. This is the simplest and most universally effective regularization technique.</p>
+
+      <h3 class="sub-h"><span class="idx">07</span>Data Augmentation</h3>
+      <p>Artificially increase training data by applying label-preserving transformations: for images (random crops, flips, rotations, color jitter), for text (synonym replacement, back-translation), for audio (time stretching, pitch shifting). One of the most effective regularization strategies — especially when real data is limited.</p>
+    </section>
+
+    <!-- ============ 03 · ARCHITECTURES ============ -->
+    <section class="block" id="activations">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">// 03 — Architectures</span>
+        <h2>Activation Functions</h2>
+        <p>Non-linear functions that give neural networks their expressive power — without them, stacking layers would just compute a linear function.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">01</span>Why Non-Linearity?</h3>
+      <p>Without an activation function, a multi-layer network computes <code>W₂(W₁x + b₁) + b₂ = W'x + b'</code> — just a single linear transformation. Non-linear activations break this, allowing the network to learn complex decision boundaries.</p>
+
+      <h3 class="sub-h"><span class="idx">02</span>Sigmoid</h3>
+      <div class="formula">
+        \[\sigma(x) = \frac{1}{1 + e^{-x}}, \quad \sigma'(x) = \sigma(x)(1 - \sigma(x))\]
+      </div>
+      <p>Squashes any input to (0, 1). Was the default for decades. Now mostly used in output layers for binary classification. Problems: <strong>vanishing gradient</strong> (derivative ≤ 0.25, shrinks with depth), not zero-centered (outputs always positive → gradient updates are biased).</p>
+
+      <h3 class="sub-h"><span class="idx">03</span>Tanh</h3>
+      <div class="formula">
+        \[\tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}, \quad \tanh'(x) = 1 - \tanh^2(x)\]
+      </div>
+      <p>Zero-centered output (-1 to 1). Better than sigmoid because gradients don't have a bias. Still suffers from vanishing gradients for large |x| (derivative → 0). Used in LSTMs and GRUs for the cell state update.</p>
+
+      <h3 class="sub-h"><span class="idx">04</span>ReLU (Rectified Linear Unit)</h3>
+      <div class="formula">
+        \[\text{ReLU}(x) = \max(0, x), \quad \text{ReLU}'(x) = \begin{cases} 1 & x > 0 \\ 0 & x \leq 0 \end{cases}\]
+      </div>
+      <p>The default activation for hidden layers since 2012. Advantages: computationally trivial, no vanishing gradient for positive inputs, produces sparse activations (efficiency). Problem: <strong>dead neurons</strong> — if a neuron's weights are such that it always receives negative input, it outputs 0 forever and its gradient is 0. This can happen with high learning rates.</p>
+
+      <h3 class="sub-h"><span class="idx">05</span>Leaky ReLU &amp; PReLU</h3>
+      <div class="formula">
+        \[\text{LeakyReLU}(x) = \begin{cases} x & x > 0 \\ \alpha x & x \leq 0 \end{cases}\]
+      </div>
+      <p>Allows a small gradient (α × x) for negative inputs, preventing dead neurons. Leaky ReLU uses a fixed α (e.g., 0.01). PReLU (Parametric ReLU) learns α during training. Used in some computer vision models.</p>
+
+      <h3 class="sub-h"><span class="idx">06</span>GELU (Gaussian Error Linear Unit)</h3>
+      <div class="formula">
+        \[\text{GELU}(x) = x \cdot \Phi(x) = x \cdot \frac{1}{2}\left[1 + \text{erf}\left(\frac{x}{\sqrt{2}}\right)\right]\]
+      </div>
+      <p>A smooth approximation of ReLU that weights the input by its probability of being positive under a standard normal distribution. Used in <strong>BERT, GPT-2, GPT-3</strong>. Often approximated as <code>0.5x(1 + tanh(√(2/π)(x + 0.044715x³)))</code>.</p>
+
+      <h3 class="sub-h"><span class="idx">07</span>Swish &amp; SwiGLU</h3>
+      <div class="formula">
+        \[\text{Swish}(x) = x \cdot \sigma(x)\]
+        \[\text{SwiGLU}(x) = \text{Swish}(xW_1) \odot (xW_2)\]
+      </div>
+      <p>Swish is smooth and non-monotonic — slightly outperforms ReLU on deep networks. <strong>SwiGLU</strong> (Shazeer, 2020) adds a gating mechanism: one branch computes Swish, another provides a gate. Used in <strong>LLaMA, PaLM, Gemini, Mistral</strong> — the current state-of-the-art for LLMs. Requires 3 weight matrices instead of 2, but the quality improvement justifies the cost.</p>
+
+      <h3 class="sub-h"><span class="idx">08</span>Activation Function Comparison</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Function</th><th>Formula</th><th>Range</th><th>Gradient</th><th>Used In</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Sigmoid</strong></td><td>1/(1+e⁻ˣ)</td><td>(0, 1)</td><td>≤ 0.25 (vanishes)</td><td>Output layers, LSTMs gates</td></tr>
+            <tr><td><strong>Tanh</strong></td><td>(eˣ-e⁻ˣ)/(eˣ+e⁻ˣ)</td><td>(-1, 1)</td><td>≤ 1 (vanishes)</td><td>LSTMs, GRUs</td></tr>
+            <tr><td><strong>ReLU</strong></td><td>max(0, x)</td><td>[0, ∞)</td><td>0 or 1</td><td>CNNs, default hidden layer</td></tr>
+            <tr><td><strong>GELU</strong></td><td>x · Φ(x)</td><td>(-0.17, ∞)</td><td>Smooth</td><td>BERT, GPT-2/3</td></tr>
+            <tr><td><strong>SwiGLU</strong></td><td>Swish(xW₁) ⊙ xW₂</td><td>(-∞, ∞)</td><td>Smooth + gating</td><td>LLaMA, PaLM, Gemini</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block" id="cnn">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--teal);">// 03 — Architectures</span>
+        <h2>Convolutional Neural Networks (CNNs)</h2>
+        <p>Neural networks that exploit spatial structure — the breakthrough that revolutionized computer vision.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">01</span>Core Insight</h3>
+      <p>Instead of connecting every input to every neuron (like an MLP), CNNs use <strong>local receptive fields</strong> and <strong>shared weights</strong>. A small filter (e.g., 3×3) slides across the input, detecting the same pattern everywhere. This dramatically reduces parameters: a 3×3 filter has only 9 weights, regardless of image size.</p>
+
+      <div class="mermaid">
+flowchart LR
+    IMG["Input image<br/>(e.g. 28×28)"] --> CONV["Convolution<br/>learnable filters<br/>3×3, 5×5, etc."]
+    CONV --> POOL["Pooling<br/>max or average<br/>downsample"]
+    POOL --> FLatten["Flatten"]
+    FLatten --> FC["Fully Connected<br/>classification layers"]
+      </div>
+
+      <h3 class="sub-h"><span class="idx">02</span>Convolution Operation</h3>
+      <p>A filter K slides over input X with stride s and padding p. The output feature map at position (i,j):</p>
+      <div class="formula">
+        \[Y_{i,j} = \sum_{m}\sum_{n} X_{i \cdot s + m, \; j \cdot s + n} \cdot K_{m,n} + b\]
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Parameter</th><th>What It Controls</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Kernel size</strong></td><td>Receptive field (how much context)</td><td>3×3, 5×5, 7×7</td></tr>
+            <tr><td><strong>Stride (s)</strong></td><td>Step size of the filter</td><td>s=1 (dense), s=2 (downsample)</td></tr>
+            <tr><td><strong>Padding (p)</strong></td><td>Zeros around border to control size</td><td>same (p=1 for 3×3) preserves size</td></tr>
+            <tr><td><strong>Channels</strong></td><td>Number of filters (output depth)</td><td>64, 128, 256 filters</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Output size formula:</strong> <code>O = (I - K + 2P) / S + 1</code></p>
+
+      <h3 class="sub-h"><span class="idx">03</span>Pooling</h3>
+      <p>Reduces spatial dimensions, provides translation invariance, and reduces computation:</p>
+      <ul>
+        <li><strong>Max Pooling:</strong> takes the maximum value in each window (most common, 2×2 with stride 2)</li>
+        <li><strong>Average Pooling:</strong> takes the mean (used in the last layer of many architectures)</li>
+        <li><strong>Global Average Pooling:</strong> averages the entire feature map to a single value (replaces fully connected layers)</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">04</span>Classic CNN Architectures</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Architecture</th><th>Year</th><th>Depth</th><th>Key Innovation</th><th>Top-5 Error</th></tr></thead>
+          <tbody>
+            <tr><td><strong>LeNet-5</strong></td><td>1998</td><td>7</td><td>First practical CNN (MNIST digit recognition)</td><td>—</td></tr>
+            <tr><td><strong>AlexNet</strong></td><td>2012</td><td>8</td><td>ReLU, Dropout, GPU training, Data augmentation</td><td>16.4%</td></tr>
+            <tr><td><strong>VGGNet</strong></td><td>2014</td><td>16–19</td><td>Uniform 3×3 filters, deeper = better</td><td>7.3%</td></tr>
+            <tr><td><strong>GoogLeNet/Inception</strong></td><td>2014</td><td>22</td><td>Inception modules (parallel filter sizes)</td><td>6.7%</td></tr>
+            <tr><td><strong>ResNet</strong></td><td>2015</td><td>50–152</td><td>Skip/residual connections → 100+ layers</td><td>3.6%</td></tr>
+            <tr><td><strong>DenseNet</strong></td><td>2017</td><td>121–264</td><td>Dense connections (each layer → all later layers)</td><td>3.5%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">05</span>ResNet &amp; Skip Connections</h3>
+      <p>The most important innovation in deep CNNs. Instead of learning <code>H(x)</code> directly, learn the <strong>residual</strong> <code>F(x) = H(x) - x</code>:</p>
+      <div class="formula">
+        \[y = F(x, \{W_i\}) + x\]
+      </div>
+      <p>If the optimal function is close to identity, it's easier to learn F(x) ≈ 0 than H(x) ≈ x. Skip connections provide a "gradient highway" — gradients flow directly through the identity branch, bypassing potentially hundreds of layers. This is why ResNets can train 152+ layers while plain networks fail at ~20.</p>
+
+      <h3 class="sub-h"><span class="idx">06</span>Modern CNN Usage</h3>
+      <p>CNNs remain dominant for: image classification, object detection (YOLO, Faster R-CNN), semantic segmentation (U-Net), medical imaging, and as vision encoders in multimodal models (ViT has largely replaced CNNs in state-of-art, but CNNs are still faster and more data-efficient).</p>
+    </section>
+
+    <section class="block" id="rnn">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--periwinkle);">// 03 — Architectures</span>
+        <h2>RNNs, LSTMs &amp; GRUs</h2>
+        <p>Recurrent architectures designed for sequential data — text, time series, speech, and music.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">01</span>Vanilla RNN</h3>
+      <p>Processes sequences by maintaining a <strong>hidden state</strong> that acts as the network's memory. At each time step t:</p>
+      <div class="formula">
+        \[h_t = \tanh(W_{hh} h_{t-1} + W_{xh} x_t + b)\]
+        \[y_t = W_{hy} h_t + c\]
+      </div>
+      <p>The same weights <code>W_hh</code>, <code>W_xh</code> are reused at every time step — parameter sharing across time. The hidden state <code>h_t</code> theoretically encodes all previous inputs.</p>
+
+      <div class="mermaid">
+flowchart LR
+    X0["x₀"] --> H0["h₀"]
+    H0 --> H1["h₁ = tanh(W_hh·h₀ + W_xh·x₀)"]
+    X1["x₁"] --> H1
+    H1 --> H2["h₂ = tanh(W_hh·h₁ + W_xh·x₁)"]
+    X2["x₂"] --> H2
+    H2 --> H3["h₃"]
+      </div>
+
+      <h3 class="sub-h"><span class="idx">02</span>Training: Backpropagation Through Time (BPTT)</h3>
+      <p>To train an RNN, unroll the network across time steps and apply standard backpropagation. The loss is the sum (or average) of losses at each time step:</p>
+      <div class="formula">
+        \[L = \sum_{t=1}^{T} L_t(y_t, \hat{y}_t)\]
+      </div>
+      <p>Gradients flow backward through the unrolled network. Since the same <code>W_hh</code> is used at every step, its gradient is a sum of contributions from all time steps — this is where vanishing/exploding happens.</p>
+
+      <h3 class="sub-h"><span class="idx">03</span>The Vanishing Gradient Problem in RNNs</h3>
+      <p>The gradient at time step t with respect to an earlier step k involves a product of Jacobians:</p>
+      <div class="formula">
+        \[\frac{\partial h_t}{\partial h_k} = \prod_{i=k+1}^{t} \frac{\partial h_i}{\partial h_{i-1}} = \prod_{i=k+1}^{t} W_{hh}^T \cdot \text{diag}(\sigma'(z_i))\]
+      </div>
+      <p>Each term is typically &lt;1 in spectral norm, so the product shrinks exponentially. For long sequences (t-k > 10), the gradient is effectively zero — the RNN cannot learn long-range dependencies.</p>
+      <div class="callout warn" data-icon="⚠️">
+        <div class="callout-title">Practical consequence</div>
+        <p>A vanilla RNN trained on "The <strong>cat</strong>, which was sitting on the mat and wearing a red hat, <strong>was</strong> sleeping" cannot learn the agreement between "cat" and "was" if they are far apart. The gradient vanishes before it reaches the relevant earlier position.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">04</span>LSTM (Long Short-Term Memory, Hochreiter &amp; Schmidhuber, 1997)</h3>
+      <p>The LSTM solves vanishing gradients by introducing a <strong>cell state</strong> — a separate memory channel that can carry information across hundreds of time steps with minimal gradient decay.</p>
+
+      <p><strong>Two states:</strong></p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>State</th><th>Symbol</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Hidden State</strong></td><td>h_t</td><td>Output at this time step (used for predictions)</td></tr>
+            <tr><td><strong>Cell State</strong></td><td>C_t</td><td>Long-term memory ("conveyor belt" — carries info with minimal modification)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>Three gates</strong> control information flow into and out of the cell state:</p>
+
+      <div class="formula">
+        \[f_t = \sigma(W_f [h_{t-1}, x_t] + b_f) \quad \text{(Forget gate: what to erase)}\]
+        \[i_t = \sigma(W_i [h_{t-1}, x_t] + b_i) \quad \text{(Input gate: what to add)}\]
+        \[\tilde{C}_t = \tanh(W_C [h_{t-1}, x_t] + b_C) \quad \text{(Candidate memory)}\]
+        \[C_t = f_t \odot C_{t-1} + i_t \odot \tilde{C}_t \quad \text{(Update cell state)}\]
+        \[o_t = \sigma(W_o [h_{t-1}, x_t] + b_o) \quad \text{(Output gate: what to output)}\]
+        \[h_t = o_t \odot \tanh(C_t) \quad \text{(Compute hidden state)}\]
+      </div>
+
+      <div class="mermaid">
+flowchart LR
+    subgraph FORGET["Forget Gate"]
+        F["f(t) = sigmoid(W_f·[h(t-1), x(t)])"]
+    end
+    subgraph INPUT["Input Gate"]
+        I["i(t) = sigmoid(W_i·[h(t-1), x(t)])"]
+        CAND["C~(t) = tanh(W_c·[h(t-1), x(t)])"]
+    end
+    subgraph CELL["Cell State Update"]
+        CS["C(t) = f(t)⊙C(t-1) + i(t)⊙C~(t)"]
+    end
+    subgraph OUTPUT["Output Gate"]
+        O["o(t) = sigmoid(W_o·[h(t-1), x(t)])"]
+        HOUT["h(t) = o(t)⊙tanh(C(t))"]
+    end
+    F --> CS
+    I --> CS
+    CAND --> CS
+    CS --> HOUT
+    O --> HOUT
+      </div>
+
+      <h3 class="sub-h"><span class="idx">05</span>Why LSTM Solves Vanishing Gradient</h3>
+      <p>The cell state update is <code>C_t = f_t ⊙ C_{t-1} + i_t ⊙ C̃_t</code>. The gradient of C_t with respect to C_{t-1} is simply f_t — a single sigmoid output, not a product of many terms. When f_t ≈ 1, the gradient flows through unchanged across hundreds of time steps. This is the "gradient highway."</p>
+
+      <h3 class="sub-h"><span class="idx">06</span>GRU (Gated Recurrent Unit, Cho et al., 2014)</h3>
+      <p>A simplified LSTM that merges the cell state and hidden state into one, and combines the forget/input gates into a single <strong>update gate</strong>:</p>
+      <div class="formula">
+        \[z_t = \sigma(W_z [h_{t-1}, x_t]) \quad \text{(Update gate: keep old vs. add new)}\]
+        \[r_t = \sigma(W_r [h_{t-1}, x_t]) \quad \text{(Reset gate: how much past to forget)}\]
+        \[\tilde{h}_t = \tanh(W [r_t \odot h_{t-1}, x_t]) \quad \text{(Candidate hidden state)}\]
+        \[h_t = (1 - z_t) \odot h_{t-1} + z_t \odot \tilde{h}_t \quad \text{(Interpolate)}\]
+      </div>
+
+      <div class="grid2">
+        <div class="card accent-teal">
+          <h4>LSTM vs GRU</h4>
+          <ul>
+            <li>GRU has <strong>2 gates</strong> vs LSTM's 3</li>
+            <li>GRU has <strong>no separate cell state</strong></li>
+            <li>GRU has <strong>fewer parameters</strong> (~30% less)</li>
+            <li>GRU trains <strong>faster</strong></li>
+            <li>LSTM often <strong>slightly better quality</strong> with enough data</li>
+          </ul>
+        </div>
+        <div class="card accent-amber">
+          <h4>When to Use Each</h4>
+          <ul>
+            <li><strong>GRU:</strong> smaller datasets, faster training needed, simpler sequences</li>
+            <li><strong>LSTM:</strong> larger datasets, complex long-range dependencies</li>
+            <li><strong>Neither:</strong> Transformers have largely replaced both for most NLP tasks</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">07</span>Bidirectional RNNs</h3>
+      <p>Two RNNs process the sequence in opposite directions. Their hidden states are concatenated at each time step, giving the model access to both past and future context:</p>
+      <div class="formula">
+        \[\overrightarrow{h_t} = \text{RNN}_{\text{forward}}(x_t, \overrightarrow{h_{t-1}})\]
+        \[\overleftarrow{h_t} = \text{RNN}_{\text{backward}}(x_t, \overleftarrow{h_{t+1}})\]
+        \[h_t = [\overrightarrow{h_t}; \overleftarrow{h_t}]\]
+      </div>
+      <p>Used when the full sequence is available (classification, NER), not for autoregressive generation.</p>
+    </section>
+
+    <!-- ============ 04 · ATTENTION & TRANSFORMERS ============ -->
+    <section class="block" id="attention">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">// 04 — Attention &amp; Transformers</span>
+        <h2>Attention Mechanism (Bahdanau et al., 2014)</h2>
+        <p>The breakthrough that let models focus on relevant parts of the input — the key insight behind the Transformer revolution.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">01</span>The Problem with Fixed-Length Context</h3>
+      <p>In encoder-decoder models, the entire input sequence is compressed into a single fixed-length vector (the encoder's final hidden state). This is a severe bottleneck — for long sentences, early information is lost. Attention solves this by letting the decoder look at <strong>all</strong> encoder hidden states at every decoding step.</p>
+
+      <h3 class="sub-h"><span class="idx">02</span>Intuition</h3>
+      <p>When translating "The cat sat on the mat", to produce "le", the model should attend to "The". To produce "chat", it should attend to "cat". To produce "tapis", it should attend to "mat". Attention computes a <strong>weighted summary</strong> of all input positions, where the weights reflect relevance.</p>
+
+      <h3 class="sub-h"><span class="idx">03</span>Scaled Dot-Product Attention</h3>
+      <p>The attention function maps a query and a set of key-value pairs to an output:</p>
+      <div class="formula">
+        \[\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right) V\]
+      </div>
+
+      <div class="grid3">
+        <div class="card accent-amber">
+          <h4>Query (Q)</h4>
+          <p>"What am I looking for?" — the decoder's current state (or a token's representation). Dimensions: <code>(n, d_k)</code>.</p>
+        </div>
+        <div class="card accent-teal">
+          <h4>Key (K)</h4>
+          <p>"What do I contain?" — each input position's label for matching. Dimensions: <code>(m, d_k)</code>.</p>
+        </div>
+        <div class="card accent-peri">
+          <h4>Value (V)</h4>
+          <p>"What do I actually provide?" — the content at each input position. Dimensions: <code>(m, d_v)</code>.</p>
+        </div>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">04</span>Step-by-Step</h3>
+      <ol>
+        <li><strong>Score:</strong> compute dot products between query and all keys: <code>scores = Q · K^T</code> → matrix of size (n, m)</li>
+        <li><strong>Scale:</strong> divide by <code>√d_k</code> to prevent dot products from growing too large (which pushes softmax into regions with tiny gradients)</li>
+        <li><strong>Softmax:</strong> normalize each row to get attention weights (probabilities that sum to 1)</li>
+        <li><strong>Weighted sum:</strong> multiply attention weights by values to get the output</li>
+      </ol>
+
+      <div class="mermaid">
+flowchart LR
+    Q["Query Q"] --> DOT["Q · K^T<br/>(score matrix)"]
+    K["Key K"] --> DOT
+    DOT --> SCALE["÷ √d_k<br/>(scaling)"]
+    SCALE --> SOFT["softmax<br/>(attention weights)"]
+    SOFT --> MUL["× V<br/>(weighted values)"]
+    V["Value V"] --> MUL
+    MUL --> OUT["Output"]
+      </div>
+
+      <h3 class="sub-h"><span class="idx">05</span>Self-Attention</h3>
+      <p>In self-attention, Q, K, and V all come from the <strong>same sequence</strong>. Each token attends to every other token in the sequence, capturing relationships regardless of distance. For the sentence "The cat sat on the mat", self-attention allows "sat" to directly attend to "cat" (its subject) even though they are separated by other words.</p>
+
+      <h3 class="sub-h"><span class="idx">06</span>Causal (Masked) Self-Attention</h3>
+      <p>In autoregressive generation (like GPT), each token can only attend to <strong>previous</strong> tokens — otherwise it could "cheat" by looking at the answer. A causal mask is applied to the attention scores, setting future positions to -∞ before the softmax:</p>
+      <div class="formula">
+        \[\text{MaskedAttention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}} + M\right) V\]
+        \[M_{ij} = \begin{cases} 0 & \text{if } i \geq j \\ -\infty & \text{if } i < j \end{cases}\]
+      </div>
+      <p>This ensures token i can only attend to tokens 1, ..., i — never to future tokens. This is the fundamental constraint that makes language models work: they predict one token at a time from left to right.</p>
+
+      <h3 class="sub-h"><span class="idx">07</span>Multi-Head Attention</h3>
+      <p>Instead of performing a single attention function, it's beneficial to project Q, K, V into multiple subspaces and attend in parallel. Each "head" learns different types of relationships:</p>
+      <div class="formula">
+        \[\text{MultiHead}(Q,K,V) = \text{Concat}(\text{head}_1, ..., \text{head}_h) W^O\]
+        \[\text{where head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)\]
+      </div>
+      <p>For a model with <code>d_model = 512</code> and <code>h = 8</code> heads, each head operates on <code>d_k = d_v = 64</code> dimensions. Some heads learn syntactic relationships, others semantic, others positional — the model discovers what's useful.</p>
+
+      <div class="callout good" data-icon="✅">
+        <div class="callout-title">Why attention replaced recurrence</div>
+        <ul>
+          <li><strong>Parallelizable:</strong> all positions are processed simultaneously — O(1) sequential operations vs O(n) for RNNs.</li>
+          <li><strong>Long-range dependencies:</strong> any two tokens interact directly in O(1) steps, regardless of distance.</li>
+          <li><strong>Interpretable:</strong> attention weights show what the model focuses on — useful for debugging and understanding.</li>
+          <li><strong>Computational complexity:</strong> self-attention is O(n²·d) — worse than RNN's O(n·d²) for very long sequences, but much better for moderate lengths and highly parallelizable on GPUs.</li>
+        </ul>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">08</span>Cross-Attention</h3>
+      <p>In encoder-decoder models, the decoder attends to the encoder's output. The queries come from the decoder, while keys and values come from the encoder. This is how the decoder "reads" the input while generating the output. In text-to-image models (like Stable Diffusion), cross-attention connects text embeddings (keys/values) with image features (queries).</p>
+    </section>
+
+    <section class="block" id="transformer">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--teal);">// 04 — Attention &amp; Transformers</span>
+        <h2>Transformer Architecture (Vaswani et al., 2017)</h2>
+        <p>"Attention Is All You Need" — the architecture that eliminated recurrence entirely and became the foundation of all modern LLMs.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">01</span>Encoder-Decoder Structure</h3>
+      <p>The original Transformer has an encoder (processes input) and decoder (generates output), connected by cross-attention:</p>
+      <div class="mermaid">
+flowchart TB
+    subgraph ENC["Encoder Stack (×N)"]
+        EI["Input Embedding + PE"]
+        EA["Multi-Head Self-Attention"]
+        EN1["Add & LayerNorm"]
+        EF["Position-wise Feed-Forward"]
+        EN2["Add & LayerNorm"]
+    end
+    subgraph DEC["Decoder Stack (×N)"]
+        DI["Output Embedding + PE"]
+        DM["Masked Multi-Head Self-Attention"]
+        DN1["Add & LayerNorm"]
+        DA["Multi-Head Cross-Attention<br/>(Q from decoder, K/V from encoder)"]
+        DN2["Add & LayerNorm"]
+        DF["Position-wise Feed-Forward"]
+        DN3["Add & LayerNorm"]
+    end
+    INPUT["Input tokens"] --> EI --> EA --> EN1 --> EF --> EN2
+    EN2 -->|"K, V"| DA
+    TARGET["Target tokens (shifted right)"] --> DI --> DM --> DN1 --> DA
+    DA --> DN2 --> DF --> DN3 --> OUTPUT["Logits"]
+      </div>
+
+      <h3 class="sub-h"><span class="idx">02</span>Encoder Block (Repeated N times)</h3>
+      <p>Each encoder block contains two sub-layers, each wrapped with a residual connection and layer normalization:</p>
+      <ol>
+        <li><strong>Multi-Head Self-Attention:</strong> every token attends to every other token in the input</li>
+        <li><strong>Position-wise Feed-Forward Network:</strong> a 2-layer MLP applied independently to each position</li>
+      </ol>
+      <div class="formula">
+        \[\text{FFN}(x) = \text{ReLU}(xW_1 + b_1)W_2 + b_2\]
+      </div>
+      <p>The FFN typically expands the hidden dimension by 4× (e.g., 512 → 2048) then projects back. This is where most of the model's parameters live (~2/3).</p>
+
+      <h3 class="sub-h"><span class="idx">03</span>Decoder Block (Repeated N times)</h3>
+      <p>Each decoder block has three sub-layers:</p>
+      <ol>
+        <li><strong>Masked Multi-Head Self-Attention:</strong> causal masking ensures each position only attends to earlier positions</li>
+        <li><strong>Multi-Head Cross-Attention:</strong> queries from decoder, keys/values from encoder output — the decoder "reads" the input</li>
+        <li><strong>Position-wise Feed-Forward Network</strong></li>
+      </ol>
+
+      <h3 class="sub-h"><span class="idx">04</span>Key Innovations</h3>
+      <div class="grid2">
+        <div class="card accent-amber">
+          <h4>Residual Connections</h4>
+          <p><code>output = LayerNorm(x + Sublayer(x))</code>. Enables training very deep networks by providing gradient highways — gradients flow directly through the identity branch, bypassing the sub-layer.</p>
+        </div>
+        <div class="card accent-teal">
+          <h4>Layer Normalization</h4>
+          <p>Normalizes across features (not batch). Stabilizes training, reduces sensitivity to initialization. Some models use "Pre-LN" (norm before sub-layer) instead of "Post-LN" (norm after) for more stable training.</p>
+        </div>
+        <div class="card accent-peri">
+          <h4>Position-wise FFN</h4>
+          <p>A two-layer MLP applied independently to each position. Typically the hidden dimension is 4× the model dimension. This is where the model's "knowledge" is stored — each position processes through the same shared MLP.</p>
+        </div>
+        <div class="card accent-green">
+          <h4>Embedding &amp; Output</h4>
+          <p>Input tokens are embedded into <code>d_model</code> dimensions. The output layer projects back to vocabulary size and applies softmax. Weight tying (sharing the embedding and output projection matrices) is common and improves performance.</p>
+        </div>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">05</span>Transformer Variants</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Variant</th><th>Architecture</th><th>Examples</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Encoder-only</strong></td><td>Bidirectional self-attention (no masking)</td><td>BERT, RoBERTa, ALBERT</td><td>Classification, NER, embeddings, search</td></tr>
+            <tr><td><strong>Decoder-only</strong></td><td>Causal (masked) self-attention</td><td>GPT-1/2/3/4, LLaMA, PaLM, Mistral</td><td>Text generation, LLMs, code generation</td></tr>
+            <tr><td><strong>Encoder-Decoder</strong></td><td>Full architecture with cross-attention</td><td>T5, BART, Whisper, mBART</td><td>Translation, summarization, speech-to-text</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout note" data-icon="💡">
+        <div class="callout-title">Why decoder-only won for LLMs</div>
+        <p>Decoder-only models (GPT-style) are simpler, scale better, and use a unified training objective (predict next token). The encoder-decoder split adds complexity without clear benefits at scale. Almost all modern LLMs use decoder-only architecture.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">06</span>Computational Complexity</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Component</th><th>Complexity per Layer</th><th>Sequential Operations</th></tr></thead>
+          <tbody>
+            <tr><td>Self-Attention</td><td>O(n² · d)</td><td>O(1)</td></tr>
+            <tr><td>RNN</td><td>O(n · d²)</td><td>O(n)</td></tr>
+            <tr><td>CNN</td><td>O(k · n · d²)</td><td>O(1)</td></tr>
+            <tr><td>FFN</td><td>O(n · d²)</td><td>O(1)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Self-attention has O(n²) complexity in sequence length — for n=1024 this is manageable, for n=100K it becomes expensive. This motivates efficient attention variants (FlashAttention, linear attention, sliding window attention).</p>
+    </section>
+
+    <section class="block" id="positional-encoding">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--periwinkle);">// 04 — Attention &amp; Transformers</span>
+        <h2>Positional Encoding</h2>
+        <p>Transformers have no inherent sense of order — self-attention treats the input as a set, not a sequence. Positional encodings inject sequence position information.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">01</span>Why Position Matters</h3>
+      <p>Without positional encoding, "dog bites man" and "man bites dog" produce the same output — the model can't distinguish word order. Positional encodings are added to the input embeddings before the first Transformer layer.</p>
+
+      <h3 class="sub-h"><span class="idx">02</span>Sinusoidal Encoding (Original Transformer)</h3>
+      <div class="formula">
+        \[PE_{(pos, 2i)} = \sin\left(\frac{pos}{10000^{2i/d_{model}}}\right)\]
+        \[PE_{(pos, 2i+1)} = \cos\left(\frac{pos}{10000^{2i/d_{model}}}\right)\]
+      </div>
+      <p>Each dimension corresponds to a sinusoid of different frequency. Low dimensions oscillate rapidly (capturing fine-grained position), high dimensions oscillate slowly (capturing coarse position). Key property: <code>PE(pos+k)</code> can be expressed as a linear function of <code>PE(pos)</code>, so the model can learn relative positions.</p>
+
+      <h3 class="sub-h"><span class="idx">03</span>Learned Positional Embeddings</h3>
+      <p>Instead of fixed sinusoids, learn a position embedding matrix <code>E ∈ R^(max_len × d_model)</code>. Used in BERT (max_len=512) and GPT-2 (max_len=1024). Simpler but cannot generalize beyond the maximum training length.</p>
+
+      <h3 class="sub-h"><span class="idx">04</span>Relative Positional Encoding</h3>
+      <p>Instead of encoding absolute position, encode the <strong>relative distance</strong> between tokens. The attention score between positions i and j depends on (i-j), not on i and j individually. Used in Transformer-XL, T5, and ALiBi.</p>
+
+      <h3 class="sub-h"><span class="idx">05</span>RoPE (Rotary Position Embeddings)</h3>
+      <p>Used in <strong>LLaMA, PaLM, Mistral, Qwen</strong> — the dominant approach in modern LLMs. Instead of adding position information to embeddings, RoPE rotates the query and key vectors in 2D subspaces:</p>
+      <div class="formula">
+        \[R_\theta(x, m) = \begin{pmatrix} x_0 \\ x_1 \\ x_2 \\ x_3 \\ \vdots \end{pmatrix} \otimes \begin{pmatrix} \cos m\theta_0 \\ \cos m\theta_0 \\ \cos m\theta_1 \\ \cos m\theta_1 \\ \vdots \end{pmatrix} + \begin{pmatrix} -x_1 \\ x_0 \\ -x_3 \\ x_2 \\ \vdots \end{pmatrix} \otimes \begin{pmatrix} \sin m\theta_0 \\ \sin m\theta_0 \\ \sin m\theta_1 \\ \sin m\theta_1 \\ \vdots \end{pmatrix}\]
+      </div>
+      <p>Advantages: naturally captures relative positions, no extra parameters, and can extrapolate to longer sequences than seen during training (especially with NTK-aware scaling).</p>
+
+      <h3 class="sub-h"><span class="idx">06</span>Comparison</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Method</th><th>Type</th><th>Extrapolates?</th><th>Used In</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Sinusoidal</strong></td><td>Fixed, absolute</td><td>Yes (in theory)</td><td>Original Transformer</td></tr>
+            <tr><td><strong>Learned</strong></td><td>Learned, absolute</td><td>No (limited to max_len)</td><td>BERT, GPT-2</td></tr>
+            <tr><td><strong>ALiBi</strong></td><td>Fixed, relative</td><td>Yes</td><td>BLOOM, MPT</td></tr>
+            <tr><td><strong>RoPE</strong></td><td>Learned, relative</td><td>Yes (with scaling)</td><td>LLaMA, PaLM, Mistral, Qwen</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ 05 · GENERATIVE AI ============ -->
+    <section class="block" id="vae">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--amber);">// 05 — Generative AI</span>
+        <h2>Variational Autoencoders (VAEs)</h2>
+        <p>Generative models that learn a smooth latent space — allowing you to sample new data points by sampling from the latent distribution.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">01</span>Motivation</h3>
+      <p>A regular autoencoder learns a deterministic mapping from input to a latent code and back. The latent space may have holes — sampling randomly from it produces garbage. A VAE forces the latent space to be <strong>smooth and continuous</strong>, so nearby points in latent space decode to similar data points.</p>
+
+      <h3 class="sub-h"><span class="idx">02</span>Architecture</h3>
+      <div class="mermaid">
+flowchart LR
+    X["Input x"] --> ENC["Encoder<br/>outputs μ and σ"]
+    ENC --> MU["μ (mean)"]
+    ENC --> SIGMA["σ (std dev)"]
+    MU --> REPARAM["z = μ + σ⊙ε<br/>ε ~ N(0,1)"]
+    SIGMA --> REPARAM
+    REPARAM --> DEC["Decoder<br/>p(x|z)"]
+    DEC --> XREC["Reconstructed x̂"]
+      </div>
+
+      <h3 class="sub-h"><span class="idx">03</span>The Reparameterization Trick</h3>
+      <p>To train the VAE, we need to backpropagate through the sampling step. But sampling <code>z ~ N(μ, σ²)</code> is not differentiable. The trick: instead of sampling z directly, sample a fixed noise vector <code>ε ~ N(0,1)</code> and compute <code>z = μ + σ ⊙ ε</code>. Now gradients flow through μ and σ.</p>
+
+      <h3 class="sub-h"><span class="idx">04</span>Training Objective: The ELBO</h3>
+      <p>We want to maximize the log-likelihood of the data, which is intractable. Instead, we maximize the <strong>Evidence Lower Bound (ELBO)</strong>:</p>
+      <div class="formula">
+        \[\log p(x) \geq \text{ELBO} = \underbrace{\mathbb{E}_{q(z|x)}[\log p(x|z)]}_{\text{reconstruction accuracy}} - \underbrace{D_{KL}(q(z|x) \| p(z))}_{\text{latent space regularization}}\]
+      </div>
+      <div class="grid2">
+        <div class="card accent-teal">
+          <h4>Reconstruction Term</h4>
+          <p>How well the decoder reconstructs the input. For binary data, use binary cross-entropy. For continuous data, use MSE. Maximizing this ensures the VAE can actually generate realistic data.</p>
+        </div>
+        <div class="card accent-amber">
+          <h4>KL Divergence</h4>
+          <p>Measures how far the encoder's distribution q(z|x) is from the prior p(z) = N(0,I). Pulls the latent distributions toward the standard normal. This regularization ensures the latent space is smooth and well-structured.</p>
+        </div>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">05</span>KL Divergence Closed Form</h3>
+      <p>When both distributions are Gaussian, the KL divergence has a closed-form solution:</p>
+      <div class="formula">
+        \[D_{KL} = -\frac{1}{2} \sum_{j=1}^{d} \left(1 + \log \sigma_j^2 - \mu_j^2 - \sigma_j^2\right)\]
+      </div>
+
+      <h3 class="sub-h"><span class="idx">06</span>Limitations</h3>
+      <ul>
+        <li><strong>Blurry outputs:</strong> VAEs tend to produce averaged, blurry images because the reconstruction loss encourages averaging over modes.</li>
+        <li><strong>Posterior collapse:</strong> the encoder may ignore the input and use only the prior, making the latent code useless.</li>
+        <li><strong>Limited capacity:</strong> the Gaussian assumption may not capture complex data distributions.</li>
+      </ul>
+    </section>
+
+    <section class="block" id="gan">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--teal);">// 05 — Generative AI</span>
+        <h2>Generative Adversarial Networks (Goodfellow et al., 2014)</h2>
+        <p>Two networks competing in a zero-sum game — a generator that creates fake data and a discriminator that tries to tell real from fake.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">01</span>The Minimax Game</h3>
+      <div class="mermaid">
+flowchart LR
+    Z["Random noise z<br/>~ p(z)"] --> G["Generator G<br/>maps noise to data"]
+    G --> FAKE["Fake sample G(z)"]
+    FAKE --> D["Discriminator D<br/>real or fake?"]
+    REAL["Real data x<br/>~ p_data"] --> D
+    D --> PROB["P(real)"]
+    D -.->|"gradients"| G
+      </div>
+
+      <div class="formula">
+        \[\min_G \max_D \; V(D, G) = \mathbb{E}_{x \sim p_{data}}[\log D(x)] + \mathbb{E}_{z \sim p_z}[\log(1 - D(G(z)))]\]
+      </div>
+      <p>The discriminator maximizes this (correctly classify real vs fake). The generator minimizes it (fool the discriminator). At the Nash equilibrium, <code>G</code> produces perfect samples and <code>D(x) = 0.5</code> for all inputs.</p>
+
+      <h3 class="sub-h"><span class="idx">02</span>Training Algorithm</h3>
+      <ol>
+        <li><strong>Train D:</strong> sample real batch and fake batch (from current G). Update D to maximize log D(x) + log(1-D(G(z))). Repeat k times (typically k=1).</li>
+        <li><strong>Train G:</strong> sample noise, generate fake, update G to maximize log D(G(z)) (or equivalently minimize log(1-D(G(z)))).</li>
+        <li>Alternate until convergence.</li>
+      </ol>
+
+      <h3 class="sub-h"><span class="idx">03</span>GAN Challenges</h3>
+      <div class="grid2">
+        <div class="card accent-coral">
+          <h4>Mode Collapse</h4>
+          <p>The generator discovers a few outputs that fool the discriminator and produces only those — ignoring most of the data distribution. The discriminator can't help because it only sees the fake distribution, not the real one's diversity.</p>
+        </div>
+        <div class="card accent-amber">
+          <h4>Training Instability</h4>
+          <p>The two networks can oscillate, diverge, or one can dominate. If D becomes too good, G gets no useful gradient (log(1-D(G(z))) ≈ 0). If D is too weak, G gets poor feedback. Careful balancing of learning rates and architectures is required.</p>
+        </div>
+        <div class="card accent-teal">
+          <h4>No Density Estimation</h4>
+          <p>GANs don't learn an explicit probability distribution — you can't compute P(x) for a given sample. This limits applications that need likelihood-based evaluation.</p>
+        </div>
+        <div class="card accent-peri">
+          <h4>Evaluation Difficulty</h4>
+          <p>No single metric captures GAN quality. FID (Fréchet Inception Distance) and IS (Inception Score) are commonly used but imperfect.</p>
+        </div>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">04</span>Notable GAN Variants</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Variant</th><th>Year</th><th>Key Innovation</th><th>Application</th></tr></thead>
+          <tbody>
+            <tr><td><strong>DCGAN</strong></td><td>2015</td><td>Convolutional architecture with specific normalization rules for stable training</td><td>Image generation</td></tr>
+            <tr><td><strong>CycleGAN</strong></td><td>2017</td><td>Unpaired image-to-image translation using cycle consistency loss</td><td>Style transfer, season change</td></tr>
+            <tr><td><strong>ProGAN</strong></td><td>2017</td><td>Progressive growing — train at increasing resolutions</td><td>High-res face generation</td></tr>
+            <tr><td><strong>StyleGAN</strong></td><td>2018</td><td>Style-based generator with adaptive instance normalization (AdaIN)</td><td>Photorealistic face synthesis</td></tr>
+            <tr><td><strong>BigGAN</strong></td><td>2018</td><td>Large-scale class-conditional generation with truncated sampling</td><td>High-fidelity ImageNet generation</td></tr>
+            <tr><td><strong>GANformer</strong></td><td>2021</td><td>Transformer-based GAN with bipartite attention</td><td>Scene synthesis</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block" id="diffusion">
+      <div class="block-head">
+        <span class="eyebrow" style="color:var(--coral);">// 05 — Generative AI</span>
+        <h2>Diffusion Models (Ho et al., 2020)</h2>
+        <p>The architecture behind DALL·E, Stable Diffusion, and Midjourney — state-of-the-art image, video, and audio generation.</p>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">01</span>Core Idea</h3>
+      <p>Learn to reverse a gradual noising process. The <strong>forward process</strong> destroys data by adding Gaussian noise step by step until it becomes pure noise. The <strong>reverse process</strong> learns to undo each noising step, starting from pure noise and recovering the original data.</p>
+
+      <div class="mermaid">
+flowchart LR
+    X0["Clean data x₀"] -->|"q(x₁|x₀)<br/>add noise"| X1["x₁ (slightly noisy)"]
+    X1 -->|"q(x₂|x₁)"| X2["x₂"]
+    X2 -->|"..."| XT["x_T (pure noise)"]
+    XT -->|"p_θ(x_{T-1}|x_T)<br/>learned denoise"| X2R["x_{T-1}"]
+    X2R -->|"p_θ(...)"| X1R["..."]
+    X1R -->|"p_θ(x₀|x₁)"| X0R["x̂₀ (generated)"]
+      </div>
+
+      <h3 class="sub-h"><span class="idx">02</span>Forward Process (Fixed, No Learning)</h3>
+      <p>At each step t, add a small amount of Gaussian noise controlled by variance schedule β₁, ..., β_T:</p>
+      <div class="formula">
+        \[q(x_t | x_{t-1}) = \mathcal{N}(x_t; \sqrt{1-\beta_t} \, x_{t-1}, \beta_t I)\]
+      </div>
+      <p>A key property: we can sample <code>x_t</code> directly from <code>x₀</code> in one step using the cumulative schedule <code>ᾱ_t = ∏(1-β_s)</code>:</p>
+      <div class="formula">
+        \[q(x_t | x_0) = \mathcal{N}(x_t; \sqrt{\bar{\alpha}_t} \, x_0, (1-\bar{\alpha}_t) I)\]
+        \[x_t = \sqrt{\bar{\alpha}_t} \, x_0 + \sqrt{1-\bar{\alpha}_t} \, \epsilon, \quad \epsilon \sim \mathcal{N}(0, I)\]
+      </div>
+
+      <h3 class="sub-h"><span class="idx">03</span>Reverse Process (Learned)</h3>
+      <p>A neural network (typically a <strong>U-Net</strong> or <strong>DiT</strong> — Diffusion Transformer) learns to predict the noise ε that was added at each step:</p>
+      <div class="formula">
+        \[p_\theta(x_{t-1} | x_t) = \mathcal{N}(x_{t-1}; \mu_\theta(x_t, t), \sigma_t^2 I)\]
+        \[\mu_\theta(x_t, t) = \frac{1}{\sqrt{1-\beta_t}} \left(x_t - \frac{\beta_t}{\sqrt{1-\bar{\alpha}_t}} \epsilon_\theta(x_t, t)\right)\]
+      </div>
+
+      <h3 class="sub-h"><span class="idx">04</span>Training Objective</h3>
+      <p>The full ELBO is complex, but the simplified objective (Ho et al., 2020) works remarkably well — just predict the noise:</p>
+      <div class="formula">
+        \[L_{\text{simple}} = \mathbb{E}_{t \sim U(1,T), \, x_0, \, \epsilon \sim \mathcal{N}(0,I)} \left[\|\epsilon - \epsilon_\theta(x_t, t)\|^2\right]\]
+      </div>
+      <p>Training: sample a clean image x₀, sample a random timestep t, add noise to get x_t, predict the noise with the model, compute MSE loss, backpropagate. At inference: start from pure noise x_T ~ N(0,I) and iteratively denoise for T steps.</p>
+
+      <h3 class="sub-h"><span class="idx">05</span>The U-Net Architecture</h3>
+      <p>The denoising network is typically a U-Net — an encoder-decoder with skip connections:</p>
+      <ul>
+        <li><strong>Encoder:</strong> progressively downsamples the image, extracting features at each resolution</li>
+        <li><strong>Decoder:</strong> progressively upsamples, combining with encoder features via skip connections</li>
+        <li><strong>Time embedding:</strong> sinusoidal position embedding of the timestep t is added to each layer</li>
+        <li><strong>Attention:</strong> self-attention layers at lower resolutions for global context</li>
+      </ul>
+
+      <h3 class="sub-h"><span class="idx">06</span>Accelerating Sampling</h3>
+      <p>The original DDPM requires 1000 denoising steps — too slow for practical use. Modern methods dramatically reduce this:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Method</th><th>Year</th><th>Idea</th><th>Steps</th></tr></thead>
+          <tbody>
+            <tr><td><strong>DDPM</strong></td><td>2020</td><td>Original denoising diffusion</td><td>1000</td></tr>
+            <tr><td><strong>DDIM</strong></td><td>2020</td><td>Deterministic non-Markovian sampling — skip steps</td><td>50–100</td></tr>
+            <tr><td><strong>PLMS</strong></td><td>2022</td><td>Pseudo numerical methods for diffusion ODEs</td><td>20–50</td></tr>
+            <tr><td><strong>DPM-Solver</strong></td><td>2022</td><td>Fast ODE solver for diffusion models</td><td>10–20</td></tr>
+            <tr><td><strong>LCM</strong></td><td>2023</td><td>Latent Consistency Models — distilled from diffusion</td><td>1–4</td></tr>
+            <tr><td><strong>SDXL Turbo</strong></td><td>2023</td><td>Adversarial distillation of SDXL</td><td>1</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-h"><span class="idx">07</span>Text-Conditioned Generation</h3>
+      <p>Modern text-to-image models (Stable Diffusion, DALL·E, Midjourney) condition the denoising process on text descriptions using <strong>cross-attention</strong>:</p>
+      <ol>
+        <li><strong>Text encoding:</strong> the prompt is encoded using CLIP's text encoder into a sequence of embeddings</li>
+        <li><strong>Cross-attention:</strong> in the U-Net/DiT, image features (queries) attend to text embeddings (keys/values)</li>
+        <li><strong>Classifier-Free Guidance (CFG):</strong> during sampling, denoise both conditioned and unconditioned, then interpolate: <code>ε̃ = ε_uncond + w · (ε_cond - ε_uncond)</code>. Higher w = stronger adherence to the prompt (typically w=7.5).</li>
+      </ol>
+
+      <h3 class="sub-h"><span class="idx">08</span>Latent Diffusion (Stable Diffusion)</h3>
+      <p>Running diffusion directly on high-resolution pixels is expensive. Latent Diffusion Models (LDMs) first compress images into a lower-dimensional latent space using a VAE encoder, run diffusion in that latent space, then decode back to pixels. This reduces computation by 4–16× while maintaining quality.</p>
+      <div class="mermaid">
+flowchart LR
+    IMG["Image"] --> VAE_ENC["VAE Encoder<br/>(compress to latent)"]
+    VAE_ENC --> LATENT["Latent z"]
+    LATENT --> DIFF["Diffusion in latent space<br/>(denoise z)"]
+    DIFF --> VAE_DEC["VAE Decoder<br/>(reconstruct image)"]
+    VAE_DEC --> OUT["Generated image"]
+      </div>
+
+      <h3 class="sub-h"><span class="idx">09</span>Why Diffusion Models Won</h3>
+      <div class="callout good" data-icon="✅">
+        <ul>
+          <li><strong>Stable training:</strong> no adversarial dynamics — just a simple MSE loss. No mode collapse, no oscillation.</li>
+          <li><strong>Mode coverage:</strong> captures the full data distribution, not just a few modes. Generated samples are more diverse.</li>
+          <li><strong>Scalable:</strong> more compute at inference (more steps, larger models) consistently improves quality.</li>
+          <li><strong>Controllable:</strong> easily conditioned on text (cross-attention), images (ControlNet, IP-Adapter), depth maps, segmentation masks.</li>
+          <li><strong>Theoretical foundation:</strong> rooted in score matching and diffusion processes — well-understood mathematically.</li>
+        </ul>
+      </div>
+
+      <div class="callout warn" data-icon="⚠️">
+        <div class="callout-title">Remaining challenges</div>
+        <ul>
+          <li><strong>Inference speed:</strong> even with加速 methods, still slower than GANs (single forward pass).</li>
+          <li><strong>Text rendering:</strong> current models struggle with accurate text in images.</li>
+          <li><strong>Compositional reasoning:</strong> spatial relationships ("a red cube on top of a blue sphere") remain difficult.</li>
+          <li><strong>Evaluation:</strong> FID is imperfect — doesn't capture all aspects of generation quality.</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <a class="back-top" href="#top">↑ Back to top</a>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad:true,
+    theme:'base',
+    themeVariables:{
+      background:'#11151d',
+      primaryColor:'#1a2332',
+      primaryTextColor:'#e8eaf0',
+      primaryBorderColor:'#3a4560',
+      lineColor:'#7c9cff',
+      secondaryColor:'#1a2a28',
+      tertiaryColor:'#2a1a28',
+      fontFamily:'JetBrains Mono, monospace',
+      fontSize:'14px',
+      nodeBorder:'#3a4560',
+      mainBkg:'#1a2332',
+      nodeBkg:'#1a2332',
+      clusterBkg:'#11151d',
+      clusterBorder:'#232a38',
+      titleColor:'#e8eaf0',
+      edgeLabelBackground:'#11151d'
+    },
+    flowchart:{curve:'basis', padding:15},
+    securityLevel:'loose'
+  });
+  hljs.highlightAll();
+
+  // KaTeX auto-render
+  document.addEventListener('DOMContentLoaded', function(){
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left: '\\[', right: '\\]', display: true},
+        {left: '\\(', right: '\\)', display: false}
+      ],
+      throwOnError: false
+    });
+  });
+
+  // mobile nav toggle
+  const sidebar = document.getElementById('sidebar');
+  const toggle = document.getElementById('menuToggle');
+  toggle.addEventListener('click', ()=> sidebar.classList.toggle('open'));
+  document.querySelectorAll('.navlink').forEach(l=>{
+    l.addEventListener('click', ()=> sidebar.classList.remove('open'));
+  });
+
+  // active link highlighting on scroll
+  const links = Array.from(document.querySelectorAll('.navlink[href^="#"]'));
+  const sections = links.map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
+  function onScroll(){
+    let current = sections[0];
+    const y = window.scrollY + 120;
+    for(const s of sections){
+      if(s.offsetTop <= y) current = s;
+    }
+    links.forEach(l=>l.classList.remove('active'));
+    if(current){
+      const active = links.find(l => l.getAttribute('href') === '#'+current.id);
+      if(active) active.classList.add('active');
+    }
+  }
+  window.addEventListener('scroll', onScroll);
+  onScroll();
+</script>
+</body>
+</html>

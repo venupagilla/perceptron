@@ -108,7 +108,7 @@ a:hover{text-decoration:underline;}
 .menu-toggle{
   display:none; position:fixed; top:16px; left:16px; z-index:30;
   background:var(--panel-2); border:1px solid var(--border); color:var(--text);
-  width:40px; height:40px; border-radius:8px; font-size:18px; cursor:pointer;
+  width:44px; height:44px; border-radius:8px; font-size:18px; cursor:pointer;
 }
 
 .main{margin-left:280px; flex:1; min-width:0;}
@@ -181,7 +181,7 @@ section.block:target{}
 .block-head p{color:var(--muted); max-width:680px;}
 
 h3.sub-h{
-  font-family:var(--display); font-size:20px; font-weight:600; margin:40px 0 14px;
+  font-family:var(--display); font-size:20px; font-weight:600; margin:32px 0 14px;
   padding-top:4px;
 }
 h3.sub-h .idx{color:var(--muted-2); font-family:var(--mono); font-size:14px; margin-right:8px;}
@@ -213,7 +213,7 @@ h4.mini-h{font-family:var(--display); font-size:15.5px; font-weight:600; margin:
 table{width:100%; border-collapse:collapse; margin:18px 0; font-size:13.5px;}
 thead th{
   font-family:var(--mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase;
-  color:var(--muted-2); text-align:left; padding:10px 14px; border-bottom:1px solid var(--border);
+  color:var(--muted-2); text-align:left; padding:10px 14px; border-bottom:1px solid var(--border); font-weight:600;
 }
 tbody td{padding:11px 14px; border-bottom:1px solid var(--border); color:var(--muted); vertical-align:top;}
 tbody td:first-child{color:var(--text); font-weight:600;}
@@ -223,7 +223,7 @@ tbody tr:hover{background:rgba(255,255,255,0.015);}
 
 pre{
   background:#0d1117 !important; border:1px solid var(--border); border-radius:10px;
-  padding:18px 20px; overflow-x:auto; margin:16px 0; font-size:13px;
+  padding:20px 24px; overflow-x:auto; margin:16px 0; font-size:13px;
 }
 code{font-family:var(--mono);}
 :not(pre) > code{
@@ -245,7 +245,9 @@ ul.checklist li::before{
   content:"✓"; position:absolute; left:0; color:var(--green); font-family:var(--mono); font-weight:600;
 }
 
-.mermaid{background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:20px; margin:18px 0; display:flex; justify-content:center;}
+.mermaid{background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:24px; margin:20px 0; display:flex; justify-content:center; position:relative; overflow:hidden;}
+.mermaid::before{content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, var(--amber), var(--teal), var(--periwinkle));}
+.diagram-label{font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.14em; color:var(--muted-2); text-align:center; margin-bottom:8px;}
 
 .diagram-box{
   font-family:var(--mono); font-size:12.5px; white-space:pre; overflow-x:auto;
@@ -3078,16 +3080,23 @@ if (m.find()) {
     theme:'base',
     themeVariables:{
       background:'#11151d',
-      primaryColor:'#161c27',
+      primaryColor:'#1a2332',
       primaryTextColor:'#e8eaf0',
-      primaryBorderColor:'#232a38',
-      lineColor:'#5c6478',
-      secondaryColor:'#161c27',
-      tertiaryColor:'#161c27',
+      primaryBorderColor:'#3a4560',
+      lineColor:'#7c9cff',
+      secondaryColor:'#1a2a28',
+      tertiaryColor:'#2a1a28',
       fontFamily:'JetBrains Mono, monospace',
-      fontSize:'13px'
+      fontSize:'14px',
+      nodeBorder:'#3a4560',
+      mainBkg:'#1a2332',
+      nodeBkg:'#1a2332',
+      clusterBkg:'#11151d',
+      clusterBorder:'#232a38',
+      titleColor:'#e8eaf0',
+      edgeLabelBackground:'#11151d'
     },
-    flowchart:{curve:'basis'},
+    flowchart:{curve:'basis', padding:15},
     securityLevel:'loose'
   });
   hljs.highlightAll();
