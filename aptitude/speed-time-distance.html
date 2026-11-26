@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speed, Time &amp; Distance — Quantitative Aptitude</title>
+<meta name="description" content="Speed, Time &amp; Distance — handwritten quantitative aptitude notes with formulas, shortcuts, traps, and solved examples.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Patrick+Hand&family=Kalam:wght@300;400;700&family=Indie+Flower&display=swap" rel="stylesheet">
+<style>
+body.note-body { background: #f0f0f0; font-family: 'Caveat', cursive; padding: 20px; }
+body.dark-mode.note-body { background: #0f0f23; }
+@media print { body.note-body { background: #fff; } }
+</style>
+<style>
+  @page { size: A4; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #222;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 10px;
+    gap: 28px;
+  }
+
+  /* ===== PAGE ===== */
+  .page {
+    width: 210mm; min-height: 297mm;
+    background: #fffef9;
+    background-image:
+      linear-gradient(rgba(80,80,200,0.08) 1px, transparent 1px);
+    background-size: 100% 32px;
+    padding: 38px 50px 35px 75px;
+    box-shadow: 0 6px 30px rgba(0,0,0,0.35), 0 0 0 1px rgba(0,0,0,0.06);
+    position: relative;
+    overflow: hidden;
+    border-radius: 3px;
+    transform: rotate(var(--rot, 0deg));
+  }
+  .page:nth-child(odd) { --rot: -0.2deg; }
+  .page:nth-child(even) { --rot: 0.3deg; }
+
+  /* scanned edge shadow */
+  .page::after {
+    content: ''; position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background:
+      linear-gradient(90deg, rgba(0,0,0,0.03) 0%, transparent 2%, transparent 98%, rgba(0,0,0,0.03) 100%),
+      linear-gradient(0deg, rgba(0,0,0,0.02) 0%, transparent 2%, transparent 98%, rgba(0,0,0,0.02) 100%);
+    pointer-events: none;
+  }
+
+  /* red margin line */
+  .page::before {
+    content: ''; position: absolute;
+    left: 55px; top: 0; bottom: 0;
+    width: 1.5px;
+    background: rgba(200,60,60,0.30);
+  }
+
+  /* ===== HOLE PUNCHES ===== */
+  .hole {
+    position: absolute; left: 16px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: #ddd;
+    border: 1px solid #bbb;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.15);
+  }
+  .hole:nth-child(1) { top: 28px; }
+  .hole:nth-child(2) { top: 50%; margin-top: -7px; }
+  .hole:nth-child(3) { bottom: 28px; }
+
+  /* ===== HEADINGS — RED MARKER ===== */
+  .chap-title {
+    font-family: 'Kalam', cursive;
+    font-size: 38px; font-weight: 700;
+    color: #c0392b;
+    text-decoration: underline;
+    text-decoration-style: wavy;
+    text-underline-offset: 7px;
+    text-decoration-thickness: 3px;
+    margin-bottom: 2px;
+    display: inline-block;
+    transform: rotate(-0.6deg);
+    text-shadow: 0 0 1px rgba(192,57,43,0.2);
+  }
+
+  .chap-sub {
+    font-family: 'Kalam', cursive;
+    font-size: 18px; color: #c0392b;
+    margin-bottom: 14px; opacity: 0.8;
+  }
+
+  h2 {
+    font-family: 'Kalam', cursive;
+    font-size: 26px; font-weight: 700;
+    color: #c0392b;
+    margin: 20px 0 8px 0;
+    padding: 2px 10px 2px 0;
+    border-bottom: 3px solid #c0392b;
+    display: inline-block;
+    transform: rotate(var(--h2r, -0.2deg));
+  }
+  h2:nth-of-type(even) { --h2r: 0.3deg; }
+
+  h3 {
+    font-family: 'Kalam', cursive;
+    font-size: 21px; font-weight: 700;
+    color: #b91c1c;
+    margin: 14px 0 6px 0;
+    transform: rotate(0.2deg);
+  }
+
+  /* ===== BODY — BLUE GEL PEN ===== */
+  p, li, td, .note-text, .step-text, .example-text {
+    font-family: 'Caveat', cursive;
+    font-size: 20px;
+    line-height: 1.7;
+    color: #1a3a6e;
+    letter-spacing: 0.15px;
+  }
+
+  ul { list-style: none; margin: 4px 0 10px 0; padding-left: 8px; }
+  ul li {
+    position: relative;
+    padding-left: 22px;
+    margin-bottom: 5px;
+  }
+  ul li::before {
+    content: '▸';
+    position: absolute; left: 2px;
+    color: #1a3a6e; font-weight: 700; font-size: 18px;
+  }
+
+  /* ===== YELLOW HIGHLIGHTER ===== */
+  .hl {
+    background: linear-gradient(180deg, transparent 40%, rgba(255,235,59,0.55) 40%, rgba(255,235,59,0.55) 88%, transparent 88%);
+    padding: 0 4px; font-weight: 600;
+    border-radius: 2px;
+  }
+  .hl-s {
+    background: linear-gradient(180deg, transparent 35%, rgba(255,210,0,0.6) 35%, rgba(255,210,0,0.6) 90%, transparent 90%);
+    padding: 0 5px; font-weight: 700;
+  }
+  .hl-box {
+    background: rgba(255,235,59,0.35);
+    border: 2px dashed #b8860b;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    transform: rotate(-0.2deg);
+    position: relative;
+  }
+  .hl-box::before {
+    content: '✦ FORMULA';
+    position: absolute; top: -12px; left: 16px;
+    background: #fffef9; padding: 0 8px;
+    font-family: 'Kalam', cursive;
+    font-size: 14px; font-weight: 700; color: #c0392b;
+    letter-spacing: 1px;
+  }
+
+  /* ===== RED CIRCLE / UNDERLINE ===== */
+  .rc {
+    border: 2.5px solid #c0392b;
+    border-radius: 50%;
+    display: inline-block;
+    padding: 1px 12px;
+    transform: rotate(-1.5deg);
+    font-weight: 700;
+    color: #c0392b;
+    line-height: 1.4;
+  }
+  .rul {
+    text-decoration: underline;
+    text-decoration-color: #c0392b;
+    text-decoration-thickness: 2.5px;
+    text-underline-offset: 4px;
+    font-weight: 600;
+  }
+  .rug {
+    text-decoration: underline wavy #c0392b;
+    text-underline-offset: 4px;
+    font-weight: 700;
+  }
+  .wavy-u {
+    text-decoration: underline wavy #c0392b;
+    text-underline-offset: 5px;
+  }
+
+  /* ===== EXAM TIP / COMMON MISTAKE / MEMORY TRICK ===== */
+  .et {
+    background: rgba(255,235,59,0.13);
+    border-left: 5px solid #f59e0b;
+    border-radius: 0 10px 10px 0;
+    padding: 10px 14px;
+    margin: 10px 0;
+    transform: rotate(-0.2deg);
+    position: relative;
+  }
+  .et::before {
+    content: '🎯 Exam Tip:';
+    display: block;
+    font-family: 'Kalam', cursive;
+    font-size: 16px; font-weight: 700; color: #b45309;
+    margin-bottom: 3px;
+  }
+
+  .cm {
+    background: rgba(239,68,68,0.08);
+    border-left: 5px solid #ef4444;
+    border-radius: 0 10px 10px 0;
+    padding: 10px 14px;
+    margin: 10px 0;
+    transform: rotate(0.2deg);
+  }
+  .cm::before {
+    content: '⚠️ Common Mistake:';
+    display: block;
+    font-family: 'Kalam', cursive;
+    font-size: 16px; font-weight: 700; color: #dc2626;
+    margin-bottom: 3px;
+  }
+
+  .mt {
+    background: rgba(139,92,246,0.08);
+    border-left: 5px solid #8b5cf6;
+    border-radius: 0 10px 10px 0;
+    padding: 10px 14px;
+    margin: 10px 0;
+    transform: rotate(-0.1deg);
+  }
+  .mt::before {
+    content: '🧠 Memory Trick:';
+    display: block;
+    font-family: 'Kalam', cursive;
+    font-size: 16px; font-weight: 700; color: #7c3aed;
+    margin-bottom: 3px;
+  }
+
+  .st {
+    background: rgba(34,197,94,0.08);
+    border-left: 5px solid #22c55e;
+    border-radius: 0 10px 10px 0;
+    padding: 10px 14px;
+    margin: 10px 0;
+    transform: rotate(-0.15deg);
+  }
+  .st::before {
+    content: '✏️ Solved Example:';
+    display: block;
+    font-family: 'Kalam', cursive;
+    font-size: 16px; font-weight: 700; color: #16a34a;
+    margin-bottom: 3px;
+  }
+
+  /* ===== DIAGRAM BOX ===== */
+  .diag {
+    border: 2px dashed #888;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 14px auto;
+    max-width: 480px;
+    background: rgba(0,0,0,0.012);
+    text-align: center;
+    position: relative;
+    transform: rotate(0.3deg);
+  }
+  .diag-lbl {
+    font-family: 'Kalam', cursive;
+    font-size: 14px; color: #888;
+    position: absolute; top: -10px; left: 50%;
+    transform: translateX(-50%);
+    background: #fffef9; padding: 0 10px;
+  }
+
+  /* ===== TABLE ===== */
+  .ht {
+    border-collapse: collapse;
+    margin: 10px 0;
+    width: 100%;
+    font-size: 18px;
+    transform: rotate(-0.15deg);
+  }
+  .ht th {
+    background: rgba(192,57,43,0.12);
+    color: #c0392b;
+    font-family: 'Kalam', cursive;
+    font-weight: 700;
+    padding: 7px 12px;
+    border: 2px solid #c0392b;
+    font-size: 19px;
+  }
+  .ht td {
+    padding: 6px 12px;
+    border: 1.5px solid #94a3b8;
+    color: #1a3a6e;
+    font-family: 'Caveat', cursive;
+  }
+
+  /* ===== DOODLES ===== */
+  .dd {
+    position: absolute;
+    font-size: 26px;
+    opacity: 0.25;
+    transform: rotate(var(--ddr, -12deg));
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* ===== STEP BOX ===== */
+  .step-b {
+    display: flex; gap: 8px; margin: 4px 0; align-items: flex-start;
+  }
+  .step-n {
+    background: #1a3a6e; color: #fff;
+    border-radius: 50%;
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; flex-shrink: 0;
+    font-family: 'Kalam', cursive;
+    margin-top: 3px;
+  }
+
+  /* ===== FLOWCHART ===== */
+  .fc {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 4px;
+    margin: 12px 0;
+  }
+  .fc-b {
+    background: rgba(26,58,110,0.08);
+    border: 2px solid #1a3a6e;
+    border-radius: 10px;
+    padding: 8px 20px;
+    font-family: 'Caveat', cursive;
+    font-size: 18px; color: #1a3a6e;
+    text-align: center;
+    transform: rotate(-0.5deg);
+    min-width: 160px;
+  }
+  .fc-a {
+    font-size: 22px; color: #c0392b; font-weight: 700;
+  }
+
+  /* ===== ANSWER BOX ===== */
+  .ans-box {
+    background: rgba(255,235,59,0.4);
+    border: 2.5px solid #b8860b;
+    border-radius: 10px;
+    padding: 8px 16px;
+    text-align: center;
+    font-family: 'Kalam', cursive;
+    font-size: 24px; font-weight: 700;
+    color: #854d0e;
+    display: inline-block;
+    margin: 8px 0;
+    transform: rotate(-0.5deg);
+  }
+
+  /* ===== DIVIDER ===== */
+  .div { border: none; border-top: 2px dashed #cbd5e1; margin: 16px 0; }
+
+  /* ===== PAGE NUMBER ===== */
+  .pn {
+    position: absolute;
+    bottom: 16px; right: 35px;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 16px; color: #999;
+  }
+
+  /* ===== TWO COLUMN ===== */
+  .tc {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 10px 0;
+  }
+
+  /* ===== SCAN NOISE OVERLAY ===== */
+  .scan-overlay {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    opacity: 0.012;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+
+  /* ===== STAPLE SHADOW ===== */
+  .staple {
+    position: absolute; left: 8px;
+    width: 6px; height: 18px;
+    background: rgba(0,0,0,0.08);
+    border-radius: 2px;
+    transform: rotate(3deg);
+  }
+  .staple:nth-child(2) { top: 120px; }
+  .staple:nth-child(3) { bottom: 120px; }
+
+  .back-btn {
+    position: fixed; top: 10px; left: 10px;
+    background: rgba(0,0,0,0.6); color: #fff;
+    padding: 6px 14px; border-radius: 20px;
+    font-family: 'Caveat', cursive; font-size: 16px;
+    text-decoration: none; z-index: 1000;
+    transition: background 0.2s;
+  }
+  .back-btn:hover { background: rgba(0,0,0,0.85); }
+  .dl-btn {
+    position: fixed; top: 10px; right: 100px;
+    background: rgba(52,152,219,0.85); color: #fff;
+    padding: 6px 14px; border-radius: 20px; border: none;
+    font-family: 'Caveat', cursive; font-size: 16px;
+    cursor: pointer; z-index: 1000; transition: background 0.2s;
+  }
+  .dl-btn:hover { background: rgba(41,128,185,1); }
+  .dark-btn {
+    position: fixed; top: 10px; right: 180px;
+    background: rgba(0,0,0,0.5); color: #fff;
+    padding: 6px 10px; border-radius: 20px; border: none;
+    font-size: 18px; cursor: pointer; z-index: 1000;
+    line-height: 1; transition: background 0.2s;
+  }
+  .dark-btn:hover { background: rgba(0,0,0,0.8); }
+  body.dark-mode { background: #0f0f23; }
+  body.dark-mode .page { background: #16163a; box-shadow: 0 6px 30px rgba(0,0,0,0.5); }
+  body.dark-mode .page::before { background: rgba(255,80,80,0.2); }
+  body.dark-mode .hole { background: #222; border-color: #333; }
+  body.dark-mode .scan-overlay { opacity: 0.005; }
+  body.dark-mode .chap-title { color: #ff6b6b; }
+  body.dark-mode .chap-sub { color: #ff6b6b; opacity: 0.7; }
+  body.dark-mode h2 { color: #ff6b6b; border-bottom-color: #ff6b6b; }
+  body.dark-mode h3 { color: #ff6b6b; }
+  body.dark-mode, body.dark-mode p, body.dark-mode li,
+  body.dark-mode td, body.dark-mode .note-text,
+  body.dark-mode .step-text, body.dark-mode .example-text { color: #b8c6db; }
+  body.dark-mode .hl {
+    background: linear-gradient(180deg, transparent 40%, rgba(255,200,0,0.3) 40%, rgba(255,200,0,0.3) 88%, transparent 88%);
+  }
+  body.dark-mode .hl-s {
+    background: linear-gradient(180deg, transparent 35%, rgba(255,180,0,0.25) 35%, rgba(255,180,0,0.25) 90%, transparent 90%);
+  }
+  body.dark-mode .hl-box {
+    background: rgba(255,200,0,0.06); border-color: #8a7000; color: #b8c6db;
+  }
+  body.dark-mode .hl-box::before { background: #16163a; }
+  body.dark-mode .et {
+    background: rgba(46,204,113,0.06); color: #b8c6db;
+  }
+  body.dark-mode .mt {
+    background: rgba(155,89,182,0.06); color: #b8c6db;
+  }
+  body.dark-mode .cm {
+    background: rgba(231,76,60,0.06); color: #b8c6db;
+  }
+  body.dark-mode .st {
+    background: rgba(74,106,154,0.08); border-color: rgba(74,106,154,0.3); color: #b8c6db;
+  }
+  body.dark-mode .rc { border-color: #ff6b6b; color: #ff6b6b; }
+  body.dark-mode .rul, body.dark-mode .rug, body.dark-mode .wavy-u { text-decoration-color: #ff6b6b; }
+  body.dark-mode .ht { border-color: #4a6a9a; }
+  body.dark-mode .ht th {
+    background: rgba(255,107,107,0.15); color: #ff6b6b;
+    border-color: #ff6b6b;
+  }
+  body.dark-mode .ht td { border-color: #4a6a9a; color: #b8c6db; }
+  body.dark-mode .diag { border-color: #555; background: rgba(255,255,255,0.02); }
+  body.dark-mode .ans-box {
+    background: rgba(255,200,0,0.1); border-color: #8a7000; color: #ff6b6b;
+  }
+  body.dark-mode .dd { opacity: 0.12; }
+  body.dark-mode .div { border-color: #333; }
+  body.dark-mode .back-btn { background: rgba(0,0,0,0.8); }
+  body.dark-mode .dl-btn { background: rgba(52,152,219,0.5); }
+  body.dark-mode .dark-btn { background: rgba(255,255,255,0.15); }
+  body.dark-mode svg text { fill: #b8c6db; }
+  body.dark-mode svg text[fill="#c0392b"],
+  body.dark-mode svg text[fill="#1a3a6e"],
+  body.dark-mode svg text[fill="#1a4a7a"] { fill: #b8c6db; }
+  body.dark-mode svg text[fill="#16a34a"],
+  body.dark-mode svg text[fill="#22c55e"] { fill: #4ade80; }
+  body.dark-mode svg rect,
+  body.dark-mode svg polygon,
+  body.dark-mode svg circle { stroke-opacity: 0.4; fill-opacity: 0.4; }
+  .page-break { page-break-after: always; break-after: page; }
+  @media print {
+    body { background: #fff; padding: 0; gap: 0; }
+    .page { box-shadow: none; margin: 0; border-radius: 0; }
+    .scan-overlay, .back-btn, .dl-btn, .dark-btn { display: none; }
+  }
+</style>
+<style>
+@media screen {
+  .dl-btn { right: 10px; }
+  .dark-btn { right: 140px; }
+}
+@media screen and (max-width: 600px) {
+  .dl-btn { right: 8px; }
+  .dark-btn { right: 116px; }
+}
+</style>
+<style>
+.table-scroll { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+@media print { .table-scroll { overflow: visible; } }
+</style>
+<style>
+@media screen and (max-width: 600px) {
+  body.note-body { padding: 10px; }
+  .page {
+    width: auto !important;
+    max-width: 100%;
+    min-height: auto;
+    padding: 20px 18px;
+    margin: 10px auto;
+  }
+  .page::before, .page::after { display: none; }
+  .page svg, .page img { max-width: 100%; height: auto; }
+}
+</style>
+</head>
+<body class="note-body">
+  <a class="back-btn" href="./index.html">&larr; Back to Dashboard</a>
+  <button type="button" class="dark-btn" id="darkToggle" aria-label="Toggle dark mode" aria-pressed="false">&#127769;</button>
+  <button type="button" class="dl-btn" onclick="window.print()">&#11015; Download PDF</button>
+<!-- ═══════════════════════════════════════════════ PAGE 1 ═══════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="scan-overlay"></div>
+
+  <!-- Doodles -->
+  <span class="dd" style="top:18px;right:28px;">🚄</span>
+  <span class="dd" style="top:160px;right:12px;font-size:20px;">⏱️</span>
+  <span class="dd" style="bottom:90px;left:10px;font-size:22px;">📏</span>
+  <span class="dd" style="bottom:200px;right:18px;font-size:18px;">📍</span>
+
+  <div class="chap-title">Speed, Time & Distance</div>
+  <div class="chap-sub">📐 Complete Topper's Notes — Basics to Advanced | All Exam Topics</div>
+
+  <hr class="div">
+
+  <h2>1. The Golden Triangle △</h2>
+  <p>These three formulas are the <span class="hl">FOUNDATION</span> of this entire chapter. Master these first!</p>
+
+  <div class="hl-box">
+    <p style="font-size:23px;font-weight:700;text-align:center;color:#1a3a6e;font-family:'Kalam',cursive;">
+      <span class="hl-s">Distance = Speed × Time</span>
+    </p>
+    <p style="font-size:21px;font-weight:600;text-align:center;color:#1a3a6e;font-family:'Caveat',cursive;margin-top:4px;">
+      Speed = Distance ÷ Time &nbsp;|&nbsp; Time = Distance ÷ Speed
+    </p>
+  </div>
+
+  <div class="mt">
+    <b>Think of D = S × T like a triangle:</b> Cover the letter you want to find — the other two show the operation. D on top, S × T below. <span class="rug">Memorise this triangle!</span>
+  </div>
+
+  <!-- Visual Triangle Diagram -->
+  <div class="diag">
+    <span class="diag-lbl">📐 DST Triangle</span>
+    <svg role="img" width="280" height="200" viewBox="0 0 280 200">
+      <title>DST Triangle - Speed Time Distance Formula</title>
+      <desc>A triangle with D at the top and S times T below. Covering D gives S times T, covering S gives D over T, covering T gives D over S. The fundamental formula of speed, time and distance.</desc>
+      <polygon points="140,25 40,175 240,175" fill="rgba(26,58,110,0.06)" stroke="#1a3a6e" stroke-width="2.5"/>
+      <text x="140" y="65" text-anchor="middle" font-family="Kalam" font-size="28" font-weight="700" fill="#c0392b">D</text>
+      <text x="140" y="160" text-anchor="middle" font-family="Kalam" font-size="22" font-weight="600" fill="#1a3a6e">S × T</text>
+      <line x1="140" y1="80" x2="140" y2="120" stroke="#c0392b" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="60" y="100" font-family="Caveat" font-size="14" fill="#888" transform="rotate(-30,60,100)">Cover D → S×T</text>
+      <text x="210" y="100" font-family="Caveat" font-size="14" fill="#888" transform="rotate(30,210,100)">Cover S → D/T</text>
+    </svg>
+  </div>
+
+  <h2>2. Units & Their Symbols</h2>
+  <p><span class="rul">NEVER mix units!</span> Always check before solving.</p>
+
+  <div class="tc">
+    <div>
+      <p><b style="color:#c0392b;">Speed:</b></p>
+      <ul>
+        <li>km/hr — kilometres per hour</li>
+        <li>m/s — metres per second</li>
+        <li>mph — miles per hour</li>
+      </ul>
+    </div>
+    <div>
+      <p><b style="color:#c0392b;">Distance:</b></p>
+      <ul>
+        <li>km, m, cm, miles, feet</li>
+      </ul>
+      <p style="margin-top:6px;"><b style="color:#c0392b;">Time:</b> h, min, s</p>
+    </div>
+  </div>
+
+  <div class="cm">
+    If speed is in <span class="hl">km/hr</span> and distance in <span class="hl">metres</span> — convert first! Nothing will work otherwise.
+  </div>
+
+  <h2>3. Unit Conversions ⭐⭐⭐</h2>
+  <p><span class="hl-s">Most tested concept in exams!</span> Memorise these cold:</p>
+
+  <div class="hl-box">
+    <p style="font-size:22px;font-weight:700;text-align:center;">
+      <span class="hl-s">km/hr → m/s : × 5/18</span>
+    </p>
+    <p style="font-size:22px;font-weight:700;text-align:center;margin-top:4px;">
+      <span class="hl-s">m/s → km/hr : × 18/5</span>
+    </p>
+  </div>
+
+  <div class="mt">
+    <b>"5/18 to go DOWN, 18/5 to go UP"</b><br>
+    km/hr (bigger) → m/s (smaller) = multiply by smaller fraction 5/18<br>
+    m/s (smaller) → km/hr (bigger) = multiply by larger fraction 18/5
+  </div>
+
+  <h3>Quick Reference Table</h3>
+  <div class="table-scroll"><table class="ht">
+    <tr><th>km/hr</th><th>m/s</th><th>km/hr</th><th>m/s</th></tr>
+    <tr><td>18</td><td><span class="hl">5</span></td><td>108</td><td><span class="hl">30</span></td></tr>
+    <tr><td>36</td><td><span class="hl">10</span></td><td>126</td><td><span class="hl">35</span></td></tr>
+    <tr><td>54</td><td><span class="hl">15</span></td><td>144</td><td><span class="hl">40</span></td></tr>
+    <tr><td>72</td><td><span class="hl">20</span></td><td>162</td><td><span class="hl">45</span></td></tr>
+    <tr><td>90</td><td><span class="hl">25</span></td><td>180</td><td><span class="hl">50</span></td></tr>
+  </table></div>
+
+  <div class="st">
+    Convert 72 km/hr to m/s<br>
+    <b>Step 1:</b> 72 × 5/18 = (72÷18) × 5 = 4 × 5<br>
+    <span class="ans-box">= 20 m/s ✓</span>
+  </div>
+
+  <div class="et">
+    In exams, they rarely give speed in compatible units. First step = <span class="rul">convert everything</span> to consistent unit system!
+  </div>
+
+  <span class="pn">1</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 2 ═══════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="scan-overlay"></div>
+
+  <span class="dd" style="top:22px;right:30px;">🏃</span>
+  <span class="dd" style="top:280px;left:8px;font-size:20px;">⚡</span>
+  <span class="dd" style="bottom:60px;right:20px;font-size:22px;">🎯</span>
+
+  <h2>4. Average Speed ⭐⭐</h2>
+
+  <div class="hl-box">
+    <p style="font-size:22px;font-weight:700;text-align:center;">
+      <span class="rul">Average Speed = Total Distance ÷ Total Time</span>
+    </p>
+  </div>
+
+  <h3>Case 1 — Equal DISTANCE, Different Speeds</h3>
+  <p>If you travel <span class="hl">same distance</span> at speeds S₁ and S₂ (e.g., go & return):</p>
+
+  <div class="hl-box">
+    <p style="font-size:22px;font-weight:700;text-align:center;">
+      <span class="hl-s">Avg Speed = 2 × S₁ × S₂ ÷ (S₁ + S₂)</span>
+    </p>
+    <p style="text-align:center;font-size:17px;color:#666;">This is the <b>Harmonic Mean</b> — NOT arithmetic mean!</p>
+  </div>
+
+  <div class="cm">
+    <b>Classic trap!</b> Avg speed ≠ (S₁ + S₂)/2 when distances are equal.<br>
+    <span style="color:#16a34a;font-weight:700;">✓</span> Use 2S₁S₂/(S₁+S₂)<br>
+    <span style="color:#dc2626;font-weight:700;">✗</span> (S₁+S₂)/2 is WRONG here
+  </div>
+
+  <div class="st">
+    A man goes to his office at 30 km/hr and returns at 20 km/hr. Find avg speed.<br>
+    <b>Step 1:</b> Avg = (2 × 30 × 20) / (30 + 20) = 1200/50<br>
+    <span class="ans-box">= 24 km/hr ✓</span>
+    <br><span style="font-size:18px;color:#888;">Note: (30+20)/2 = 25 is WRONG!</span>
+  </div>
+
+  <!-- Harmonic Mean Visual -->
+  <div class="diag">
+    <span class="diag-lbl">⚖️ Harmonic Mean Visual</span>
+    <svg role="img" width="380" height="130" viewBox="0 0 380 130">
+      <title>Harmonic Mean Visual for Average Speed</title>
+      <desc>Illustration showing a journey going at 30 km per hour and returning at 20 km per hour over the same distance, with the average speed formula 2 times V1 times V2 divided by V1 plus V2.</desc>
+      <rect x="20" y="20" width="80" height="50" rx="8" fill="rgba(26,58,110,0.08)" stroke="#1a3a6e" stroke-width="2"/>
+      <text x="60" y="50" text-anchor="middle" font-family="Caveat" font-size="17" fill="#1a3a6e" font-weight="600">Go: 30 km/hr</text>
+      <text x="60" y="90" text-anchor="middle" font-family="Caveat" font-size="14" fill="#888">Same Distance D</text>
+      <rect x="280" y="20" width="80" height="50" rx="8" fill="rgba(26,58,110,0.08)" stroke="#1a3a6e" stroke-width="2"/>
+      <text x="320" y="50" text-anchor="middle" font-family="Caveat" font-size="17" fill="#1a3a6e" font-weight="600">Return: 20 km/hr</text>
+      <text x="320" y="90" text-anchor="middle" font-family="Caveat" font-size="14" fill="#888">Same Distance D</text>
+      <line x1="105" y1="45" x2="275" y2="45" stroke="#c0392b" stroke-width="2" stroke-dasharray="5,3"/>
+      <text x="190" y="35" text-anchor="middle" font-family="Kalam" font-size="14" fill="#c0392b">Distance D Same</text>
+      <rect x="110" y="60" width="160" height="35" rx="8" fill="rgba(255,235,59,0.3)" stroke="#b8860b" stroke-width="2"/>
+      <text x="190" y="83" text-anchor="middle" font-family="Caveat" font-size="16" fill="#854d0e" font-weight="700">Avg = 2V₁V₂/(V₁+V₂)</text>
+    </svg>
+  </div>
+
+  <h3>Case 2 — Equal TIME, Different Speeds</h3>
+  <p>If you travel for <span class="hl">same time</span> at speeds S₁ and S₂:</p>
+
+  <div class="hl-box">
+    <p style="font-size:22px;font-weight:700;text-align:center;">
+      <span class="hl-s">Avg Speed = (S₁ + S₂) / 2</span>
+    </p>
+    <p style="text-align:center;font-size:17px;color:#666;">Arithmetic Mean — only when TIME is equal!</p>
+  </div>
+
+  <div class="et">
+    <b>Exam Tip:</b> Read the question carefully — "half the distance" vs "half the time" give <span class="rul">different formulas</span>! Don't mix them up!
+  </div>
+
+  <span class="pn">2</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 3 ═══════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="scan-overlay"></div>
+
+  <span class="dd" style="top:20px;right:25px;">🚗</span>
+  <span class="dd" style="top:200px;left:10px;font-size:20px;">➡️</span>
+  <span class="dd" style="bottom:120px;right:15px;font-size:22px;">⬅️</span>
+
+  <h2>5. Relative Speed</h2>
+  <p>Relative speed = speed of one object <span class="rul">as seen from</span> the other object.</p>
+
+  <div class="tc">
+    <div class="hl-box" style="text-align:center;">
+      <p style="font-size:20px;font-weight:700;">Same Direction</p>
+      <p style="font-size:24px;font-weight:700;margin:6px 0;"><span class="hl-s">|S₁ − S₂|</span></p>
+      <p style="font-size:17px;color:#666;">Subtract the speeds</p>
+    </div>
+    <div class="hl-box" style="text-align:center;">
+      <p style="font-size:20px;font-weight:700;">Opposite Direction</p>
+      <p style="font-size:24px;font-weight:700;margin:6px 0;"><span class="hl-s">S₁ + S₂</span></p>
+      <p style="font-size:17px;color:#666;">Add the speeds</p>
+    </div>
+  </div>
+
+  <div class="mt">
+    <b>Think of it like this:</b><br>
+    • Same direction → they're chasing each other → speed difference matters → <span class="rul">SUBTRACT</span><br>
+    • Opposite direction → they're coming towards each other → both contribute → <span class="rul">ADD</span>
+  </div>
+
+  <!-- Relative Speed Diagram -->
+  <div class="diag">
+    <span class="diag-lbl">🔄 Relative Speed Visual</span>
+    <svg role="img" width="400" height="240" viewBox="0 0 400 240">
+      <title>Relative Speed Visual - Same and Opposite Directions</title>
+      <desc>Top section shows two objects A and B moving in the same direction with relative speed S1 minus S2. Bottom section shows them moving in opposite directions with relative speed S1 plus S2.</desc>
+      <text x="200" y="22" text-anchor="middle" font-family="Kalam" font-size="16" font-weight="700" fill="#c0392b">Same Direction → Relative Speed = |S₁ − S₂|</text>
+      <rect x="40" y="35" width="60" height="40" rx="6" fill="rgba(26,58,110,0.1)" stroke="#1a3a6e" stroke-width="2"/>
+      <text x="70" y="60" text-anchor="middle" font-family="Caveat" font-size="15" fill="#1a3a6e">A (S₁)</text>
+      <rect x="180" y="35" width="60" height="40" rx="6" fill="rgba(192,57,43,0.1)" stroke="#c0392b" stroke-width="2"/>
+      <text x="210" y="60" text-anchor="middle" font-family="Caveat" font-size="15" fill="#c0392b">B (S₂)</text>
+      <text x="135" y="65" text-anchor="middle" font-family="Caveat" font-size="20" fill="#c0392b" font-weight="700">→ →</text>
+
+      <text x="200" y="145" text-anchor="middle" font-family="Kalam" font-size="16" font-weight="700" fill="#c0392b">Opposite Direction → Relative Speed = S₁ + S₂</text>
+      <rect x="40" y="160" width="60" height="40" rx="6" fill="rgba(26,58,110,0.1)" stroke="#1a3a6e" stroke-width="2"/>
+      <text x="70" y="185" text-anchor="middle" font-family="Caveat" font-size="15" fill="#1a3a6e">A (S₁)</text>
+      <rect x="300" y="160" width="60" height="40" rx="6" fill="rgba(192,57,43,0.1)" stroke="#c0392b" stroke-width="2"/>
+      <text x="330" y="185" text-anchor="middle" font-family="Caveat" font-size="15" fill="#c0392b">B (S₂)</text>
+      <text x="195" y="188" text-anchor="middle" font-family="Caveat" font-size="20" fill="#c0392b" font-weight="700">→ ←</text>
+    </svg>
+  </div>
+
+  <div class="st">
+    Two trains 100m and 150m long run at 45 km/hr and 36 km/hr in <b>opposite directions</b>. Time to cross?<br>
+    <b>Step 1:</b> Rel Speed = 45 + 36 = 81 km/hr<br>
+    <b>Step 2:</b> Convert = 81 × 5/18 = 22.5 m/s<br>
+    <b>Step 3:</b> Total length = 100 + 150 = 250m<br>
+    <b>Step 4:</b> Time = 250 ÷ 22.5<br>
+    <span class="ans-box">≈ 11.11 sec ✓</span>
+  </div>
+
+  <div class="et">
+    For train problems: <span class="hl">ALWAYS convert speed to m/s</span> since lengths are in metres!
+  </div>
+
+  <div class="cm">
+    Forgetting to add <span class="rul">BOTH train lengths</span> when they cross each other — always use (L₁ + L₂)!
+  </div>
+
+  <span class="pn">3</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 4 ═══════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="scan-overlay"></div>
+
+  <span class="dd" style="top:18px;right:32px;">🚂</span>
+  <span class="dd" style="top:180px;right:8px;font-size:20px;">🌉</span>
+  <span class="dd" style="bottom:100px;left:12px;font-size:22px;">⏱️</span>
+
+  <h2>6. Train Problems 🚂</h2>
+  <p><span class="hl">Very common in exams.</span> Key idea: when a train crosses something, it must cover its own length + the object's length!</p>
+
+  <h3>Case A — Train crosses a Pole / Person / Tree</h3>
+  <div class="hl-box">
+    <p style="font-size:22px;font-weight:700;text-align:center;">
+      <span class="hl-s">Time = Length of Train ÷ Speed</span>
+    </p>
+    <p style="text-align:center;font-size:17px;color:#666;">Only train's length matters — pole has negligible width</p>
+  </div>
+
+  <div class="st">
+    A 100m train crosses a pole in 10 sec. Find speed in km/hr.<br>
+    <b>Step 1:</b> Speed = 100/10 = 10 m/s<br>
+    <b>Step 2:</b> Convert: 10 × 18/5 = 36 km/hr<br>
+    <span class="ans-box">Speed = 36 km/hr ✓</span>
+  </div>
+
+  <h3>Case B — Train crosses a Platform / Bridge / Tunnel</h3>
+  <div class="hl-box">
+    <p style="font-size:22px;font-weight:700;text-align:center;">
+      <span class="hl-s">Time = (Train Length + Platform Length) ÷ Speed</span>
+    </p>
+  </div>
+
+  <!-- Train + Platform Diagram -->
+  <div class="diag">
+    <span class="diag-lbl">🌉 Train Crossing Platform</span>
+    <svg role="img" width="400" height="100" viewBox="0 0 400 100">
+      <title>Train Crossing a Platform Diagram</title>
+      <desc>Illustration of a train of length L1 crossing a platform of length L2. The train must cover its own length plus the platform length, so total distance equals L1 plus L2.</desc>
+      <rect x="30" y="30" width="60" height="35" rx="5" fill="rgba(59,130,246,0.15)" stroke="#3b82f6" stroke-width="2"/>
+      <text x="60" y="52" text-anchor="middle" font-family="Caveat" font-size="13" fill="#1e40af">🚂 L₁</text>
+      <rect x="100" y="45" width="150" height="20" rx="3" fill="rgba(234,179,8,0.2)" stroke="#ca8a04" stroke-width="2"/>
+      <text x="175" y="60" text-anchor="middle" font-family="Caveat" font-size="13" fill="#854d0e">Platform L₂</text>
+      <line x1="35" y1="72" x2="245" y2="72" stroke="#c0392b" stroke-width="2"/>
+      <text x="140" y="85" text-anchor="middle" font-family="Kalam" font-size="15" fill="#c0392b" font-weight="700">Total = L₁ + L₂</text>
+      <text x="175" y="18" text-anchor="middle" font-family="Caveat" font-size="12" fill="#888">Train starts here → must clear entire platform</text>
+    </svg>
+  </div>
+
+  <h3>Case C — Two Trains crossing each other</h3>
+  <div class="tc">
+    <div class="hl-box" style="text-align:center;">
+      <p style="font-weight:700;">Opposite Direction</p>
+      <p style="font-size:20px;font-weight:700;margin:4px 0;"><span class="hl-s">T = (L₁+L₂)/(S₁+S₂)</span></p>
+    </div>
+    <div class="hl-box" style="text-align:center;">
+      <p style="font-weight:700;">Same Direction</p>
+      <p style="font-size:20px;font-weight:700;margin:4px 0;"><span class="hl-s">T = (L₁+L₂)/(S₁−S₂)</span></p>
+    </div>
+  </div>
+
+  <div class="st">
+    140m train at 54 km/hr overtakes a 160m train at 36 km/hr. Time to overtake?<br>
+    <b>Step 1:</b> Relative speed = 54 − 36 = 18 km/hr = 5 m/s<br>
+    <b>Step 2:</b> Total length = 140 + 160 = 300m<br>
+    <b>Step 3:</b> Time = 300/5<br>
+    <span class="ans-box">= 60 sec ✓</span>
+  </div>
+
+  <div class="cm">
+    In overtaking problems, <span class="rul">same direction</span> means SUBTRACT speeds. In crossing problems, <span class="rul">opposite direction</span> means ADD speeds. Don't mix them!
+  </div>
+
+  <span class="pn">4</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 5 ═══════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="scan-overlay"></div>
+
+  <span class="dd" style="top:24px;right:28px;">🚤</span>
+  <span class="dd" style="top:220px;left:10px;font-size:20px;">🌊</span>
+  <span class="dd" style="bottom:80px;right:22px;font-size:22px;">🧭</span>
+
+  <h2>7. Boats & Streams 🚤</h2>
+  <p>When a boat moves in a river, the <span class="hl">stream (current)</span> either helps or opposes it.</p>
+
+  <h3>Key Terms</h3>
+  <ul>
+    <li><span class="hl-s">Downstream</span> = Boat moves <span class="rul">with</span> the current → <span class="rc">Faster!</span></li>
+    <li><span class="hl-s">Upstream</span> = Boat moves <span class="rul">against</span> the current → <span class="rc">Slower!</span></li>
+  </ul>
+
+  <div class="hl-box">
+    <p style="font-size:21px;font-weight:700;text-align:center;">
+      <span class="hl-s">Downstream Speed = Boat Speed + Stream Speed</span>
+    </p>
+    <p style="font-size:21px;font-weight:700;text-align:center;">
+      <span class="hl-s">Upstream Speed = Boat Speed − Stream Speed</span>
+    </p>
+  </div>
+
+  <h3>Finding Individual Speeds</h3>
+  <p>If you know Downstream (D) and Upstream (U):</p>
+
+  <div class="hl-box">
+    <p style="font-size:21px;font-weight:700;text-align:center;">
+      <span class="hl-s">Boat Speed = (D + U) / 2</span>
+    </p>
+    <p style="font-size:21px;font-weight:700;text-align:center;">
+      <span class="hl-s">Stream Speed = (D − U) / 2</span>
+    </p>
+  </div>
+
+  <!-- Boat & Stream Diagram -->
+  <div class="diag">
+    <span class="diag-lbl">🚤 Boat & Stream</span>
+    <svg role="img" width="420" height="160" viewBox="0 0 420 160">
+      <title>Boat and Stream Diagram</title>
+      <desc>River flow shown with downstream boat moving with the current at boat plus stream speed, and upstream boat moving against the current at boat minus stream speed.</desc>
+      <!-- River -->
+      <rect x="10" y="40" width="400" height="110" rx="10" fill="rgba(59,130,246,0.06)" stroke="#3b82f6" stroke-width="1.5"/>
+      <text x="210" y="105" text-anchor="middle" font-family="Caveat" font-size="22" fill="#3b82f6" opacity="0.4">→ → → → → → → → → → →</text>
+      <!-- Downstream -->
+      <rect x="30" y="55" width="120" height="45" rx="8" fill="rgba(34,197,94,0.12)" stroke="#22c55e" stroke-width="2"/>
+      <text x="90" y="72" text-anchor="middle" font-family="Caveat" font-size="15" fill="#16a34a" font-weight="700">🚤 Downstream</text>
+      <text x="90" y="92" text-anchor="middle" font-family="Caveat" font-size="14" fill="#16a34a">Boat + Stream</text>
+      <!-- Upstream -->
+      <rect x="270" y="100" width="120" height="45" rx="8" fill="rgba(239,68,68,0.1)" stroke="#ef4444" stroke-width="2"/>
+      <text x="330" y="117" text-anchor="middle" font-family="Caveat" font-size="15" fill="#dc2626" font-weight="700">🚤 Upstream</text>
+      <text x="330" y="137" text-anchor="middle" font-family="Caveat" font-size="14" fill="#dc2626">Boat − Stream</text>
+      <!-- Labels -->
+      <text x="210" y="32" text-anchor="middle" font-family="Kalam" font-size="16" fill="#c0392b" font-weight="700">River Flow →</text>
+    </svg>
+  </div>
+
+  <div class="st">
+    A boat goes 36 km downstream in 3 hrs and 36 km upstream in 6 hrs. Find boat & stream speeds.<br>
+    <b>Step 1:</b> D = 36/3 = 12 km/hr &nbsp;|&nbsp; U = 36/6 = 6 km/hr<br>
+    <b>Step 2:</b> Boat = (12+6)/2 = <span class="hl">9 km/hr</span><br>
+    <b>Step 3:</b> Stream = (12−6)/2 = <span class="hl">3 km/hr</span><br>
+    <span class="ans-box">Boat = 9 km/hr, Stream = 3 km/hr ✓</span>
+  </div>
+
+  <div class="et">
+    Downstream is <span class="rul">ALWAYS</span> faster than upstream. If your answer shows otherwise, you've made a mistake!
+  </div>
+
+  <div class="cm">
+    Mixing up formulas! Remember:<br>
+    <span style="color:#16a34a;font-weight:700;">✓</span> Downstream = Boat + Stream (with current = faster)<br>
+    <span style="color:#dc2626;font-weight:700;">✗</span> Downstream = Boat − Stream ← WRONG!
+  </div>
+
+  <span class="pn">5</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 6 ═══════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="scan-overlay"></div>
+
+  <span class="dd" style="top:20px;right:30px;">🏃</span>
+  <span class="dd" style="top:300px;left:8px;font-size:20px;">🏆</span>
+  <span class="dd" style="bottom:60px;right:18px;font-size:22px;">🔄</span>
+
+  <h2>8. Races 🏃</h2>
+
+  <h3>Distance-based Race</h3>
+  <p>If A beats B by <span class="hl">'x' metres</span> in a race of <span class="hl">'D' metres</span> — when A finishes D, B covers only (D − x).</p>
+
+  <div class="hl-box">
+    <p style="font-size:22px;font-weight:700;text-align:center;">
+      <span class="hl-s">Speed Ratio A : B = D : (D − x)</span>
+    </p>
+  </div>
+
+  <h3>Time-based Race</h3>
+  <p>If A beats B by <span class="hl">'t' seconds</span> — when A finishes, B takes t more seconds.</p>
+
+  <div class="hl-box">
+    <p style="font-size:22px;font-weight:700;text-align:center;">
+      <span class="hl-s">Speed Ratio A : B = (T + t) : T</span>
+    </p>
+    <p style="text-align:center;font-size:16px;color:#666;">T = time taken by A</p>
+  </div>
+
+  <div class="st">
+    In a 100m race, A beats B by 10m and B beats C by 20m. By how much does A beat C?<br>
+    <b>Step 1:</b> A:B = 100:90 = 10:9<br>
+    <b>Step 2:</b> B:C = 100:80 = 5:4<br>
+    <b>Step 3:</b> A:C = (10×5):(9×4) = 50:36 = 25:18<br>
+    <b>Step 4:</b> When A runs 100m, C runs (18/25)×100 = 72m<br>
+    <span class="ans-box">A beats C by 28m ✓</span>
+  </div>
+
+  <hr class="div">
+
+  <h2>9. Circular Track Problems 🔄</h2>
+
+  <div class="tc">
+    <div class="hl-box" style="text-align:center;">
+      <p style="font-weight:700;">Opposite Direction</p>
+      <p style="font-size:20px;font-weight:700;margin:4px 0;"><span class="hl-s">Meet = C/(S₁+S₂)</span></p>
+    </div>
+    <div class="hl-box" style="text-align:center;">
+      <p style="font-weight:700;">Same Direction</p>
+      <p style="font-size:20px;font-weight:700;margin:4px 0;"><span class="hl-s">Meet = C/|S₁−S₂|</span></p>
+    </div>
+  </div>
+
+  <!-- Circular Track -->
+  <div class="diag">
+    <span class="diag-lbl">🔄 Circular Track (400m)</span>
+    <svg role="img" width="220" height="220" viewBox="0 0 220 220">
+      <title>Circular Track Diagram</title>
+      <desc>Circular track of 400 meters showing start point, with runners A and B moving in opposite directions. First meeting time equals circumference divided by relative speed.</desc>
+      <circle cx="110" cy="110" r="90" fill="none" stroke="#1a3a6e" stroke-width="3"/>
+      <circle cx="110" cy="110" r="85" fill="none" stroke="#1a3a6e" stroke-width="1" stroke-dasharray="4,4"/>
+      <text x="110" y="15" text-anchor="middle" font-family="Caveat" font-size="14" fill="#c0392b" font-weight="700">A →</text>
+      <text x="110" y="215" text-anchor="middle" font-family="Caveat" font-size="14" fill="#c0392b" font-weight="700">← B</text>
+      <text x="110" y="115" text-anchor="middle" font-family="Caveat" font-size="14" fill="#888">400m</text>
+      <circle cx="110" cy="110" r="5" fill="#c0392b"/>
+      <text x="195" y="115" font-family="Kalam" font-size="12" fill="#16a34a">Start</text>
+    </svg>
+  </div>
+
+  <div class="et">
+    First meeting time = Circumference ÷ Relative Speed<br>
+    Second meeting = 2 × Circumference ÷ Relative Speed
+  </div>
+
+  <h2>10. Escalator / Moving Walkway</h2>
+  <p>When a person walks on a <span class="hl">moving escalator</span>, effective speed changes!</p>
+
+  <div class="hl-box">
+    <p style="font-size:20px;font-weight:700;text-align:center;">
+      <span class="hl-s">Going UP: Effective = Person + Escalator</span>
+    </p>
+    <p style="font-size:20px;font-weight:700;text-align:center;">
+      <span class="hl-s">Going DOWN: Effective = Person − Escalator</span>
+    </p>
+  </div>
+
+  <div class="st">
+    Man walks up a moving escalator in 20 sec. Coming down takes 40 sec. His speed = 3 m/s. Find escalator speed.<br>
+    <b>Let</b> escalator speed = e, length = L<br>
+    <b>Up:</b> L = (3+e)×20 &nbsp;|&nbsp; <b>Down:</b> L = (3−e)×40<br>
+    (3+e)×20 = (3−e)×40 → 60+20e = 120−40e → 60e = 60<br>
+    <span class="ans-box">e = 1 m/s ✓</span>
+  </div>
+
+  <span class="pn">6</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 7 ═══════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="scan-overlay"></div>
+
+  <span class="dd" style="top:22px;right:26px;">⚡</span>
+  <span class="dd" style="top:250px;left:10px;font-size:20px;">📝</span>
+  <span class="dd" style="bottom:70px;right:20px;font-size:22px;">🏁</span>
+
+  <h2>11. Meeting Point Problems</h2>
+  <p>Two people start from <span class="hl">opposite ends</span> and walk towards each other.</p>
+
+  <div class="hl-box">
+    <p style="font-size:20px;font-weight:700;text-align:center;">
+      <span class="hl-s">Time to meet = Distance / (S₁ + S₂)</span>
+    </p>
+    <p style="font-size:19px;font-weight:600;text-align:center;">
+      Meeting point from A = S₁ × Time
+    </p>
+  </div>
+
+  <!-- Meeting Point Diagram -->
+  <div class="diag">
+    <span class="diag-lbl">📍 Meeting Point Visual</span>
+    <svg role="img" width="400" height="90" viewBox="0 0 400 90">
+      <title>Meeting Point Visual Diagram</title>
+      <desc>Two people A with speed S1 and B with speed S2 start from opposite ends and walk towards each other. They meet at a point where the distance from A equals S1 times time and from B equals S2 times time.</desc>
+      <rect x="20" y="25" width="70" height="40" rx="6" fill="rgba(239,68,68,0.1)" stroke="#ef4444" stroke-width="2"/>
+      <text x="55" y="50" text-anchor="middle" font-family="Caveat" font-size="15" fill="#dc2626" font-weight="700">A (S₁)</text>
+      <rect x="310" y="25" width="70" height="40" rx="6" fill="rgba(59,130,246,0.1)" stroke="#3b82f6" stroke-width="2"/>
+      <text x="345" y="50" text-anchor="middle" font-family="Caveat" font-size="15" fill="#1e40af" font-weight="700">B (S₂)</text>
+      <line x1="95" y1="45" x2="305" y2="45" stroke="#94a3b8" stroke-width="2"/>
+      <circle cx="185" cy="45" r="10" fill="rgba(34,197,94,0.2)" stroke="#22c55e" stroke-width="2"/>
+      <text x="185" y="49" text-anchor="middle" font-family="Kalam" font-size="12" fill="#16a34a" font-weight="700">Meet</text>
+      <text x="140" y="75" text-anchor="middle" font-family="Caveat" font-size="13" fill="#888">S₁ × T</text>
+      <text x="245" y="75" text-anchor="middle" font-family="Caveat" font-size="13" fill="#888">S₂ × T</text>
+      <text x="200" y="88" text-anchor="middle" font-family="Caveat" font-size="12" fill="#888">Distance = (S₁ + S₂) × T</text>
+    </svg>
+  </div>
+
+  <div class="mt">
+    <b>Distance ratio = Speed ratio!</b><br>
+    When time is same, distance covered is proportional to speed. So A's distance : B's distance = S₁ : S₂.
+  </div>
+
+  <hr class="div">
+
+  <h2>12. Speed Changed by Percentage</h2>
+
+  <div class="hl-box">
+    <p style="font-size:18px;font-weight:700;">Speed ↑ by x%:</p>
+    <p style="font-size:20px;font-weight:700;text-align:center;">
+      <span class="hl-s">New Time = Original × 100/(100+x)</span>
+    </p>
+    <p style="font-size:17px;text-align:center;">Time saved = Original × x/(100+x)</p>
+  </div>
+
+  <div class="hl-box">
+    <p style="font-size:18px;font-weight:700;">Speed ↓ by x%:</p>
+    <p style="font-size:20px;font-weight:700;text-align:center;">
+      <span class="hl-s">New Time = Original × 100/(100−x)</span>
+    </p>
+    <p style="font-size:17px;text-align:center;">Extra time = Original × x/(100−x)</p>
+  </div>
+
+  <div class="st">
+    A man increases speed by 25% and reaches 30 min early. Find usual time.<br>
+    <b>Method:</b> Usual time × 25/(100+25) = 30<br>
+    Usual time × 25/125 = 30 → Usual time = 30 × 5<br>
+    <span class="ans-box">= 150 min = 2.5 hrs ✓</span>
+  </div>
+
+  <div class="et">
+    When speed increases, time <span class="rul">decreases</span> (and vice versa) — they are <b>inversely proportional</b> when distance is constant!
+  </div>
+
+  <span class="pn">7</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 8 ═══════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="scan-overlay"></div>
+
+  <span class="dd" style="top:20px;right:28px;">📋</span>
+  <span class="dd" style="top:200px;left:10px;font-size:20px;">⭐</span>
+  <span class="dd" style="bottom:120px;right:15px;font-size:22px;">🏆</span>
+
+  <h2>13. Key Shortcuts & Formula Sheet ⚡</h2>
+
+  <div class="hl-box">
+    <p><span class="rc">1</span> <span class="hl-s">D = S × T</span> — The master formula!</p>
+  </div>
+  <div class="hl-box">
+    <p><span class="rc">2</span> <span class="hl-s">1 km/hr = 5/18 m/s</span> — Most used conversion!</p>
+  </div>
+  <div class="hl-box">
+    <p><span class="rc">3</span> <span class="hl-s">Avg Speed (equal dist) = 2S₁S₂/(S₁+S₂)</span></p>
+  </div>
+  <div class="hl-box">
+    <p><span class="rc">4</span> <span class="hl-s">Avg Speed (equal time) = (S₁+S₂)/2</span></p>
+  </div>
+  <div class="hl-box">
+    <p><span class="rc">5</span> Trains crossing: <span class="hl-s">Total Length = L₁ + L₂</span></p>
+  </div>
+  <div class="hl-box">
+    <p><span class="rc">6</span> Boats: <span class="hl-s">Down = Boat+Stream, Up = Boat−Stream</span></p>
+  </div>
+  <div class="hl-box">
+    <p><span class="rc">7</span> Same direction: <span class="hl-s">Rel Speed = |S₁−S₂|</span></p>
+  </div>
+  <div class="hl-box">
+    <p><span class="rc">8</span> Opposite direction: <span class="hl-s">Rel Speed = S₁+S₂</span></p>
+  </div>
+
+  <hr class="div">
+
+  <h2>14. Golden Rules 🏆</h2>
+  <ul>
+    <li><span class="hl-s">Rule 1:</span> Always convert to same unit system first</li>
+    <li><span class="hl-s">Rule 2:</span> For avg speed, use Harmonic Mean for equal distances</li>
+    <li><span class="hl-s">Rule 3:</span> Trains: Add lengths when crossing each other</li>
+    <li><span class="hl-s">Rule 4:</span> Boats: Downstream is ALWAYS faster than upstream</li>
+    <li><span class="hl-s">Rule 5:</span> Races: Speed ratio = Inverse of time ratio</li>
+    <li><span class="hl-s">Rule 6:</span> Draw a diagram for complex problems</li>
+  </ul>
+
+  <hr class="div">
+
+  <h2>15. Common Mistakes to Avoid ❌</h2>
+
+  <div class="cm" style="margin-bottom:6px;">
+    <strong>1.</strong> Using (S₁+S₂)/2 instead of 2S₁S₂/(S₁+S₂) for avg speed with equal distances
+  </div>
+  <div class="cm" style="margin-bottom:6px;">
+    <strong>2.</strong> Forgetting to add train lengths when crossing
+  </div>
+  <div class="cm" style="margin-bottom:6px;">
+    <strong>3.</strong> Not converting km/hr → m/s for train problems
+  </div>
+  <div class="cm" style="margin-bottom:6px;">
+    <strong>4.</strong> Adding speeds in same direction (should subtract!)
+  </div>
+  <div class="cm" style="margin-bottom:6px;">
+    <strong>5.</strong> Mixing up Downstream/Upstream formulas
+  </div>
+  <div class="cm">
+    <strong>6.</strong> Using wrong units (km/hr with metres)
+  </div>
+
+  <hr class="div">
+
+  <h2>16. Problem Solving Flowchart</h2>
+
+  <div class="fc">
+    <div class="fc-b">📝 Read the question carefully</div>
+    <div class="fc-a">↓</div>
+    <div class="fc-b">🔍 Identify what's given & what's asked</div>
+    <div class="fc-a">↓</div>
+    <div class="fc-b">🔄 Convert units to consistent system</div>
+    <div class="fc-a">↓</div>
+    <div class="fc-b">📐 Choose the right formula</div>
+    <div class="fc-a">↓</div>
+    <div class="fc-b">✏️ Solve step by step</div>
+    <div class="fc-a">↓</div>
+    <div class="fc-b">✅ Verify — does answer make sense?</div>
+  </div>
+
+  <div class="et">
+    Always verify your answer with a rough estimate. If a train's speed comes out to 500 km/hr or time is negative — something is wrong!
+  </div>
+
+  <span class="pn">8</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 9 ═══════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="scan-overlay"></div>
+
+  <!-- Doodles -->
+  <span class="dd" style="top:18px;right:28px;">⚡</span>
+  <span class="dd" style="top:160px;left:10px;font-size:20px;">🔗</span>
+  <span class="dd" style="bottom:120px;right:18px;font-size:22px;">🛗</span>
+  <span class="dd" style="bottom:200px;left:12px;font-size:18px;">⏰</span>
+
+  <div class="chap-title" style="font-size:34px;">Navneet Sir's Special Insights ⚡</div>
+
+  <hr class="div">
+
+  <h2>Speed = Efficiency 🔗</h2>
+  <p><span class="hl">Core Insight:</span> Speed is the <span class="rug">same concept</span> as Efficiency in Time & Work.</p>
+
+  <div class="hl-box">
+    <p style="font-size:20px;font-weight:700;text-align:center;">
+      <span class="hl-s">Efficiency = Work done per unit time = Speed</span>
+    </p>
+  </div>
+
+  <ul>
+    <li>In <span class="hl">Time & Work</span>: Efficiency is measured in <span class="rul">work/day</span></li>
+    <li>In <span class="hl">Speed</span>: Efficiency is measured in <span class="rul">distance/hour</span></li>
+    <li>Both mean: <span class="hl-s">output per unit time</span></li>
+  </ul>
+
+  <div class="et">
+    If you understand Efficiency, you already understand Speed! A person who is "twice as efficient" walks at twice the speed. This insight helps solve many problems intuitively.
+  </div>
+
+  <hr class="div">
+
+  <h2>Why D = S × T? (Unit Cancellation)</h2>
+  <p>Speed = Distance / Time. So <span class="hl">Distance = Speed × Time</span>.</p>
+
+  <div class="mt">
+    <b>Unit Cancellation Trick:</b><br>
+    When you multiply <span class="hl">km/hr × hr</span>, the "hr" cancels out:<br>
+    <span style="font-size:22px;font-weight:700;">(km/<s>hr</s>) × <s>hr</s> = km ✓</span><br>
+    This is <span class="rug">why multiplication works</span> — units must cancel!
+  </div>
+
+  <div class="cm">
+    If speed is in <span class="hl">m/s</span> and time in <span class="hl">hours</span>, you <span class="rul">CANNOT</span> multiply directly! The units don't cancel. Always convert first!
+  </div>
+
+  <hr class="div">
+
+  <h2>Unit Conversion "Lift" Method 🛗</h2>
+  <p>Think of a lift moving between floors:</p>
+
+  <div class="hl-box" style="text-align:center;">
+    <p style="font-size:18px;font-weight:700;font-family:'Caveat',cursive;">
+      <span class="rul">Kilo</span> → Hecto → Deca → <span class="hl-s">Meter</span> → Deci → Centi → <span class="rul">Milli</span>
+    </p>
+    <p style="font-size:17px;margin-top:6px;">
+      Going <span style="color:#16a34a;font-weight:700;">DOWN</span> (to smaller) → <span class="hl">Multiply by 10</span> each step<br>
+      Going <span style="color:#dc2626;font-weight:700;">UP</span> (to larger) → <span class="hl">Divide by 10</span> each step
+    </p>
+  </div>
+
+  <div class="mt">
+    <b>Memory Trick — "King Henry Died By Drinking Chocolate Milk":</b><br>
+    Kilo → Hecto → Deca → Base → Deci → Centi → Milli<br>
+    The <span class="hl">Base</span> is meters, litres, or grams.
+  </div>
+
+  <div class="table-scroll"><table class="ht">
+    <tr><th>Conversion</th><th>Steps</th><th>Factor</th></tr>
+    <tr><td>km → m</td><td>Down 3 steps</td><td><span class="hl">× 1000</span></td></tr>
+    <tr><td>m → cm</td><td>Down 2 steps</td><td><span class="hl">× 100</span></td></tr>
+    <tr><td>cm → mm</td><td>Down 1 step</td><td><span class="hl">× 10</span></td></tr>
+    <tr><td>m → km</td><td>Up 3 steps</td><td><span class="hl">÷ 1000</span></td></tr>
+  </table></div>
+
+  <hr class="div">
+
+  <h2>Fractional Hours to Hours & Minutes ⏰</h2>
+
+  <div class="st">
+    Convert 15/2 hrs to hours and minutes.<br>
+    <b>Step 1:</b> 15 ÷ 2 = 7 remainder 1<br>
+    <b>Step 2:</b> 7 hours<br>
+    <b>Step 3:</b> 1/2 × 60 = 30 minutes<br>
+    <span class="ans-box">15/2 hrs = 7 hrs 30 min ✓</span>
+  </div>
+
+  <div class="st">
+    Convert 85/4 hrs to hours and minutes.<br>
+    <b>Step 1:</b> 85 ÷ 4 = 21 remainder 1<br>
+    <b>Step 2:</b> 21 hours<br>
+    <b>Step 3:</b> 1/4 × 60 = 15 minutes<br>
+    <span class="ans-box">85/4 hrs = 21 hrs 15 min ✓</span>
+  </div>
+
+  <div class="hl-box">
+    <p style="font-size:20px;font-weight:700;text-align:center;">
+      <span class="hl-s">Hours = Numerator ÷ Denominator</span><br>
+      <span class="hl-s">Minutes = (Remainder ÷ Denominator) × 60</span>
+    </p>
+  </div>
+
+  <div class="et">
+    In exams, time is often given as fractions like 15/2, 85/4. Convert to hrs & min for the final answer. Never leave answers as improper fractions!
+  </div>
+
+  <span class="pn">9</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 10 ═══════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="scan-overlay"></div>
+
+  <!-- Doodles -->
+  <span class="dd" style="top:18px;right:28px;">🎯</span>
+  <span class="dd" style="top:200px;left:10px;font-size:20px;">⏱️</span>
+  <span class="dd" style="bottom:100px;right:15px;font-size:22px;">🧠</span>
+  <span class="dd" style="bottom:250px;left:12px;font-size:18px;">🚌</span>
+
+  <div class="chap-title" style="font-size:34px;">Advanced Concepts by Navneet Sir 🎯</div>
+
+  <hr class="div">
+
+  <h2>Same Start Time Condition ⏱️</h2>
+  <p><span class="hl">Critical Rule:</span> The relative speed formulas only work when <span class="rug">both persons start at the SAME TIME!</span></p>
+
+  <div class="hl-box">
+    <p style="font-size:19px;font-weight:700;text-align:center;">
+      Same direction: <span class="hl-s">Rel Speed = |S₁ − S₂|</span><br>
+      Opposite direction: <span class="hl-s">Rel Speed = S₁ + S₂</span>
+    </p>
+    <p style="text-align:center;font-size:16px;color:#c0392b;font-weight:600;">✓ Works ONLY when start time is same!</p>
+  </div>
+
+  <div class="cm">
+    <b>Classic Trap!</b> If A starts at 9 AM and B starts at 10 AM — <span class="rul">you CANNOT use relative speed directly!</span><br>
+    First find how far A goes alone in 1 hour, <span class="rul">then</span> use relative speed for the remaining distance.
+  </div>
+
+  <div class="st">
+    A starts at 9 AM (40 km/hr), B starts at 10 AM (60 km/hr) from same point. When does B catch A?<br>
+    <b>Step 1:</b> By 10 AM, A covers = 40 × 1 = 40 km<br>
+    <b>Step 2:</b> Relative speed = 60 − 40 = 20 km/hr<br>
+    <b>Step 3:</b> Time to catch = 40/20 = 2 hrs after 10 AM<br>
+    <span class="ans-box">B catches A at 12:00 PM ✓</span>
+  </div>
+
+  <hr class="div">
+
+  <h2>Late/Early Distance Formula 📐</h2>
+  <p>When a person is late at one speed and early at another:</p>
+
+  <div class="hl-box">
+    <p style="font-size:20px;font-weight:700;text-align:center;">
+      <span class="hl-s">D = (S₁ × S₂) / (S₁ − S₂) × ΔT</span>
+    </p>
+    <p style="text-align:center;font-size:16px;color:#666;">ΔT = time difference (late − early) in hours</p>
+  </div>
+
+  <div class="st">
+    Walking at 5 km/hr (7 min late), at 6 km/hr (5 min early). Find distance.<br>
+    <b>Step 1:</b> ΔT = 7 − (−5) = 12 min = 0.2 hr<br>
+    <b>Step 2:</b> D = (5 × 6) / (6 − 5) × 0.2<br>
+    <b>Step 3:</b> D = 30/1 × 0.2<br>
+    <span class="ans-box">D = 6 km ✓</span>
+  </div>
+
+  <div class="et">
+    Late is <span class="rul">positive</span>, Early is <span class="rul">negative</span>. So ΔT = late − (−early) = late + early!
+  </div>
+
+  <hr class="div">
+
+  <h2>Without vs With Stoppage 🚌</h2>
+
+  <div class="hl-box">
+    <p style="font-size:19px;font-weight:700;text-align:center;">
+      <span class="hl-s">Stoppage time/hr = (Without − With) / Without × 60 min</span>
+    </p>
+  </div>
+
+  <div class="st">
+    Without stoppage speed = 54 km/hr, With stoppage speed = 45 km/hr. Find stoppage time per hour.<br>
+    <b>Step 1:</b> Difference = 54 − 45 = 9 km/hr<br>
+    <b>Step 2:</b> Time lost per hour = 9/54 × 60 = 1/6 × 60<br>
+    <span class="ans-box">= 10 min per hour ✓</span>
+  </div>
+
+  <div class="mt">
+    <b>Trick:</b> The speed loss (difference) tells you how much distance is lost per hour. Convert that lost distance at original speed → time lost = (Difference / Without) × 60 minutes.
+  </div>
+
+  <hr class="div">
+
+  <h2>LCM Method for Unknown Distance 🧠</h2>
+  <p>When <span class="hl">neither speed nor distance</span> is given, but travel times are known:</p>
+
+  <div class="hl-box">
+    <p style="font-size:20px;font-weight:700;text-align:center;">
+      <span class="hl-s">1. LCM of travel times = Total Distance</span><br>
+      <span class="hl-s">2. Distance ÷ each time = respective speeds</span><br>
+      <span class="hl-s">3. Use standard formulas</span>
+    </p>
+  </div>
+
+  <div class="st">
+    A takes 6 hrs, B takes 8 hrs to cover same distance. Find ratio of speeds and time to meet when walking towards each other.<br>
+    <b>Step 1:</b> LCM of 6 and 8 = 24 km (assume total distance)<br>
+    <b>Step 2:</b> Speed A = 24/6 = 4 km/hr, Speed B = 24/8 = 3 km/hr<br>
+    <b>Step 3:</b> Ratio A:B = 4:3<br>
+    <b>Step 4:</b> Meeting time = 24/(4+3) = 24/7<br>
+    <span class="ans-box">Ratio = 4:3, Meet in ≈ 3.43 hrs ✓</span>
+  </div>
+
+  <div class="et">
+    The LCM method is <span class="rul">extremely powerful</span> when absolute values aren't given. You can assume any convenient distance — LCM makes calculations clean!
+  </div>
+
+  <span class="pn">10</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 11 ═══════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="scan-overlay"></div>
+
+  <span class="dd" style="top:18px;right:30px;">📝</span>
+  <span class="dd" style="top:180px;left:10px;font-size:20px;">✏️</span>
+  <span class="dd" style="bottom:90px;right:15px;font-size:22px;">🎯</span>
+
+  <h2>17. Practice Problems 📝</h2>
+
+  <div class="st">
+    <b>Q1:</b> A cyclist covers 1200m in 3 minutes. Can he beat someone riding at 25 km/hr?<br>
+    <b>Step 1:</b> Speed = 1200/180 = 6.67 m/s<br>
+    <b>Step 2:</b> Convert: 6.67 × 18/5 = 24 km/hr<br>
+    <span class="ans-box">No — 24 < 25 km/hr ❌</span>
+  </div>
+
+  <div class="st">
+    <b>Q2:</b> Walking at 5 km/hr, a man misses his train by 7 min. At 6 km/hr, he reaches 5 min early. Find distance.<br>
+    <b>Step 1:</b> Time diff = 7 + 5 = 12 min = 0.2 hrs<br>
+    <b>Step 2:</b> d/5 − d/6 = 0.2 → (6d−5d)/30 = 0.2<br>
+    <b>Step 3:</b> d/30 = 0.2 → d = 6<br>
+    <span class="ans-box">Distance = 6 km ✓</span>
+  </div>
+
+  <div class="st">
+    <b>Q3:</b> Two stations 465 km apart. Train from B at 10 AM (65 km/hr), Train from A at 11 AM (35 km/hr). When do they meet?<br>
+    <b>Step 1:</b> By 11 AM, Train B covers = 65 km<br>
+    <b>Step 2:</b> Remaining = 465 − 65 = 400 km<br>
+    <b>Step 3:</b> Rel speed = 65 + 35 = 100 km/hr<br>
+    <b>Step 4:</b> Time = 400/100 = 4 hrs after 11 AM<br>
+    <span class="ans-box">They meet at 3:00 PM ✓</span>
+  </div>
+
+  <div class="st">
+    <b>Q4:</b> A man travels ⅓ of distance at 10 km/hr, next ⅓ at 20 km/hr, last ⅓ at 60 km/hr. Find avg speed.<br>
+    <b>Apply: </b> For equal distances with 3 speeds: Avg = 3abc/(ab+bc+ca)<br>
+    <b>= </b> 3×10×20×60 / (10×20 + 20×60 + 60×10)<br>
+    <b>= </b> 36000 / (200 + 1200 + 600) = 36000/2000<br>
+    <span class="ans-box">= 18 km/hr ✓</span>
+  </div>
+
+  <div class="st">
+    <b>Q5:</b> A train 240m long passes a bridge 360m long in 40 sec. Find its speed in km/hr.<br>
+    <b>Total dist:</b> 240 + 360 = 600m<br>
+    <b>Speed =</b> 600/40 = 15 m/s = 15 × 18/5<br>
+    <span class="ans-box">= 54 km/hr ✓</span>
+  </div>
+
+  <div class="st">
+    <b>Q6:</b> A man can row at 8 km/hr in still water. River flows at 3 km/hr. Find time to go 30 km downstream and back.<br>
+    <b>Down:</b> 8 + 3 = 11 km/hr → Time = 30/11 = 2.727 hrs<br>
+    <b>Up:</b> 8 − 3 = 5 km/hr → Time = 30/5 = 6 hrs<br>
+    <b>Total:</b> 2.727 + 6 = 8.727 hrs<br>
+    <span class="ans-box">≈ 8 hrs 44 min ✓</span>
+  </div>
+
+  <span class="pn">11</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 12 ═══════════════════════════════════════════════ -->
+<div class="page">
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="scan-overlay"></div>
+
+  <span class="dd" style="top:20px;right:28px;">📚</span>
+  <span class="dd" style="top:250px;left:8px;font-size:20px;">⭐</span>
+  <span class="dd" style="bottom:100px;right:18px;font-size:22px;">🏁</span>
+
+  <div style="text-align:center;margin-bottom:16px;">
+    <span class="chap-title" style="font-size:32px;">Quick Revision Cheat Sheet</span>
+  </div>
+
+  <p style="text-align:center;font-size:19px;color:#666;margin-bottom:16px;">All formulas at a glance — <span class="hl">memorise these!</span></p>
+
+  <div class="table-scroll"><table class="ht">
+    <tr><th style="width:35%;">Concept</th><th>Formula</th></tr>
+    <tr><td>Master Formula</td><td><span class="hl">D = S × T</span></td></tr>
+    <tr><td>km/hr → m/s</td><td><span class="hl">× 5/18</span></td></tr>
+    <tr><td>m/s → km/hr</td><td><span class="hl">× 18/5</span></td></tr>
+    <tr><td>Avg Speed (equal dist)</td><td><span class="hl">2S₁S₂/(S₁+S₂)</span></td></tr>
+    <tr><td>Avg Speed (equal time)</td><td><span class="hl">(S₁+S₂)/2</span></td></tr>
+    <tr><td>Rel Speed (same dir)</td><td><span class="hl">|S₁ − S₂|</span></td></tr>
+    <tr><td>Rel Speed (opp dir)</td><td><span class="hl">S₁ + S₂</span></td></tr>
+    <tr><td>Train crosses pole</td><td><span class="hl">T = L_train / S</span></td></tr>
+    <tr><td>Train crosses platform</td><td><span class="hl">T = (L_train + L_plat) / S</span></td></tr>
+    <tr><td>Two trains crossing (opp)</td><td><span class="hl">T = (L₁+L₂)/(S₁+S₂)</span></td></tr>
+    <tr><td>Two trains crossing (same)</td><td><span class="hl">T = (L₁+L₂)/(S₁−S₂)</span></td></tr>
+    <tr><td>Downstream Speed</td><td><span class="hl">Boat + Stream</span></td></tr>
+    <tr><td>Upstream Speed</td><td><span class="hl">Boat − Stream</span></td></tr>
+    <tr><td>Boat Speed</td><td><span class="hl">(D + U)/2</span></td></tr>
+    <tr><td>Stream Speed</td><td><span class="hl">(D − U)/2</span></td></tr>
+    <tr><td>Race — Distance Basis</td><td><span class="hl">A:B = D:(D−x)</span></td></tr>
+    <tr><td>Race — Time Basis</td><td><span class="hl">A:B = (T+t):T</span></td></tr>
+    <tr><td>Circular Meet (opp)</td><td><span class="hl">T = C/(S₁+S₂)</span></td></tr>
+    <tr><td>Circular Meet (same)</td><td><span class="hl">T = C/|S₁−S₂|</span></td></tr>
+    <tr><td>Escalator UP</td><td><span class="hl">Eff = Person + Esc</span></td></tr>
+    <tr><td>Escalator DOWN</td><td><span class="hl">Eff = Person − Esc</span></td></tr>
+    <tr><td>Speed ↑ by x%</td><td><span class="hl">New Time = Orig × 100/(100+x)</span></td></tr>
+    <tr><td>Speed ↓ by x%</td><td><span class="hl">New Time = Orig × 100/(100−x)</span></td></tr>
+  </table></div>
+
+  <hr class="div">
+
+  <!-- Final Summary -->
+  <div style="text-align:center;padding:18px;background:rgba(255,235,59,0.15);border:2.5px solid #b8860b;border-radius:14px;margin-top:10px;transform:rotate(-0.3deg);">
+    <p style="font-size:26px;color:#854d0e;font-weight:700;font-family:'Kalam',cursive;">"Practice makes perfect!"</p>
+    <p style="font-size:19px;color:#b45309;font-family:'Caveat',cursive;">Solve 5 problems daily — Master Speed, Time & Distance 🎯</p>
+  </div>
+
+  <div style="text-align:center;margin-top:14px;font-size:28px;opacity:0.3;">
+    ✏️ 📐 🚂 🚤 🏃 🔄 ⚡ 🏆
+  </div>
+
+  <span class="pn">12</span>
+</div>
+<script>
+(function () {
+  var body = document.body;
+  var button = document.getElementById('darkToggle');
+  var KEY = 'darkMode';
+
+  function apply(on) {
+    body.classList.toggle('dark-mode', on);
+    button.innerHTML = on ? '&#9728;&#65039;' : '&#127769;';
+    button.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+
+  var saved = false;
+  try { saved = window.localStorage.getItem(KEY) === 'true'; } catch (e) {}
+  apply(saved);
+
+  button.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-mode');
+    apply(next);
+    try { window.localStorage.setItem(KEY, next ? 'true' : 'false'); } catch (e) {}
+  });
+})();
+</script>
+</body>
+</html>

@@ -3,7 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>perceptron — AI study notes</title>
+<title>perceptron — study notes</title>
+<meta name="description" content="Hand-written study notes on AI, software engineering, and cloud — covering LLMs, neural networks, agents, Java, FastAPI, AWS, DevOps, and more.">
+<meta property="og:title" content="perceptron — study notes">
+<meta property="og:description" content="Hand-written study notes on AI, software engineering, and cloud — covering LLMs, neural networks, agents, Java, FastAPI, AWS, DevOps, and more.">
+<meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -64,8 +68,9 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
   font-family:var(--mono); font-size:11.5px; padding:6px 12px; border:1px solid var(--border);
   border-radius:100px; color:var(--muted); background:var(--panel);
 }
-.feature-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:16px;}
-.feature-card{background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:20px;}
+.feature-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+.feature-card{background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:20px; transition:border-color .15s, transform .15s;}
+.feature-card:hover{border-color:var(--teal); transform:translateY(-2px); text-decoration:none;}
 .feature-card h3{font-family:var(--display); font-size:16px; font-weight:600; margin-bottom:10px;}
 .feature-card .fnum{font-family:var(--mono); font-size:10px; color:var(--teal); display:block; margin-bottom:8px; letter-spacing:.1em;}
 .feature-card p{color:var(--muted); font-size:13.5px;}
@@ -88,6 +93,11 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
 .note-card p{color:var(--muted); font-size:14px;}
 .note-card .open{margin-top:auto; font-family:var(--mono); font-size:13px; color:var(--periwinkle); display:inline-flex; align-items:center; gap:6px;}
 .note-card:hover .open{color:var(--amber);}
+.apt-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+.apt-grid .note-card{padding:24px;}
+.apt-grid .note-card h3{font-size:20px;}
+.apt-grid .note-card p{font-size:13.5px;}
+.apt-more{margin-top:28px; text-align:center;}
 .cta-band{text-align:center; padding:100px 40px;}
 .cta-band h2{font-family:var(--display); font-size:34px; font-weight:700; margin-bottom:14px;}
 .cta-band p{color:var(--muted); max-width:520px; margin:0 auto 32px;}
@@ -100,10 +110,11 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
   section.block{padding:60px 22px;}
   .feature-grid{grid-template-columns:1fr 1fr;}
   .notes-grid{grid-template-columns:1fr;}
+  .apt-grid{grid-template-columns:1fr 1fr;}
   .cta-band{padding:70px 22px;}
   .footer{padding:24px 22px 50px;}
 }
-@media(max-width:520px){ .feature-grid{grid-template-columns:1fr;} }
+@media(max-width:520px){ .feature-grid{grid-template-columns:1fr;} .apt-grid{grid-template-columns:1fr;} }
 </style>
 </head>
 <body>
@@ -111,15 +122,16 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
   <div class="brand">perceptron<span>.</span></div>
   <div class="nav-links">
     <a href="#notes">Notes</a>
+    <a href="#aptitude">Aptitude</a>
     <a href="#features">Topics</a>
   </div>
 </nav>
 <header class="hero" id="hero">
   <canvas id="neuralCanvas" aria-hidden="true"></canvas>
   <div class="hero-inner">
-    <span class="eyebrow">// perceptron — AI study notes</span>
-    <h1>From <span>tokens</span> to <span>agents</span>,<br>one connected library of notes.</h1>
-    <p class="lead">Hand-written reference notes on large language models and agentic AI — covering embeddings, attention, tokenization, agent loops, protocols, and guardrails.</p>
+    <span class="eyebrow">// perceptron — study notes</span>
+    <h1>From <span>tokens</span> to <span>agents</span> to <span>cloud</span>,<br>one connected library of notes.</h1>
+    <p class="lead">Hand-written reference notes spanning AI, software engineering, cloud infrastructure, and quantitative aptitude — LLMs, neural networks, agents, Java, FastAPI, AWS, DevOps, and exam-ready maths.</p>
     <div class="cta-row">
       <a class="btn primary" href="introduction-to-llm.html">Start with LLM foundations</a>
       <a class="btn ghost" href="agentic-ai-foundations.html">Dive into AI agents</a>
@@ -131,6 +143,9 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
       <span class="pill">LangChain</span>
       <span class="pill">MCP</span>
       <span class="pill">Guardrails</span>
+      <span class="pill">Averages</span>
+      <span class="pill">Percentages</span>
+      <span class="pill">Speed &amp; Time</span>
     </div>
   </div>
 </header>
@@ -210,21 +225,26 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
 <section class="block" id="features">
   <div class="block-head">
     <span class="eyebrow teal">// what's inside</span>
-    <h2>Two courses, one mental model.</h2>
-    <p>Notes that connect the dots — from the token up to the agent that acts.</p>
+    <h2>Nine subjects, one connected library.</h2>
+    <p>From neural networks to cloud architecture to exam maths — notes that connect the dots across AI, software, infrastructure, and aptitude.</p>
   </div>
   <div class="feature-grid">
-    <div class="feature-card"><span class="fnum">01</span><h3>Embeddings</h3><p>Words as vectors — Word2Vec, GloVe, and the geometry of meaning.</p></div>
-    <div class="feature-card"><span class="fnum">02</span><h3>Attention</h3><p>Transformers, self-attention, and why the whole field pivoted to them.</p></div>
-    <div class="feature-card"><span class="fnum">03</span><h3>Agents</h3><p>The agentic loop, LangChain, MCP, and building systems that act.</p></div>
-    <div class="feature-card"><span class="fnum">04</span><h3>Guardrails</h3><p>Prompt injection, threat models, and defense in depth.</p></div>
+    <a class="feature-card" href="introduction-to-llm.html" style="text-decoration:none;color:inherit;"><span class="fnum">01</span><h3>LLM Foundations</h3><p>Tokenization, embeddings, attention, and RAG — from statistical models to transformers.</p></a>
+    <a class="feature-card" href="neural-networks.html" style="text-decoration:none;color:inherit;"><span class="fnum">02</span><h3>Neural Networks</h3><p>Perceptrons to diffusion — backprop, CNNs, LSTMs, transformers, and generative AI.</p></a>
+    <a class="feature-card" href="agentic-ai-foundations.html" style="text-decoration:none;color:inherit;"><span class="fnum">03</span><h3>AI Agents</h3><p>The agentic loop, LangChain, MCP, and building systems that reason and act.</p></a>
+    <a class="feature-card" href="langchain.html" style="text-decoration:none;color:inherit;"><span class="fnum">04</span><h3>LangChain</h3><p>Chains, agents, memory, and RAG — building LLM applications end to end.</p></a>
+    <a class="feature-card" href="java.html" style="text-decoration:none;color:inherit;"><span class="fnum">05</span><h3>Java</h3><p>Syntax, OOP, collections, concurrency, and modern features — the full journey.</p></a>
+    <a class="feature-card" href="fastapi.html" style="text-decoration:none;color:inherit;"><span class="fnum">06</span><h3>FastAPI</h3><p>Requests, parameters, Pydantic validation, and building APIs in Python.</p></a>
+    <a class="feature-card" href="aws.html" style="text-decoration:none;color:inherit;"><span class="fnum">07</span><h3>AWS</h3><p>Core services, compute, storage, networking, and architecture foundations.</p></a>
+    <a class="feature-card" href="devops.html" style="text-decoration:none;color:inherit;"><span class="fnum">08</span><h3>DevOps</h3><p>SDLC, Agile, Git, CI/CD, Docker, Ansible, and container orchestration.</p></a>
+    <a class="feature-card" href="aptitude/index.html" style="text-decoration:none;color:inherit;"><span class="fnum">09</span><h3>Quantitative Aptitude</h3><p>Averages, percentages, ratio, HCF &amp; LCM, clocks, speed, and number series — exam-ready sets.</p></a>
   </div>
 </section>
 <section class="block" id="notes">
   <div class="block-head">
     <span class="eyebrow amber">// the notes</span>
     <h2>Pick where to start.</h2>
-    <p>Two full reference pages — open either one directly.</p>
+    <p>Pick a subject and start reading — each page is self-contained.</p>
   </div>
   <div class="notes-grid">
     <a class="note-card" href="introduction-to-llm.html">
@@ -236,6 +256,18 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
         <span class="pill">Word2Vec · GloVe</span>
         <span class="pill">Attention</span>
         <span class="pill">RLHF</span>
+      </div>
+      <span class="open">Open notes →</span>
+    </a>
+    <a class="note-card" href="neural-networks.html">
+      <span class="tag amber">Deep Dive</span>
+      <h3>Neural Networks</h3>
+      <p>From perceptrons to generative AI — backpropagation, CNNs, LSTMs, attention, transformers, and diffusion models.</p>
+      <div class="pillrow">
+        <span class="pill">Perceptrons</span>
+        <span class="pill">Backpropagation</span>
+        <span class="pill">Transformers</span>
+        <span class="pill">Diffusion</span>
       </div>
       <span class="open">Open notes →</span>
     </a>
@@ -312,17 +344,105 @@ section.block{position:relative; z-index:1; max-width:1080px; margin:0 auto; pad
     </a>
   </div>
 </section>
+<section class="block" id="aptitude">
+  <div class="block-head">
+    <span class="eyebrow teal">// quantitative aptitude</span>
+    <h2>Seven exam-ready aptitude sets.</h2>
+    <p>Handwritten-style notes on arithmetic and reasoning, kept in their original paper-and-ink style — formulas, shortcuts, traps, and solved examples.</p>
+  </div>
+  <div class="apt-grid">
+    <a class="note-card" href="aptitude/hcf-and-lcm.html">
+      <span class="tag teal">Number Theory</span>
+      <h3>HCF &amp; LCM</h3>
+      <p>Factors and primes, co-primes, division methods, viral shortcuts, polynomials, and word problems.</p>
+      <div class="pillrow">
+        <span class="pill">Factors</span>
+        <span class="pill">Primes</span>
+        <span class="pill">Division</span>
+        <span class="pill">Polynomials</span>
+      </div>
+      <span class="open">Open notes →</span>
+    </a>
+    <a class="note-card" href="aptitude/averages.html">
+      <span class="tag amber">Arithmetic</span>
+      <h3>Averages</h3>
+      <p>The highway method, weighted averages, alligation, group splitting, and the traps exams love.</p>
+      <div class="pillrow">
+        <span class="pill">Highway Method</span>
+        <span class="pill">Weighted</span>
+        <span class="pill">Alligation</span>
+      </div>
+      <span class="open">Open notes →</span>
+    </a>
+    <a class="note-card" href="aptitude/clocks.html">
+      <span class="tag teal">Reasoning</span>
+      <h3>Clocks</h3>
+      <p>Angles and speeds, alignments, faulty clocks, mirror images, striking clocks, and calendars.</p>
+      <div class="pillrow">
+        <span class="pill">Angles</span>
+        <span class="pill">Faulty Clocks</span>
+        <span class="pill">Calendar</span>
+      </div>
+      <span class="open">Open notes →</span>
+    </a>
+    <a class="note-card" href="aptitude/ratio-and-proportion.html">
+      <span class="tag amber">Arithmetic</span>
+      <h3>Ratio &amp; Proportion</h3>
+      <p>Componendo-dividendo, merging ratios, variation, coins, and income/expenditure shortcuts.</p>
+      <div class="pillrow">
+        <span class="pill">Componendo</span>
+        <span class="pill">Merging</span>
+        <span class="pill">Variation</span>
+      </div>
+      <span class="open">Open notes →</span>
+    </a>
+    <a class="note-card" href="aptitude/percentages.html">
+      <span class="tag amber">Arithmetic</span>
+      <h3>Percentages</h3>
+      <p>Fraction tables, the AB rule, percent points vs change, elections, population, and faulty weights.</p>
+      <div class="pillrow">
+        <span class="pill">Fraction Table</span>
+        <span class="pill">AB Rule</span>
+        <span class="pill">Elections</span>
+      </div>
+      <span class="open">Open notes →</span>
+    </a>
+    <a class="note-card" href="aptitude/speed-time-distance.html">
+      <span class="tag teal">Arithmetic</span>
+      <h3>Speed, Time &amp; Distance</h3>
+      <p>The golden triangle, relative speed, trains, boats and streams, races, and circular tracks.</p>
+      <div class="pillrow">
+        <span class="pill">Relative Speed</span>
+        <span class="pill">Trains</span>
+        <span class="pill">Boats</span>
+      </div>
+      <span class="open">Open notes →</span>
+    </a>
+    <a class="note-card" href="aptitude/number-series.html">
+      <span class="tag amber">Reasoning</span>
+      <h3>Number Series</h3>
+      <p>Missing and wrong series, square/cube patterns, prime series, triple series, and Fibonacci-like rules.</p>
+      <div class="pillrow">
+        <span class="pill">Missing</span>
+        <span class="pill">Wrong</span>
+        <span class="pill">Patterns</span>
+      </div>
+      <span class="open">Open notes →</span>
+    </a>
+  </div>
+  <p class="apt-more"><a class="btn ghost" href="aptitude/index.html">Browse the aptitude library →</a></p>
+</section>
 <section class="cta-band" id="cta">
-  <h2>Start with the <span style="color:var(--amber);">LLM foundations</span><br>or dive straight into <span style="color:var(--teal);">agents</span>.</h2>
-  <p>Both pages are self-contained and open instantly in your browser.</p>
+  <h2>Every page is <span style="color:var(--amber);">self-contained</span>.<br>Pick a subject and start reading.</h2>
+  <p>No sign-ups, no paywalls — just open a page and learn.</p>
   <div class="cta-row" style="justify-content:center;">
-    <a class="btn primary" href="introduction-to-llm.html">Introduction to LLM</a>
-    <a class="btn ghost" href="agentic-ai-foundations.html">Agentic AI Foundations</a>
+    <a class="btn primary" href="#notes">Browse all notes</a>
+    <a class="btn ghost" href="introduction-to-llm.html">Start with LLM foundations</a>
   </div>
 </section>
 <footer class="footer" id="footer">
   <span>perceptron — study notes</span>
-  <span>LLM · Agents · Guardrails</span>
+  <span>LLM · Agents · Neural Nets · Java · FastAPI · AWS · DevOps · Aptitude</span>
 </footer>
 </body>
 </html>

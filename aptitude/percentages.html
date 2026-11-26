@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Percentages — Quantitative Aptitude</title>
+<meta name="description" content="Percentages — handwritten quantitative aptitude notes with formulas, shortcuts, traps, and solved examples.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Patrick+Hand&family=Kalam:wght@300;400;700&family=Indie+Flower&display=swap" rel="stylesheet">
+<style>
+body.note-body { background: #f0f0f0; font-family: 'Caveat', cursive; padding: 20px; }
+body.dark-mode.note-body { background: #0f0f23; }
+@media print { body.note-body { background: #fff; } }
+</style>
+<style>
+  @page { size: A4; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #f0f0f0; font-family: 'Caveat', cursive; padding: 20px; }
+
+  .page {
+    width: 210mm; min-height: 297mm; margin: 30px auto;
+    background: #fffef8; padding: 50px 55px 50px 70px;
+    box-shadow: 4px 6px 20px rgba(0,0,0,0.25);
+    position: relative; line-height: 1.7;
+    background-image:
+      linear-gradient(rgba(150,180,220,0.25) 1px, transparent 1px);
+    background-size: 100% 32px;
+  }
+  .page::before {
+    content: ''; position: absolute; left: 52px; top: 0; bottom: 0;
+    width: 2px; background: rgba(200,60,60,0.45);
+  }
+  .page::after {
+    content: ''; position: absolute; left: 0; top: 0; right: 0; bottom: 0;
+    border: 1px solid rgba(0,0,0,0.07); pointer-events: none;
+  }
+
+  .page-number {
+    position: absolute; bottom: 18px; right: 40px;
+    font-family: 'Caveat', cursive; font-size: 15px; color: #999;
+  }
+
+  /* ── Title banner ── */
+  .title-banner {
+    text-align: center; margin-bottom: 22px; padding-bottom: 14px;
+    border-bottom: 3px dashed #c0392b;
+  }
+  .title-banner h1 {
+    font-family: 'Kalam', cursive; font-size: 38px; font-weight: 700;
+    color: #c0392b; letter-spacing: 2px; transform: rotate(-0.6deg);
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.06);
+  }
+  .title-banner .subtitle {
+    font-size: 18px; color: #2471a3; margin-top: 4px;
+    font-family: 'Caveat', cursive;
+  }
+
+  /* ── Heading (red marker) ── */
+  h2 {
+    font-family: 'Kalam', cursive; font-size: 26px; font-weight: 700;
+    color: #c0392b; margin: 28px 0 10px 0; padding: 4px 12px;
+    background: rgba(192,57,43,0.07); border-left: 5px solid #c0392b;
+    border-radius: 3px; transform: rotate(-0.3deg);
+    text-shadow: 0.5px 0.5px 0 rgba(0,0,0,0.05);
+    page-break-inside: avoid;
+  }
+  h3 {
+    font-family: 'Kalam', cursive; font-size: 21px; font-weight: 700;
+    color: #c0392b; margin: 16px 0 6px 0; transform: rotate(-0.2deg);
+  }
+
+  /* ── Body text (blue gel pen) ── */
+  p, li, td, th, .note, .tip, .formula-box {
+    font-family: 'Caveat', cursive; font-size: 19.5px; color: #1a4a7a;
+  }
+  ul { list-style: none; margin: 6px 0 10px 8px; }
+  ul li { position: relative; padding-left: 18px; margin-bottom: 5px; }
+  ul li::before {
+    content: '▸'; position: absolute; left: -2px; color: #1a4a7a; font-weight: 700;
+  }
+
+  /* ── Highlight (yellow marker) ── */
+  .hl {
+    background: rgba(255,235,50,0.52); padding: 1px 5px;
+    border-radius: 3px; font-weight: 600;
+  }
+  .hl-strong {
+    background: rgba(255,210,0,0.65); padding: 1px 5px;
+    border-radius: 3px; font-weight: 700; border-bottom: 2px solid #d4a800;
+  }
+
+  /* ── Formula box ── */
+  .formula-box {
+    background: rgba(255,235,50,0.28); border: 2px dashed #b8860b;
+    border-radius: 8px; padding: 12px 16px; margin: 12px 0;
+    font-size: 20px; color: #1a4a7a; transform: rotate(-0.2deg);
+    position: relative;
+  }
+  .formula-box::before {
+    content: '★ FORMULA'; position: absolute; top: -11px; left: 14px;
+    background: #fffef8; padding: 0 6px; font-size: 13px; font-weight: 700;
+    color: #c0392b; font-family: 'Kalam', cursive; letter-spacing: 1px;
+  }
+
+  /* ── Exam tip / Memory trick / Common mistake ── */
+  .tip {
+    background: rgba(46,204,113,0.13); border-left: 4px solid #27ae60;
+    border-radius: 4px; padding: 10px 14px; margin: 12px 0;
+    position: relative; font-size: 18.5px;
+  }
+  .tip::before {
+    content: '💡 Exam Tip'; display: block; font-family: 'Kalam', cursive;
+    font-size: 15px; color: #27ae60; font-weight: 700; margin-bottom: 3px;
+  }
+  .trick {
+    background: rgba(155,89,182,0.12); border-left: 4px solid #8e44ad;
+    border-radius: 4px; padding: 10px 14px; margin: 12px 0;
+    position: relative; font-size: 18.5px;
+  }
+  .trick::before {
+    content: '🧠 Memory Trick'; display: block; font-family: 'Kalam', cursive;
+    font-size: 15px; color: #8e44ad; font-weight: 700; margin-bottom: 3px;
+  }
+  .mistake {
+    background: rgba(231,76,60,0.10); border-left: 4px solid #e74c3c;
+    border-radius: 4px; padding: 10px 14px; margin: 12px 0;
+    position: relative; font-size: 18.5px;
+  }
+  .mistake::before {
+    content: '⚠️ Common Mistake'; display: block; font-family: 'Kalam', cursive;
+    font-size: 15px; color: #e74c3c; font-weight: 700; margin-bottom: 3px;
+  }
+
+  /* ── Circled / underlined emphasis ── */
+  .circle-important {
+    display: inline-block; border: 2.5px solid #c0392b; border-radius: 50%;
+    padding: 2px 10px; transform: rotate(-1deg); color: #c0392b;
+    font-weight: 700;
+  }
+  .underline-important {
+    text-decoration: underline wavy #c0392b; text-underline-offset: 4px;
+    font-weight: 600;
+  }
+
+  /* ── Table ── */
+  table {
+    width: 100%; border-collapse: separate; border-spacing: 0;
+    margin: 12px 0; border: 2px solid #1a4a7a; border-radius: 6px;
+    overflow: hidden;
+  }
+  th {
+    background: rgba(192,57,43,0.15); font-family: 'Kalam', cursive;
+    font-size: 18px; color: #c0392b; padding: 7px 10px; font-weight: 700;
+    border-bottom: 2px solid #c0392b;
+  }
+  td {
+    padding: 5px 10px; border-bottom: 1px dashed rgba(26,74,122,0.25);
+    font-size: 18.5px;
+  }
+
+  /* ── Diagram area ── */
+  .diagram {
+    border: 2px dashed #888; border-radius: 10px; padding: 14px;
+    margin: 14px auto; text-align: center; max-width: 480px;
+    background: rgba(0,0,0,0.015); position: relative;
+  }
+  .diagram-label {
+    font-family: 'Kalam', cursive; font-size: 14px; color: #888;
+    position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+    background: #fffef8; padding: 0 8px;
+  }
+
+  /* ── Flowchart ── */
+  .flowchart {
+    display: flex; align-items: center; justify-content: center;
+    flex-wrap: wrap; gap: 4px; margin: 14px 0;
+  }
+  .flow-box {
+    background: rgba(26,74,122,0.1); border: 2px solid #1a4a7a;
+    border-radius: 8px; padding: 8px 14px; font-size: 16px;
+    font-family: 'Caveat', cursive; color: #1a4a7a; text-align: center;
+    transform: rotate(-0.5deg);
+  }
+  .flow-arrow { font-size: 22px; color: #c0392b; font-weight: 700; }
+
+  /* ── Side doodle ── */
+  .doodle {
+    position: absolute; font-size: 28px; opacity: 0.25;
+    transform: rotate(-12deg); pointer-events: none;
+  }
+
+  /* ── Colored example box ── */
+  .example-box {
+    background: rgba(26,74,122,0.06); border: 1.5px solid rgba(26,74,122,0.3);
+    border-radius: 8px; padding: 12px 16px; margin: 10px 0;
+  }
+  .example-box .ex-title {
+    font-family: 'Kalam', cursive; font-size: 16px; color: #c0392b;
+    font-weight: 700; margin-bottom: 4px;
+  }
+
+  /* ── SVG diagram styling ── */
+  svg text { font-family: 'Caveat', cursive; }
+
+  /* ── Sketch-style illustration ── */
+  .sketch-diagram {
+    display: inline-block; border: 2px solid #1a4a7a;
+    border-radius: 12px; padding: 10px 16px; margin: 10px 0;
+    background: rgba(26,74,122,0.04); transform: rotate(-0.4deg);
+  }
+
+  /* page break */
+  .back-btn {
+    position: fixed; top: 10px; left: 10px;
+    background: rgba(0,0,0,0.6); color: #fff;
+    padding: 6px 14px; border-radius: 20px;
+    font-family: 'Caveat', cursive; font-size: 16px;
+    text-decoration: none; z-index: 1000;
+    transition: background 0.2s;
+  }
+  .back-btn:hover { background: rgba(0,0,0,0.85); }
+  .dl-btn {
+    position: fixed; top: 10px; right: 100px;
+    background: rgba(52,152,219,0.85); color: #fff;
+    padding: 6px 14px; border-radius: 20px; border: none;
+    font-family: 'Caveat', cursive; font-size: 16px;
+    cursor: pointer; z-index: 1000; transition: background 0.2s;
+  }
+  .dl-btn:hover { background: rgba(41,128,185,1); }
+  .dark-btn {
+    position: fixed; top: 10px; right: 180px;
+    background: rgba(0,0,0,0.5); color: #fff;
+    padding: 6px 10px; border-radius: 20px; border: none;
+    font-size: 18px; cursor: pointer; z-index: 1000;
+    line-height: 1; transition: background 0.2s;
+  }
+  .dark-btn:hover { background: rgba(0,0,0,0.8); }
+  body.dark-mode { background: #0f0f23; }
+  body.dark-mode .page { background: #16163a; box-shadow: 4px 6px 20px rgba(0,0,0,0.5); }
+  body.dark-mode .page::before { background: rgba(255,80,80,0.2); }
+  body.dark-mode .page::after { border-color: rgba(255,255,255,0.06); }
+  body.dark-mode, body.dark-mode p, body.dark-mode li,
+  body.dark-mode td, body.dark-mode th { color: #b8c6db; }
+  body.dark-mode .title-banner h1 { color: #ff6b6b; }
+  body.dark-mode .title-banner .subtitle { color: #7aa4cf; }
+  body.dark-mode h2, body.dark-mode h3 { color: #ff6b6b; }
+  body.dark-mode h2 { border-left-color: #ff6b6b; }
+  body.dark-mode .hl {
+    background: linear-gradient(180deg, transparent 40%, rgba(255,200,0,0.3) 40%, rgba(255,200,0,0.3) 88%, transparent 88%);
+  }
+  body.dark-mode .hl-strong {
+    background: rgba(255,180,0,0.25); border-bottom-color: #a67c00;
+  }
+  body.dark-mode .formula-box {
+    background: rgba(255,200,0,0.06); border-color: #8a7000; color: #b8c6db;
+  }
+  body.dark-mode .formula-box::before { background: #16163a; }
+  body.dark-mode .tip {
+    background: rgba(46,204,113,0.06); color: #b8c6db;
+  }
+  body.dark-mode .trick {
+    background: rgba(155,89,182,0.06); color: #b8c6db;
+  }
+  body.dark-mode .mistake {
+    background: rgba(231,76,60,0.06); color: #b8c6db;
+  }
+  body.dark-mode .circle-important { border-color: #ff6b6b; color: #ff6b6b; }
+  body.dark-mode .underline-important { text-decoration-color: #ff6b6b; }
+  body.dark-mode table { border-color: #4a6a9a; }
+  body.dark-mode th {
+    background: rgba(255,107,107,0.15); color: #ff6b6b;
+    border-bottom-color: #ff6b6b;
+  }
+  body.dark-mode td { border-bottom-color: rgba(74,106,154,0.3); color: #b8c6db; }
+  body.dark-mode .diagram { border-color: #555; background: rgba(255,255,255,0.02); }
+  body.dark-mode .example-box {
+    background: rgba(74,106,154,0.08); border-color: rgba(74,106,154,0.3); color: #b8c6db;
+  }
+  body.dark-mode .doodle { opacity: 0.12; }
+  body.dark-mode .back-btn { background: rgba(0,0,0,0.8); }
+  body.dark-mode .dl-btn { background: rgba(52,152,219,0.5); }
+  body.dark-mode .dark-btn { background: rgba(255,255,255,0.15); }
+  body.dark-mode svg text { fill: #b8c6db; }
+  body.dark-mode svg text[fill="#c0392b"],
+  body.dark-mode svg text[fill="#1a4a7a"] { fill: #b8c6db; }
+  body.dark-mode svg text[fill="#27ae60"],
+  body.dark-mode svg text[fill="#16a34a"] { fill: #4ade80; }
+  body.dark-mode svg rect,
+  body.dark-mode svg polygon { stroke-opacity: 0.4; fill-opacity: 0.4; }
+  .page-break { page-break-after: always; break-after: page; }
+  @media print {
+    .page { box-shadow: none; margin: 0; }
+    body { background: #fff; } .back-btn, .dl-btn, .dark-btn { display: none; }
+  }
+</style>
+<style>
+@media screen {
+  .dl-btn { right: 10px; }
+  .dark-btn { right: 140px; }
+}
+@media screen and (max-width: 600px) {
+  .dl-btn { right: 8px; }
+  .dark-btn { right: 116px; }
+}
+</style>
+<style>
+.table-scroll { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+@media print { .table-scroll { overflow: visible; } }
+</style>
+<style>
+@media screen and (max-width: 600px) {
+  body.note-body { padding: 10px; }
+  .page {
+    width: auto !important;
+    max-width: 100%;
+    min-height: auto;
+    padding: 20px 18px;
+    margin: 10px auto;
+  }
+  .page::before, .page::after { display: none; }
+  .page svg, .page img { max-width: 100%; height: auto; }
+}
+</style>
+</head>
+<body class="note-body">
+  <a class="back-btn" href="./index.html">&larr; Back to Dashboard</a>
+  <button type="button" class="dark-btn" id="darkToggle" aria-label="Toggle dark mode" aria-pressed="false">&#127769;</button>
+  <button type="button" class="dl-btn" onclick="window.print()">&#11015; Download PDF</button>
+<!-- ═══════════════════════ PAGE 1 ═══════════════════════ -->
+<div class="page page-break" style="position:relative;">
+  <span class="doodle" style="top:18px;right:30px;">📐</span>
+  <span class="doodle" style="bottom:60px;left:14px;">✏️</span>
+  <span class="doodle" style="top:50%;right:12px;">📝</span>
+
+  <div class="title-banner">
+    <h1>PERCENTAGES</h1>
+    <div class="subtitle">Complete Study Notes — Chapter 1 of Maths</div>
+  </div>
+
+  <!-- ── 1. BASICS & DEFINITIONS ── -->
+  <h2>1. Basics &amp; Definitions</h2>
+
+  <p><span class="hl-strong">Percentage</span> means <span class="underline-important">"per hundred."</span> It expresses a number as a fraction of 100.</p>
+  <p style="margin-top:4px;">Symbol: <span class="hl-strong">%</span></p>
+
+  <ul>
+    <li><span class="hl">% → Fraction:</span> Drop the % sign and divide by 100.
+      <br>&nbsp;&nbsp;&nbsp;e.g., <span class="hl">20% = 20/100 = 1/5</span></li>
+    <li><span class="hl">Fraction → %:</span> Multiply by 100.
+      <br>&nbsp;&nbsp;&nbsp;e.g., <span class="hl">1/4 = 1/4 × 100 = 25%</span></li>
+    <li><span class="hl">% → Decimal:</span> Drop the % sign and move decimal two places left.
+      <br>&nbsp;&nbsp;&nbsp;e.g., <span class="hl">45% = 0.45</span></li>
+  </ul>
+
+  <!-- Navneet Sir's Principle -->
+  <div class="tip">
+    <strong>Navneet Sir's Core Principle:</strong> Always identify the <span class="circle-important">BASE</span> (the original whole) correctly. The percentage is always calculated <em>of</em> this base.
+    <br><strong>Misidentifying the base is the #1 cause of errors!</strong>
+  </div>
+
+  <!-- Flowchart: Conversion -->
+  <h3>Conversion Flowchart</h3>
+  <div class="flowchart">
+    <div class="flow-box"><strong>% Value</strong><br>e.g. 25%</div>
+    <span class="flow-arrow">→ ÷100 →</span>
+    <div class="flow-box"><strong>Fraction</strong><br>25/100 = 1/4</div>
+    <span class="flow-arrow">→ ×100 →</span>
+    <div class="flow-box"><strong>Percentage</strong><br>25%</div>
+  </div>
+  <div class="flowchart">
+    <div class="flow-box"><strong>% Value</strong><br>e.g. 45%</div>
+    <span class="flow-arrow">→ move decimal ←← →</span>
+    <div class="flow-box"><strong>Decimal</strong><br>0.45</div>
+  </div>
+
+  <span class="page-number">1</span>
+</div>
+
+<!-- ═══════════════════════ PAGE 2 ═══════════════════════ -->
+<div class="page page-break" style="position:relative;">
+  <span class="doodle" style="top:14px;right:40px;">💡</span>
+  <span class="doodle" style="bottom:50px;left:20px;">⭐</span>
+
+  <!-- ── 2. GOLDEN FRACTION-PERCENTAGE TABLE ── -->
+  <h2>2. Golden Fraction-Percentage Table</h2>
+
+  <p style="margin-bottom:8px;"><span class="circle-important">MEMORIZE THIS TABLE</span> — It will reduce your calculation time by <span class="hl-strong">80%!</span></p>
+
+  <div class="table-scroll"><table>
+    <tr><th>Fraction</th><th>Percentage</th><th>Fraction</th><th>Percentage</th></tr>
+    <tr><td>1/1</td><td class="hl">100%</td><td>1/8</td><td class="hl">12.5%</td></tr>
+    <tr><td>1/2</td><td class="hl">50%</td><td>1/9</td><td class="hl">11.11%</td></tr>
+    <tr><td>1/3</td><td class="hl">33.33%</td><td>1/10</td><td class="hl">10%</td></tr>
+    <tr><td>1/4</td><td class="hl">25%</td><td>1/11</td><td class="hl">9.09%</td></tr>
+    <tr><td>1/5</td><td class="hl">20%</td><td>1/12</td><td class="hl">8.33%</td></tr>
+    <tr><td>1/6</td><td class="hl">16.67%</td><td>1/15</td><td class="hl">6.67%</td></tr>
+    <tr><td>1/7</td><td class="hl">14.29%</td><td>1/16</td><td class="hl">6.25%</td></tr>
+    <tr><td>2/3</td><td class="hl">66.67%</td><td>3/8</td><td class="hl">37.5%</td></tr>
+    <tr><td>2/5</td><td class="hl">40%</td><td>5/6</td><td class="hl">83.33%</td></tr>
+    <tr><td>3/5</td><td class="hl">60%</td><td>7/8</td><td class="hl">87.5%</td></tr>
+    <tr><td>4/5</td><td class="hl">80%</td><td>5/12</td><td class="hl">41.67%</td></tr>
+    <tr><td>2/7</td><td class="hl">28.57%</td><td>7/9</td><td class="hl">77.78%</td></tr>
+    <tr><td>3/7</td><td class="hl">42.86%</td><td>11/12</td><td class="hl">91.67%</td></tr>
+  </table></div>
+
+  <div class="trick">
+    <strong>Pro Tip for fractions &gt; 1:</strong> Just multiply the base percentage.
+    <br>• 3/4 = 3 × 25% = <span class="hl-strong">75%</span>
+    <br>• 5/8 = 5 × 12.5% = <span class="hl-strong">62.5%</span>
+  </div>
+
+  <!-- ── 3. FAST CALCULATION TRICKS ── -->
+  <h2>3. Fast Calculation Tricks</h2>
+
+  <h3>Trick A: Finding 10%, 5%, 1% (The Base Rules)</h3>
+  <div class="formula-box">
+    10% → Move decimal <span class="hl">one place left</span>. → 10% of 450 = 45<br>
+    5% → <span class="hl">Half of 10%</span>. → 5% of 450 = 22.5<br>
+    1% → Move decimal <span class="hl">two places left</span>. → 1% of 450 = 4.5
+  </div>
+
+  <div class="example-box">
+    <div class="ex-title">✏️ Example: Find 16% of 325</div>
+    <p>= 10% + 5% + 1%</p>
+    <p>= 32.5 + 16.25 + 3.25 = <span class="hl-strong">52</span></p>
+  </div>
+
+  <span class="page-number">2</span>
+</div>
+
+<!-- ═══════════════════════ PAGE 3 ═══════════════════════ -->
+<div class="page page-break" style="position:relative;">
+  <span class="doodle" style="top:16px;right:25px;">🔢</span>
+  <span class="doodle" style="top:40%;left:10px;">📊</span>
+
+  <h3>Trick B: "Multiply by 10" Rule for Awkward Percentages</h3>
+  <p>If a % ends in a digit other than 0 or 5, <span class="underline-important">multiply by 10</span> to make math easy, then <span class="underline-important">divide final answer by 10</span>.</p>
+
+  <div class="example-box">
+    <div class="ex-title">✏️ Example: Find 23% of 60</div>
+    <p>Instead, find <span class="hl">230%</span> of 60:</p>
+    <p>• 100% → 60</p>
+    <p>• 100% → 60</p>
+    <p>• 30% → 18</p>
+    <p>• Total 230% → 60 + 60 + 18 = 138</p>
+    <p>Divide by 10 → Answer = <span class="hl-strong">13.8</span></p>
+  </div>
+
+  <h3>Trick C: Percentage of a Percentage</h3>
+  <p>To find <span class="hl">X% of Y%</span>, simply <span class="underline-important">multiply them</span> and put a decimal before the last two digits.</p>
+
+  <div class="example-box">
+    <div class="ex-title">✏️ Example: 20% of 30%</div>
+    <p>= 2 × 3 = 6 → <span class="hl-strong">0.06 (or 6%)</span></p>
+  </div>
+
+  <h3>Trick D: Navneet Sir's "Splitting" Method</h3>
+  <p>Break down complex % into sums/differences of <span class="hl">memorized fractions</span>.</p>
+
+  <div class="example-box">
+    <div class="ex-title">✏️ Example 1: Find 37.5% of 240</div>
+    <p>Recognize <span class="hl">37.5% = 3/8</span> (from table).</p>
+    <p>Calculation: 240 ÷ 8 × 3 = 30 × 3 = <span class="hl-strong">90</span></p>
+  </div>
+
+  <div class="example-box">
+    <div class="ex-title">✏️ Example 2: Find 62.5% of 480</div>
+    <p>Recognize <span class="hl">62.5% = 5/8</span>.</p>
+    <p>Calculation: 480 ÷ 8 × 5 = 60 × 5 = <span class="hl-strong">300</span></p>
+  </div>
+
+  <div class="diagram">
+    <div class="diagram-label">📐 Calculation Method Visual</div>
+    <svg role="img" width="400" height="130" viewBox="0 0 400 130">
+      <title>Calculation Method Visual - Splitting Method</title>
+      <desc>Step-by-step diagram showing how 37.5 percent equals 3/8, processed as divide by 8 then multiply by 3, resulting in 90.</desc>
+      <rect x="10" y="20" width="100" height="50" rx="10" fill="rgba(26,74,122,0.12)" stroke="#1a4a7a" stroke-width="2"/>
+      <text x="60" y="50" text-anchor="middle" font-size="15" fill="#1a4a7a" font-weight="700">37.5%</text>
+      <line x1="115" y1="45" x2="155" y2="45" stroke="#c0392b" stroke-width="2" marker-end="url(#arrow)"/>
+      <text x="135" y="38" font-size="12" fill="#c0392b" text-anchor="middle">= 3/8</text>
+      <rect x="160" y="20" width="100" height="50" rx="10" fill="rgba(231,76,60,0.1)" stroke="#e74c3c" stroke-width="2"/>
+      <text x="210" y="50" text-anchor="middle" font-size="15" fill="#e74c3c" font-weight="700">÷ 8 then × 3</text>
+      <line x1="265" y1="45" x2="305" y2="45" stroke="#27ae60" stroke-width="2" marker-end="url(#arrow2)"/>
+      <rect x="310" y="20" width="80" height="50" rx="10" fill="rgba(39,174,96,0.12)" stroke="#27ae60" stroke-width="2"/>
+      <text x="350" y="50" text-anchor="middle" font-size="15" fill="#27ae60" font-weight="700">= 90 ✓</text>
+      <text x="200" y="110" text-anchor="middle" font-size="13" fill="#888">Step-by-step Splitting Method</text>
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6Z" fill="#c0392b"/></marker>
+        <marker id="arrow2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6Z" fill="#27ae60"/></marker>
+      </defs>
+    </svg>
+  </div>
+
+  <span class="page-number">3</span>
+</div>
+
+<!-- ═══════════════════════ PAGE 4 ═══════════════════════ -->
+<div class="page page-break" style="position:relative;">
+  <span class="doodle" style="top:12px;right:35px;">📈</span>
+  <span class="doodle" style="bottom:70px;left:12px;">✏️</span>
+
+  <!-- ── 4. SUCCESSIVE % CHANGE (AB Rule) ── -->
+  <h2>4. Successive % Change (The AB Rule)</h2>
+
+  <p>When a value changes by <span class="hl">a%</span> and then by <span class="hl">b%</span>:</p>
+
+  <div class="formula-box">
+    <span class="circle-important">Net % Change = a + b + (a × b) / 100</span>
+    <br><br>
+    • If result is <span style="color:#27ae60;font-weight:700;">positive (+)</span> → net <span class="hl">increase</span>
+    <br>• If result is <span style="color:#e74c3c;font-weight:700;">negative (−)</span> → net <span class="hl">decrease</span>
+  </div>
+
+  <div class="example-box">
+    <div class="ex-title">✏️ Example 1: ↑20%, then ↑30%</div>
+    <p>= 20 + 30 + (20 × 30)/100 = 50 + 6 = <span class="hl-strong">56% Increase</span></p>
+  </div>
+
+  <div class="example-box">
+    <div class="ex-title">✏️ Example 2: ↑20%, then ↓20%</div>
+    <p>= 20 + (−20) + (20 × −20)/100 = 0 − 4 = <span class="hl-strong">4% Decrease</span></p>
+  </div>
+
+  <div class="mistake">
+    <strong>↑20% then ↓20% is NEVER 0%!</strong> It is always a <span class="underline-important">net decrease</span>.
+  </div>
+
+  <h3>Mega Shortcut for Same % Increase &amp; Decrease</h3>
+  <div class="formula-box">
+    If ↑x% then ↓x% (or vice versa), net loss = <span class="circle-important">x² / 100 %</span>
+    <br><br>
+    Example: ↑10% then ↓10% → Net loss = 10² / 100 = <span class="hl-strong">1% loss</span>
+  </div>
+
+  <!-- Hand-drawn-style diagram -->
+  <div class="diagram">
+    <div class="diagram-label">📊 AB Rule Visual Flow</div>
+    <svg role="img" width="420" height="160" viewBox="0 0 420 160">
+      <title>AB Rule Visual Flow for Successive Percentage Change</title>
+      <desc>Flow diagram showing original value going through a percent change, then b percent change, with net change formula a plus b plus a times b divided by 100.</desc>
+      <rect x="20" y="30" width="90" height="45" rx="8" fill="rgba(26,74,122,0.1)" stroke="#1a4a7a" stroke-width="2"/>
+      <text x="65" y="58" text-anchor="middle" font-size="14" fill="#1a4a7a" font-weight="700">Original</text>
+      <text x="65" y="105" text-anchor="middle" font-size="13" fill="#888">Value</text>
+      <line x1="115" y1="52" x2="155" y2="52" stroke="#c0392b" stroke-width="2" marker-end="url(#arr3)"/>
+      <text x="135" y="42" font-size="12" fill="#c0392b" text-anchor="middle">a%</text>
+      <rect x="160" y="30" width="90" height="45" rx="8" fill="rgba(192,57,43,0.1)" stroke="#c0392b" stroke-width="2"/>
+      <text x="205" y="58" text-anchor="middle" font-size="14" fill="#c0392b" font-weight="700">After a%</text>
+      <line x1="255" y1="52" x2="295" y2="52" stroke="#8e44ad" stroke-width="2" marker-end="url(#arr4)"/>
+      <text x="275" y="42" font-size="12" fill="#8e44ad" text-anchor="middle">b%</text>
+      <rect x="300" y="30" width="100" height="45" rx="8" fill="rgba(39,174,96,0.1)" stroke="#27ae60" stroke-width="2"/>
+      <text x="350" y="58" text-anchor="middle" font-size="14" fill="#27ae60" font-weight="700">Final Value</text>
+      <rect x="90" y="95" width="240" height="40" rx="8" fill="rgba(255,235,50,0.3)" stroke="#b8860b" stroke-width="2"/>
+      <text x="210" y="120" text-anchor="middle" font-size="14" fill="#1a4a7a" font-weight="700">Net = a + b + (a×b)/100</text>
+      <defs>
+        <marker id="arr3" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6Z" fill="#c0392b"/></marker>
+        <marker id="arr4" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6Z" fill="#8e44ad"/></marker>
+      </defs>
+    </svg>
+  </div>
+
+  <div class="tip">
+    <strong>Exam Application (Navneet Sir's Tip):</strong> This is frequently tested in questions about <span class="hl">price changes, marks, or dimensions</span> where two successive % changes occur. Always apply the <span class="underline-important">AB rule directly</span> instead of calculating step-by-step.
+  </div>
+
+  <span class="page-number">4</span>
+</div>
+
+<!-- ═══════════════════════ PAGE 5 ═══════════════════════ -->
+<div class="page page-break" style="position:relative;">
+  <span class="doodle" style="top:18px;right:28px;">⚡</span>
+  <span class="doodle" style="bottom:60px;right:15px;">📌</span>
+
+  <!-- ── 5. PERCENTAGE POINT vs. PERCENT CHANGE ── -->
+  <h2>5. Percentage Point vs. Percent Change</h2>
+
+  <p><span class="circle-important">Examiners love to trick you here!</span> Read carefully!</p>
+
+  <div class="formula-box">
+    <span class="hl">Percentage Point</span> = Simple subtraction of two percentages.
+    <br><br>
+    <span class="hl">Percent Change</span> = Change relative to the <span class="underline-important">OLD base value</span>.
+  </div>
+
+  <div class="example-box">
+    <div class="ex-title">✏️ Example: Pass % in 2022 = 40%, in 2023 = 60%</div>
+    <p>• Increase in <span class="hl">Percentage Points</span>: 60% − 40% = <span class="hl-strong">20 Percentage Points</span></p>
+    <p>• <span class="hl">Percent Increase</span> in pass rate: (60 − 40)/40 × 100 = 20/40 × 100 = <span class="hl-strong">50% Increase</span></p>
+  </div>
+
+  <div class="tip">
+    <strong>In Data Interpretation (DI):</strong> Graphs often show <span class="underline-important">"percentage point change."</span> Don't mistake it for "percent change"!
+  </div>
+
+  <!-- ── 6. EXPENDITURE & CONSUMPTION ── -->
+  <h2>6. Expenditure &amp; Consumption Concept</h2>
+
+  <p>Connects <span class="hl">Price</span>, <span class="hl">Consumption</span> (quantity used), and <span class="hl">Expenditure</span>.</p>
+
+  <div class="formula-box">
+    <span class="circle-important">Expenditure = Price × Consumption</span>
+    <br><br>
+    If Expenditure remains <span class="underline-important">Constant</span>, Price and Consumption are <span class="hl">inversely proportional</span>.
+    <br>P₁/P₂ = C₂/C₁
+  </div>
+
+  <div class="example-box">
+    <div class="ex-title">✏️ Example: Price of sugar ↑ by 25%. By what % must consumption ↓ to keep expenditure same?</div>
+    <p>Let Old Price = 100, New Price = 125.</p>
+    <p>100 × C₁ = 125 × C₂</p>
+    <p>C₂/C₁ = 100/125 = 4/5</p>
+    <p>Consumption reduced by 1/5 = <span class="hl-strong">20% decrease</span></p>
+  </div>
+
+  <div class="formula-box">
+    <span class="underline-important">Navneet Sir's Shortcut:</span> If price increases by R%, to keep expenditure constant, consumption must decrease by:
+    <br><br>
+    <span class="circle-important">R / (100 + R) × 100%</span>
+    <br><br>
+    Here, R = 25 → Decrease = 25/125 × 100 = <span class="hl-strong">20%</span>
+  </div>
+
+  <div class="diagram">
+    <div class="diagram-label">⚖️ Inverse Relationship</div>
+    <svg role="img" width="340" height="100" viewBox="0 0 340 100">
+      <title>Inverse Relationship between Price and Consumption</title>
+      <desc>When price increases, consumption must decrease proportionally so that expenditure stays the same, shown by a bidirectional arrow between price up and consumption down.</desc>
+      <rect x="10" y="15" width="100" height="40" rx="8" fill="rgba(192,57,43,0.1)" stroke="#c0392b" stroke-width="2"/>
+      <text x="60" y="40" text-anchor="middle" font-size="14" fill="#c0392b" font-weight="700">Price ↑</text>
+      <text x="170" y="40" text-anchor="middle" font-size="22" fill="#8e44ad" font-weight="700">⟷</text>
+      <rect x="230" y="15" width="100" height="40" rx="8" fill="rgba(39,174,96,0.1)" stroke="#27ae60" stroke-width="2"/>
+      <text x="280" y="40" text-anchor="middle" font-size="14" fill="#27ae60" font-weight="700">Consumption ↓</text>
+      <text x="170" y="85" text-anchor="middle" font-size="13" fill="#888">Expenditure stays SAME</text>
+    </svg>
+  </div>
+
+  <span class="page-number">5</span>
+</div>
+
+<!-- ═══════════════════════ PAGE 6 ═══════════════════════ -->
+<div class="page page-break" style="position:relative;">
+  <span class="doodle" style="top:14px;right:32px;">🗳️</span>
+  <span class="doodle" style="bottom:50px;left:18px;">📏</span>
+
+  <!-- ── 7. ELECTIONS & VOTES ── -->
+  <h2>7. Elections &amp; Votes Concept</h2>
+
+  <div class="formula-box">
+    <span class="hl">Valid Votes</span> = Total Votes − (Invalid Votes + Not Voted)
+    <br><br>
+    <span class="hl">Winner's Margin</span> = (Winner's Valid Votes) − (Loser's Valid Votes)
+  </div>
+
+  <h3>Standard Setup</h3>
+  <ul>
+    <li>Let Total Votes = <span class="hl">100%</span></li>
+    <li>Winning candidate gets <span class="hl">x%</span></li>
+    <li>Losing candidate gets <span class="hl">y%</span></li>
+    <li>Difference = <span class="hl">(x − y)%</span></li>
+    <li>This difference (x − y)% of Valid Votes = <span class="underline-important">Margin given in question</span></li>
+  </ul>
+
+  <div class="example-box">
+    <div class="ex-title">✏️ Example: Two candidates got 40% and 30% of valid votes. Winner won by 500 votes. Find total valid votes?</div>
+    <p>Difference in % = 40% − 30% = <span class="hl">10%</span></p>
+    <p>10% of Valid Votes = 500</p>
+    <p>Valid Votes = <span class="hl-strong">5000</span></p>
+  </div>
+
+  <div class="tip">
+    <strong>Advanced Pattern (Navneet Sir):</strong> Questions may involve <span class="hl">three candidates</span> or ask for <span class="hl">total population</span> (including those who didn't vote). Always carefully parse the given data to find the correct base — <span class="underline-important">Total Votes vs. Valid Votes vs. Population</span>.
+  </div>
+
+  <!-- ── 8. POPULATION GROWTH/DECLINE ── -->
+  <h2>8. Population Growth/Decline Formula</h2>
+
+  <div class="formula-box">
+    <span class="circle-important">P_final = P_initial × (1 ± R/100)ⁿ</span>
+    <br><br>
+    Use <span style="color:#27ae60;font-weight:700;">+</span> for Growth/Increase.
+    <br>Use <span style="color:#e74c3c;font-weight:700;">−</span> for Decline/Decrease.
+    <br><span class="hl">n</span> = Time (usually in years)
+  </div>
+
+  <div class="example-box">
+    <div class="ex-title">✏️ Example: Pop. = 10,000. ↑10% every year. Find pop. after 2 years?</div>
+    <p>P = 10000 × (1 + 10/100)²</p>
+    <p>= 10000 × (11/10)²</p>
+    <p>= 10000 × 121/100 = <span class="hl-strong">12,100</span></p>
+  </div>
+
+  <div class="trick">
+    <strong>Navneet Sir's Variant — "Present Population" Problems:</strong>
+    <br>If the population after n years is P, and the annual growth rate is R%, then:
+    <br><span class="circle-important">Present Population = P / (1 + R/100)ⁿ</span>
+  </div>
+
+  <span class="page-number">6</span>
+</div>
+
+<!-- ═══════════════════════ PAGE 7 ═══════════════════════ -->
+<div class="page page-break" style="position:relative;">
+  <span class="doodle" style="top:16px;right:30px;">⚖️</span>
+  <span class="doodle" style="bottom:55px;left:14px;">💰</span>
+
+  <!-- ── 9. FAULTY WEIGHT / DISHONEST DEALER ── -->
+  <h2>9. Faulty Weight / Dishonest Dealer</h2>
+
+  <div class="formula-box">
+    <span class="circle-important">Profit % = (Error / (True Value − Error)) × 100</span>
+    <br><br>
+    <span class="hl">Error</span> = True Weight − False Weight
+  </div>
+
+  <div class="example-box">
+    <div class="ex-title">✏️ Example: Shopkeeper gives only 900g instead of 1 kg (1000g). Find profit %?</div>
+    <p>Error = 1000 − 900 = <span class="hl">100g</span></p>
+    <p>Profit % = (100 / (1000 − 100)) × 100 = (100/900) × 100 = <span class="hl-strong">11.11% profit</span> (or 1/9 × 100)</p>
+  </div>
+
+  <div class="formula-box">
+    <span class="underline-important">Shortcut:</span> If he uses x grams instead of 1000g:
+    <br><span class="circle-important">Profit % = ((1000 − x) / x) × 100</span>
+  </div>
+
+  <div class="mistake">
+    <strong>Advanced Case (Navneet Sir):</strong> If he also marks up the price by M% and gives a discount of D%, combine the profit from false weight with markup-discount profit.
+    <br><br>
+    <span class="hl">Total Profit % = [ (100+M)(100−D) / 100 ] − 100 + (Profit from false weight)</span>
+  </div>
+
+  <!-- ── 10. INCOME, EXPENDITURE & SAVINGS ── -->
+  <h2>10. Income, Expenditure &amp; Savings</h2>
+
+  <div class="formula-box">
+    <span class="circle-important">Income = Expenditure + Savings</span>
+  </div>
+
+  <div class="example-box">
+    <div class="ex-title">✏️ Example 1 (Base is Income): Man spends 70% of income. Income ↑20%, Exp ↑10%. Find % change in savings?</div>
+    <p>Assume Income = 100 → Exp = 70, Savings = 30.</p>
+    <p>New Income: 120</p>
+    <p>New Exp: 70 + 70×10% = 70 + 7 = <span class="hl-strong">77</span></p>
+    <p>New Savings: 120 − 77 = 43</p>
+    <p>% Change: (43 − 30)/30 × 100 = 13/30 × 100 = <span class="hl-strong">43.33% Increase</span></p>
+  </div>
+
+  <div class="example-box">
+    <div class="ex-title">✏️ Example 2 (Base is Expenditure — TRICKY!): Man saves 20% of income. If expenditure = ₹4000, find income?</div>
+    <p>If he saves 20%, he <span class="underline-important">SPENDS 80%</span>. (Because 20 + 80 = 100)</p>
+    <p>80% of Income = 4000</p>
+    <p>Income = 4000 / 80 × 100 = <span class="hl-strong">₹5000</span></p>
+  </div>
+
+  <div class="trick">
+    <strong>Navneet Sir's "Series" Questions:</strong> "If income ↑20% then ↓20%, what is the net change in savings if expenditure remains constant?" — Apply the <span class="underline-important">successive percentage rule</span> to income first, then analyze impact on savings.
+  </div>
+
+  <span class="page-number">7</span>
+</div>
+
+<!-- ═══════════════════════ PAGE 8 ═══════════════════════ -->
+<div class="page" style="position:relative;">
+  <span class="doodle" style="top:12px;right:25px;">🎯</span>
+  <span class="doodle" style="bottom:50px;left:16px;">⭐</span>
+
+  <div class="title-banner" style="margin-bottom:18px;">
+    <h1 style="font-size:32px;">QUICK REVISION CHEAT SHEET</h1>
+  </div>
+
+  <h2>Master Formula Summary</h2>
+
+  <div class="formula-box">
+    <strong>1.</strong> % → Fraction: ÷ 100 &nbsp;|&nbsp; Fraction → %: × 100 &nbsp;|&nbsp; % → Decimal: ÷ 100<br>
+    <strong>2.</strong> Net % Change (AB Rule): a + b + (ab)/100<br>
+    <strong>3.</strong> Same ↑x% then ↓x%: Net loss = x²/100 %<br>
+    <strong>4.</strong> Expenditure = Price × Consumption (inverse if constant)<br>
+    <strong>5.</strong> Consumption decrease = R/(100+R) × 100%<br>
+    <strong>6.</strong> P_final = P_initial × (1 ± R/100)ⁿ<br>
+    <strong>7.</strong> Present Pop = P / (1 + R/100)ⁿ<br>
+    <strong>8.</strong> Faulty Weight Profit = (Error/(True−Error)) × 100<br>
+    <strong>9.</strong> Income = Expenditure + Savings<br>
+    <strong>10.</strong> Valid Votes = Total − (Invalid + Not Voted)
+  </div>
+
+  <h2>Top Exam Tips</h2>
+  <div class="tip">
+    <strong>1.</strong> Always identify the <span class="circle-important">BASE</span> before calculating %.
+  </div>
+  <div class="tip">
+    <strong>2.</strong> For successive changes, use the <span class="underline-important">AB rule</span> — never go step-by-step in exams.
+  </div>
+  <div class="tip">
+    <strong>3.</strong> Memorize the <span class="hl">Golden Fraction Table</span> — saves 80% calculation time.
+  </div>
+  <div class="tip">
+    <strong>4.</strong> In DI, watch out for <span class="underline-important">percentage points</span> vs. <span class="underline-important">percent change</span> — they are different!
+  </div>
+  <div class="tip">
+    <strong>5.</strong> For dishonest dealer, combine <span class="hl">false weight profit</span> with markup-discount when both are given.
+  </div>
+
+  <h2>Most Common Mistakes</h2>
+  <div class="mistake">
+    <strong>1.</strong> Thinking ↑x% then ↓x% gives 0% — it gives a <span class="hl">net decrease of x²/100%</span>!
+  </div>
+  <div class="mistake">
+    <strong>2.</strong> Confusing "saves 20%" with "spends 20%" — If savings = 20%, then spending = <span class="hl">80%</span>.
+  </div>
+  <div class="mistake">
+    <strong>3.</strong> Using Total Votes instead of <span class="hl">Valid Votes</span> in election problems.
+  </div>
+  <div class="mistake">
+    <strong>4.</strong> Forgetting to reverse the formula for <span class="hl">"Present Population"</span> problems — divide instead of multiply!
+  </div>
+
+  <!-- Decorative doodles -->
+  <div style="text-align:center;margin-top:20px;font-size:30px;opacity:0.5;">
+    ✏️ 📐 📊 📈 💡 🎯 ⭐ 🏆
+  </div>
+
+<span class="page-number">8</span>
+</div>
+<script>
+(function () {
+  var body = document.body;
+  var button = document.getElementById('darkToggle');
+  var KEY = 'darkMode';
+
+  function apply(on) {
+    body.classList.toggle('dark-mode', on);
+    button.innerHTML = on ? '&#9728;&#65039;' : '&#127769;';
+    button.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+
+  var saved = false;
+  try { saved = window.localStorage.getItem(KEY) === 'true'; } catch (e) {}
+  apply(saved);
+
+  button.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-mode');
+    apply(next);
+    try { window.localStorage.setItem(KEY, next ? 'true' : 'false'); } catch (e) {}
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+C:\Users\pagil\OneDrive\Documents\Projects\venunotes website\README.md
+C:\Users\pagil\OneDrive\Documents\Projects\venunotes website\agentic-ai-foundations.html
+C:\Users\pagil\OneDrive\Documents\Projects\venunotes website\aws.html
+C:\Users\pagil\OneDrive\Documents\Projects\venunotes website\devops.html
+C:\Users\pagil\OneDrive\Documents\Projects\venunotes website\docs\superpowers\plans\2026-08-19-five-subject-pages.md
+C:\Users\pagil\OneDrive\Documents\Projects\venunotes website\docs\superpowers\plans\2026-08-19-perceptron-landing-page.md
+C:\Users\pagil\OneDrive\Documents\Projects\venunotes website\docs\superpowers\plans\2026-08-19-remove-source-and-project-files.md
+C:\Users\pagil\OneDrive\Documents\Projects\venunotes website\docs\superpowers\specs\2026-08-19-five-subject-pages-design.md
+C:\Users\pagil\OneDrive\Documents\Projects\venunotes website\docs\superpowers\specs\2026-08-19-perceptron-landing-page-design.md
+C:\Users\pagil\OneDrive\Documents\Projects\venunotes website\docs\superpowers\specs\2026-08-19-remove-source-and-project-files-design.md
+C:\Users\pagil\OneDrive\Documents\Projects\venunotes website\fastapi.html
+C:\Users\pagil\OneDrive\Documents\Projects\venunotes website\index.html
+C:\Users\pagil\OneDrive\Documents\Projects\venunotes website\introduction-to-llm.html
+C:\Users\pagil\OneDrive\Documents\Projects\venunotes website\java.html
+C:\Users\pagil\OneDrive\Documents\Projects\venunotes website\langchain.html

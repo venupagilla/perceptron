@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Number Series — Quantitative Aptitude</title>
+<meta name="description" content="Number Series — handwritten quantitative aptitude notes with formulas, shortcuts, traps, and solved examples.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Patrick+Hand&family=Kalam:wght@300;400;700&family=Indie+Flower&display=swap" rel="stylesheet">
+<style>
+body.note-body { background: #f0f0f0; font-family: 'Caveat', cursive; padding: 20px; }
+body.dark-mode.note-body { background: #0f0f23; }
+@media print { body.note-body { background: #fff; } }
+</style>
+<style>
+@page { size: A4; margin: 0; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #f0f0f0; font-family: 'Caveat', cursive; padding: 20px; }
+
+.page {
+  width: 210mm; min-height: 297mm; margin: 30px auto;
+  background: #fffef8; padding: 50px 55px 50px 70px;
+  box-shadow: 4px 6px 20px rgba(0,0,0,0.25);
+  position: relative; line-height: 1.7;
+  background-image: linear-gradient(rgba(150,180,220,0.20) 1px, transparent 1px);
+  background-size: 100% 32px;
+}
+.page::before {
+  content: ''; position: absolute; left: 52px; top: 0; bottom: 0;
+  width: 2px; background: rgba(200,60,60,0.40);
+}
+.page::after {
+  content: ''; position: absolute; left: 0; top: 0; right: 0; bottom: 0;
+  border: 1px solid rgba(0,0,0,0.07); pointer-events: none;
+}
+
+h1 {
+  font-family: 'Kalam', cursive; font-size: 38px; font-weight: 700;
+  color: #c0392b; letter-spacing: 2px; transform: rotate(-0.6deg);
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.06);
+  margin-bottom: 8px; text-decoration: none;
+  border-bottom: 3px dashed #c0392b; padding-bottom: 6px;
+}
+.subtitle {
+  font-size: 20px; color: #2471a3; margin-bottom: 16px; font-style: italic;
+}
+
+h2 {
+  font-family: 'Kalam', cursive; font-size: 26px; font-weight: 700;
+  color: #c0392b; margin: 28px 0 10px 0; padding: 4px 12px;
+  background: rgba(192,57,43,0.07); border-left: 5px solid #c0392b;
+  border-radius: 3px; transform: rotate(-0.3deg);
+}
+h3 {
+  font-family: 'Kalam', cursive; font-size: 21px; font-weight: 700;
+  color: #c0392b; margin: 16px 0 6px 0; transform: rotate(-0.2deg);
+}
+
+p, li, td, th {
+  font-family: 'Caveat', cursive; font-size: 19.5px; color: #1a4a7a;
+}
+ul { list-style: none; margin: 6px 0 10px 8px; }
+ul li { position: relative; padding-left: 18px; margin-bottom: 5px; }
+ul li::before {
+  content: '▸'; position: absolute; left: -2px; color: #1a4a7a; font-weight: 700;
+}
+
+.highlight {
+  background: linear-gradient(180deg, transparent 40%, rgba(255,235,59,0.55) 40%, rgba(255,235,59,0.55) 88%, transparent 88%);
+  padding: 0 4px; font-weight: 600; border-radius: 2px;
+}
+
+.formula-box {
+  background: rgba(255,235,50,0.28); border: 2px dashed #b8860b;
+  border-radius: 8px; padding: 12px 16px; margin: 12px 0;
+  font-size: 20px; color: #1a4a7a; transform: rotate(-0.2deg);
+  position: relative;
+}
+.formula-box::before {
+  content: '★ FORMULA'; position: absolute; top: -11px; left: 14px;
+  background: #fffef8; padding: 0 6px; font-size: 13px; font-weight: 700;
+  color: #c0392b; font-family: 'Kalam', cursive; letter-spacing: 1px;
+}
+
+.exam-tip {
+  background: rgba(46,204,113,0.13); border-left: 4px solid #27ae60;
+  border-radius: 4px; padding: 10px 14px; margin: 12px 0;
+  position: relative; font-size: 18.5px; color: #1a4a7a;
+  font-family: 'Caveat', cursive;
+}
+.exam-tip::before {
+  content: '💡 Exam Tip'; display: block; font-family: 'Kalam', cursive;
+  font-size: 15px; color: #27ae60; font-weight: 700; margin-bottom: 3px;
+}
+
+.memory-trick {
+  background: rgba(155,89,182,0.12); border-left: 4px solid #8e44ad;
+  border-radius: 4px; padding: 10px 14px; margin: 12px 0;
+  position: relative; font-size: 18.5px; color: #1a4a7a;
+  font-family: 'Caveat', cursive;
+}
+.memory-trick::before {
+  content: '🧠 Memory Trick'; display: block; font-family: 'Kalam', cursive;
+  font-size: 15px; color: #8e44ad; font-weight: 700; margin-bottom: 3px;
+}
+
+.common-mistake {
+  background: rgba(231,76,60,0.10); border-left: 4px solid #e74c3c;
+  border-radius: 4px; padding: 10px 14px; margin: 12px 0;
+  position: relative; font-size: 18.5px; color: #1a4a7a;
+  font-family: 'Caveat', cursive;
+}
+.common-mistake::before {
+  content: '⚠️ Common Mistake'; display: block; font-family: 'Kalam', cursive;
+  font-size: 15px; color: #e74c3c; font-weight: 700; margin-bottom: 3px;
+}
+
+.circle-important {
+  display: inline-block; border: 2.5px solid #c0392b; border-radius: 50%;
+  padding: 2px 10px; transform: rotate(-1deg); color: #c0392b;
+  font-weight: 700;
+}
+.underline-important {
+  text-decoration: underline wavy #c0392b; text-underline-offset: 4px;
+  font-weight: 600;
+}
+
+.table-hand {
+  width: 100%; border-collapse: separate; border-spacing: 0;
+  margin: 12px 0; border: 2px solid #1a4a7a; border-radius: 6px;
+  overflow: hidden;
+}
+.table-hand th {
+  background: rgba(192,57,43,0.15); font-family: 'Kalam', cursive;
+  font-size: 18px; color: #c0392b; padding: 7px 10px; font-weight: 700;
+  border-bottom: 2px solid #c0392b;
+}
+.table-hand td {
+  padding: 5px 10px; border-bottom: 1px dashed rgba(26,74,122,0.25);
+  font-size: 18.5px; color: #1a4a7a; font-family: 'Caveat', cursive;
+}
+
+.diagram-box {
+  border: 2px dashed #888; border-radius: 10px; padding: 14px;
+  margin: 14px auto; text-align: center; max-width: 90%;
+  background: rgba(0,0,0,0.015); position: relative;
+}
+
+.step-box {
+  background: rgba(26,74,122,0.06); border: 1.5px solid rgba(26,74,122,0.3);
+  border-radius: 8px; padding: 10px 14px; margin: 10px 0;
+  font-size: 18.5px; color: #1a4a7a; font-family: 'Caveat', cursive;
+}
+
+.solved-example {
+  background: rgba(26,74,122,0.06); border: 1.5px solid rgba(26,74,122,0.3);
+  border-radius: 8px; padding: 12px 16px; margin: 10px 0;
+  position: relative; font-size: 18.5px; color: #1a4a7a;
+  font-family: 'Caveat', cursive;
+}
+.solved-example::before {
+  content: '✏️ Solved Example'; display: block; font-family: 'Kalam', cursive;
+  font-size: 15px; color: #c0392b; font-weight: 700; margin-bottom: 4px;
+}
+
+.handwritten-eq {
+  font-family: 'Kalam', cursive; font-size: 24px; font-weight: 700;
+  color: #c0392b; text-align: center; margin: 8px 0; display: block;
+}
+
+.divider { border: none; border-top: 2px dashed #cbd5e1; margin: 16px 0; }
+.doodle {
+  position: absolute; font-size: 28px; opacity: 0.25;
+  transform: rotate(-12deg); pointer-events: none;
+}
+.page-num {
+  position: absolute; bottom: 18px; right: 40px;
+  font-family: 'Caveat', cursive; font-size: 15px; color: #999;
+}
+.page-break { page-break-after: always; break-after: page; }
+
+.star-5 {
+  color: #c0392b; font-size: 16px; font-weight: 700;
+  display: inline-block; margin-left: 8px;
+}
+.inline-svg { display: inline-block; vertical-align: middle; }
+
+body.dark-mode { background: #0f0f23; }
+body.dark-mode .page { background: #16163a; box-shadow: 4px 6px 20px rgba(0,0,0,0.5); }
+body.dark-mode .page::before { background: rgba(255,80,80,0.2); }
+body.dark-mode .page::after { border-color: rgba(255,255,255,0.06); }
+body.dark-mode, body.dark-mode p, body.dark-mode li,
+body.dark-mode td, body.dark-mode th { color: #b8c6db; }
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3 { color: #ff6b6b; }
+body.dark-mode .subtitle { color: #7aa4cf; }
+body.dark-mode .highlight {
+  background: linear-gradient(180deg, transparent 40%, rgba(255,200,0,0.3) 40%, rgba(255,200,0,0.3) 88%, transparent 88%);
+}
+body.dark-mode .formula-box {
+  background: rgba(255,200,0,0.06); border-color: #8a7000; color: #b8c6db;
+}
+body.dark-mode .formula-box::before { background: #16163a; }
+body.dark-mode .exam-tip {
+  background: rgba(46,204,113,0.06); color: #b8c6db;
+}
+body.dark-mode .memory-trick {
+  background: rgba(155,89,182,0.06); color: #b8c6db;
+}
+body.dark-mode .common-mistake {
+  background: rgba(231,76,60,0.06); color: #b8c6db;
+}
+body.dark-mode .circle-important { border-color: #ff6b6b; color: #ff6b6b; }
+body.dark-mode .underline-important { text-decoration-color: #ff6b6b; }
+body.dark-mode .table-hand { border-color: #4a6a9a; }
+body.dark-mode .table-hand th {
+  background: rgba(255,107,107,0.15); color: #ff6b6b;
+  border-bottom-color: #ff6b6b;
+}
+body.dark-mode .table-hand td { border-bottom-color: rgba(74,106,154,0.3); color: #b8c6db; }
+body.dark-mode .diagram-box { border-color: #555; background: rgba(255,255,255,0.02); }
+body.dark-mode .step-box {
+  background: rgba(74,106,154,0.1); border-color: rgba(74,106,154,0.3); color: #b8c6db;
+}
+body.dark-mode .solved-example {
+  background: rgba(74,106,154,0.08); border-color: rgba(74,106,154,0.3); color: #b8c6db;
+}
+body.dark-mode .handwritten-eq { color: #ff6b6b; }
+body.dark-mode .divider { border-color: #333; }
+body.dark-mode .doodle { opacity: 0.12; }
+
+@media print {
+  .back-btn, .dl-btn, .dark-btn { display: none; }
+  body { background: #fff; padding: 0; }
+  .page { box-shadow: none; margin: 0 auto; page-break-after: always; }
+}
+</style>
+<style>
+@media screen {
+  .dl-btn { right: 10px; }
+  .dark-btn { right: 140px; }
+}
+@media screen and (max-width: 600px) {
+  .dl-btn { right: 8px; }
+  .dark-btn { right: 116px; }
+}
+</style>
+<style>
+.table-scroll { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+@media print { .table-scroll { overflow: visible; } }
+</style>
+<style>
+@media screen and (max-width: 600px) {
+  body.note-body { padding: 10px; }
+  .page {
+    width: auto !important;
+    max-width: 100%;
+    min-height: auto;
+    padding: 20px 18px;
+    margin: 10px auto;
+  }
+  .page::before, .page::after { display: none; }
+  .page svg, .page img { max-width: 100%; height: auto; }
+}
+</style>
+</head>
+<body class="note-body">
+  <a class="back-btn" href="./index.html">&larr; Back to Dashboard</a>
+  <button type="button" class="dark-btn" id="darkToggle" aria-label="Toggle dark mode" aria-pressed="false">&#127769;</button>
+  <button type="button" class="dl-btn" onclick="window.print()">&#11015; Download PDF</button>
+<div class="page">
+  <div class="doodle" style="top:20px;right:30px;">&#x270D;</div>
+  <div class="doodle" style="bottom:100px;left:15px;transform:rotate(-8deg);">&#x2601;</div>
+
+  <h1>Number Series</h1>
+  <p class="subtitle">By Navneet Sir | Viral Maths | Complete Missing Number Series</p>
+
+  <h2>What is a Number Series?</h2>
+  <ul>
+    <li>Numbers arranged in a sequence following a <span class="highlight">Definite Rule / Pattern</span></li>
+    <li>If there's <span class="highlight">no definite rule</span> &rarr; it's <strong>NOT</strong> a number series (random numbers)</li>
+    <li>We must be able to <span class="highlight">find the next number</span> based on that rule</li>
+  </ul>
+
+  <div class="diagram-box" style="float:right;width:280px;margin:10px 0 10px 20px;">
+    <svg viewBox="0 0 260 120" style="width:100%;">
+      <text x="130" y="22" text-anchor="middle" font-family="Kalam" font-size="16" font-weight="700" fill="#c0392b">Number Series</text>
+      <line x1="130" y1="28" x2="130" y2="40" stroke="#c0392b" stroke-width="2"/>
+      <line x1="50" y1="40" x2="210" y2="40" stroke="#c0392b" stroke-width="1.5"/>
+      <text x="50" y="62" text-anchor="middle" font-family="Caveat" font-size="15" fill="#1a4a7a">Missing Number</text>
+      <text x="210" y="62" text-anchor="middle" font-family="Caveat" font-size="15" fill="#1a4a7a">Wrong Number</text>
+      <line x1="50" y1="48" x2="50" y2="55" stroke="#1a4a7a" stroke-width="1.5"/>
+      <line x1="210" y1="48" x2="210" y2="55" stroke="#1a4a7a" stroke-width="1.5"/>
+    </svg>
+  </div>
+
+  <div class="exam-tip">
+    <strong>Imp:</strong> In exams, if a series follows a pattern, it's a Number Series. Random numbers like 4, 10, 199, 1298 &rarr; <span class="underline-important">NOT a series</span> because no rule connects them!
+  </div>
+
+  <h2>Criteria for a Valid Number Series</h2>
+  <ul>
+    <li><span class="circle-important">1</span> Must have a <span class="highlight">Definite Rule</span> binding the numbers</li>
+    <li><span class="circle-important">2</span> We must be able to <span class="highlight">Find the Next Number</span> using that rule</li>
+  </ul>
+
+  <h3>Example: Valid Series</h3>
+  <p><span class="handwritten-eq">4, 6, 10, 16, 24, ___</span></p>
+  <p>Gaps: +2, +4, +6, +8 &rarr; next gap +10 &rarr; <span class="highlight">34</span></p>
+
+  <h2>Types of Number Series (based on question)</h2>
+  <div class="table-scroll"><table class="table-hand">
+    <tr><th>Type</th><th>Description</th></tr>
+    <tr><td><span class="highlight">Missing Number Series</span></td><td>One number is missing in the sequence &rarr; find it</td></tr>
+    <tr><td><span class="highlight">Wrong Number Series</span></td><td>One number is placed incorrectly &rarr; find the wrong one</td></tr>
+  </table></div>
+
+  <h2>Types of Series (based on Movement)</h2>
+  <ul>
+    <li><span class="highlight">Slow Series</span> &rarr; Check <strong>Differences</strong> (Gap)</li>
+    <li><span class="highlight">Fast Series</span> &rarr; Check <strong>Product</strong> (Multiplication)</li>
+  </ul>
+
+  <div class="diagram-box" style="text-align:center;">
+    <svg viewBox="0 0 500 70" style="max-width:100%;">
+      <text x="50" y="20" text-anchor="middle" font-family="Kalam" font-size="16" font-weight="700" fill="#1a4a7a">SLOW</text>
+      <text x="50" y="45" text-anchor="middle" font-family="Caveat" font-size="13" fill="#1a4a7a">Ex: 2,4,6,8,10</text>
+      <text x="250" y="35" text-anchor="middle" font-family="Kalam" font-size="18" fill="#c0392b" font-weight="700">To Find Pattern</text>
+      <text x="450" y="20" text-anchor="middle" font-family="Kalam" font-size="16" font-weight="700" fill="#1a4a7a">FAST</text>
+      <text x="450" y="45" text-anchor="middle" font-family="Caveat" font-size="13" fill="#1a4a7a">Ex: 2,20,200,2000</text>
+      <line x1="110" y1="15" x2="190" y2="30" stroke="#1a4a7a" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <line x1="390" y1="15" x2="310" y2="30" stroke="#1a4a7a" stroke-width="1.5"/>
+      <text x="250" y="62" text-anchor="middle" font-family="Caveat" font-size="14" fill="#8e44ad">Use DIFFERENCE for Slow / PRODUCT for Fast</text>
+    </svg>
+  </div>
+
+  <div class="page-num">Page 1</div>
+</div>
+
+<div class="page page-break">
+  <div class="doodle" style="top:40px;right:25px;transform:rotate(5deg);">&#x2B50;</div>
+
+  <h2>To Find Pattern Quickly — Prerequisites</h2>
+  <p>You must memorize these for <span class="highlight">speed &amp; accuracy</span> (30-35 sec per question!):</p>
+
+  <div class="table-scroll"><table class="table-hand">
+    <tr><th>#</th><th>Item</th><th>Range</th></tr>
+    <tr><td>1</td><td><span class="highlight">Tables</span></td><td>1 &rarr; 25 (must)</td></tr>
+    <tr><td>2</td><td><span class="highlight">Squares</span></td><td>1 &rarr; 25 (min), 100 (ideal)</td></tr>
+    <tr><td>3</td><td><span class="highlight">Cubes</span></td><td>1 &rarr; 20 (min), 25 (ideal)</td></tr>
+    <tr><td>4</td><td><span class="highlight">Even Numbers</span></td><td>Divisible by 2: 0,2,4,6,8,10...</td></tr>
+    <tr><td>5</td><td><span class="highlight">Odd Numbers</span></td><td>Not divisible by 2: 1,3,5,7,9...</td></tr>
+    <tr><td>6</td><td><span class="highlight">Prime Numbers</span></td><td>2,3,5,7,11,13,17,19,23,29,31,37,41,43,47...</td></tr>
+    <tr><td>7</td><td><span class="highlight">Gap from 100</span></td><td>Every number's distance from 100 (e.g., 31&rarr;69, 23&rarr;77)</td></tr>
+    <tr><td>8</td><td><span class="highlight">Doubles (1-100)</span></td><td>Double of every number (78&rarr;156, 89&rarr;178)</td></tr>
+  </table></div>
+
+  <div class="exam-tip">
+    In Banking exams: 35 questions in 20 min &rarr; ~30-35 seconds per question. Mental calculation is <span class="underline-important">MUST</span>!
+  </div>
+
+  <h2>Calculation Techniques</h2>
+
+  <h3>Addition — Rounding Method</h3>
+  <p><span class="highlight">749 + 398</span> = 749 + 400 &minus; 2 = 1149 &minus; 2 = <strong>1147</strong></p>
+  <p><span class="highlight">867 + 499</span> = 867 + 500 &minus; 1 = 1367 &minus; 1 = <strong>1366</strong></p>
+
+  <div class="memory-trick">
+    <strong>Rule:</strong> Round to nearest 100, add, then adjust (add/subtract the difference)
+  </div>
+
+  <h3>Addition — Left-to-Right Method</h3>
+  <p><span class="highlight">456 + 349</span> &rarr; 400+300=700, 50+40=90, 6+9=15 &rarr; <strong>805</strong></p>
+  <p><span class="highlight">1539 + 648</span> &rarr; 1500+600=2100, 40+30=2170, 9+8=17 &rarr; <strong>2187</strong></p>
+
+  <h3>Subtraction — Nadiya Paar Approach</h3>
+  <p><span class="highlight">784 &minus; 699</span> &rarr; 700&minus;699=1, 784&minus;700=84 &rarr; gap = <strong>85</strong></p>
+  <p><span class="highlight">1248 &minus; 996</span> &rarr; 1000&minus;996=4, 1248&minus;1000=248 &rarr; <strong>252</strong></p>
+
+  <div class="exam-tip">
+    <strong>Nadiya Paar:</strong> Compare both numbers to the nearest 100/1000, then add the gaps!
+  </div>
+
+  <h3>Subtraction — Partition Approach</h3>
+  <p>Split into two parts (leave 2 places):</p>
+  <p><span class="highlight">2435 &minus; 1929</span> &rarr; Gap(24,19)=5 &rarr; Gap(35,29)=6 &rarr; <strong>506</strong></p>
+  <p><span class="highlight">7621 &minus; 4819</span> &rarr; Gap(76,48)=28 &rarr; Gap(21,19)=12 &rarr; <strong>2812</strong></p>
+
+  <div class="common-mistake">
+    When 2nd part is smaller (e.g., 2716 &minus; 1919), reduce 1st part by 1 and add 100 to 2nd part: Gap(27,19)=&rarr;7 (but write 6), Gap(16,19)=&minus;3 &rarr; 100&minus;3=97 &rarr; <strong>797</strong>
+  </div>
+
+  <h3>Multiplication — Left-to-Right</h3>
+  <p><span class="highlight">87 × 7</span> &rarr; 7×8=56, 7×7=49 &rarr; 56+4=60, carry 9 &rarr; <strong>609</strong></p>
+  <p><span class="highlight">36 × 4</span> &rarr; 4×3=12, 4×6=24 &rarr; 12+2=14, carry 4 &rarr; <strong>144</strong></p>
+  <p><span class="highlight">69 × 9</span> &rarr; 9×6=54, 9×9=81 &rarr; 54+8=62, carry 1 &rarr; <strong>621</strong></p>
+
+  <div class="page-num">Page 2</div>
+</div>
+
+<div class="page page-break">
+  <div class="doodle" style="bottom:80px;right:20px;transform:rotate(-15deg);">&#x270F;</div>
+
+  <h2>Multiplication — Special Multipliers</h2>
+  <div class="table-scroll"><table class="table-hand">
+    <tr><th>Type</th><th>Method</th><th>Example</th></tr>
+    <tr><td><span class="highlight">× 1.5 (Sawaai)</span></td><td>Add half of the number to itself</td><td>28 × 1.5 = 28 + 14 = <strong>42</strong></td></tr>
+    <tr><td><span class="highlight">× 2.5 (Dhai)</span></td><td>Double + add half</td><td>26 × 2.5 = 52 + 13 = <strong>65</strong></td></tr>
+    <tr><td><span class="highlight">× 0.5 (Aadha)</span></td><td>Just half the number</td><td>76 × 0.5 = <strong>38</strong></td></tr>
+  </table></div>
+
+  <div class="solved-example">
+    <strong>Q:</strong> 142 × 1.5 = ?<br>
+    Half of 142 = 71 &rarr; 142 + 71 = <strong>213</strong>
+  </div>
+  <div class="solved-example">
+    <strong>Q:</strong> 244 × 2.5 = ?<br>
+    Double = 488, Half = 122 &rarr; 488 + 122 = <strong>610</strong>
+  </div>
+
+  <h2>How to Find the Pattern?</h2>
+
+  <h3>For Slow Series → Check Differences</h3>
+  <ul>
+    <li>Find gap (difference) between consecutive terms</li>
+    <li>If gap doesn't reveal pattern &rarr; <span class="highlight">Double Difference</span> (Difference of differences)</li>
+  </ul>
+
+  <div class="diagram-box">
+    <svg viewBox="0 0 480 80" style="max-width:100%;">
+      <text x="240" y="18" text-anchor="middle" font-family="Kalam" font-size="16" font-weight="700" fill="#c0392b">Finding Pattern — Decision Flow</text>
+      <rect x="20" y="28" width="140" height="30" rx="6" fill="rgba(26,74,122,0.1)" stroke="#1a4a7a" stroke-width="1.5"/>
+      <text x="90" y="48" text-anchor="middle" font-family="Caveat" font-size="14" fill="#1a4a7a">Check Difference</text>
+      <rect x="310" y="28" width="150" height="30" rx="6" fill="rgba(26,74,122,0.1)" stroke="#1a4a7a" stroke-width="1.5"/>
+      <text x="385" y="48" text-anchor="middle" font-family="Caveat" font-size="14" fill="#1a4a7a">Check Product</text>
+      <text x="170" y="48" text-anchor="middle" font-family="Kalam" font-size="18" fill="#c0392b">?</text>
+      <text x="210" y="18" text-anchor="middle" font-family="Caveat" font-size="13" fill="#8e44ad">If not found</text>
+      <text x="210" y="70" text-anchor="middle" font-family="Caveat" font-size="13" fill="#8e44ad">Double Difference</text>
+      <line x1="160" y1="43" x2="300" y2="43" stroke="#c0392b" stroke-width="1.5" stroke-dasharray="3,3"/>
+    </svg>
+  </div>
+
+  <h3>For Fast Series → Check Product</h3>
+  <ul>
+    <li>Check if numbers are being <span class="highlight">multiplied</span></li>
+    <li>If product alone doesn't match &rarr; <span class="highlight">Product + Addition/Subtraction</span></li>
+  </ul>
+
+  <div class="formula-box">
+    <strong>Slow &rarr; Difference (single/double)</strong><br>
+    <strong>Fast &rarr; Product (maybe + some adjustment)</strong>
+  </div>
+
+  <h2>Pattern Type 1: Basic Patterns</h2>
+
+  <h3>Even Number Series</h3>
+  <p><span class="handwritten-eq">2, 4, 6, 8, 10, ___</span> &rarr; <span class="highlight">12</span> (gap of 2)</p>
+
+  <h3>Odd Number Series</h3>
+  <p><span class="handwritten-eq">1, 3, 5, 7, 9, ___</span> &rarr; <span class="highlight">11</span> (gap of 2)</p>
+
+  <h3>Prime Number Series</h3>
+  <p><span class="handwritten-eq">2, 3, 5, 7, ___</span> &rarr; <span class="highlight">11</span></p>
+
+  <div class="common-mistake">
+    <strong>Very important!</strong> 2,3,5,7 &rarr; looks like odd numbers, but it starts with 2 (not 1). Always check if it's <span class="underline-important">Prime</span> not just Odd! Students often write 9 (odd) instead of 11 (prime).
+  </div>
+
+  <h3>Skipped Prime Series</h3>
+  <p><span class="handwritten-eq">3, 7, 13, 19, ___</span></p>
+  <p>3 &rarr; skip 5 &rarr; 7 &rarr; skip 11 &rarr; 13 &rarr; skip 17 &rarr; 19 &rarr; skip 23 &rarr; <span class="highlight">29</span></p>
+
+  <div class="solved-example">
+    <strong>Imp:</strong> 3, 7, 17, ___<br>
+    Skip 1 prime (5), then skip 2 primes (11,13) &rarr; next skip 3 primes (19,23,29) &rarr; <strong>31</strong>
+  </div>
+
+  <div class="page-num">Page 3</div>
+</div>
+
+<div class="page page-break">
+  <div class="doodle" style="top:60px;left:10px;transform:rotate(8deg);">&#x2B50;</div>
+
+  <h2>Pattern Type 2: Square Series</h2>
+
+  <h3>Consecutive Squares</h3>
+  <p><span class="handwritten-eq">4, 9, 16, 25, 36, ___</span> &rarr; 2&sup2;,3&sup2;,4&sup2;,5&sup2;,6&sup2; &rarr; <span class="highlight">7&sup2; = 49</span></p>
+
+  <h3>Square of Odd Numbers</h3>
+  <p><span class="handwritten-eq">1, 9, 25, 49, 81, ___</span> &rarr; 1&sup2;,3&sup2;,5&sup2;,7&sup2;,9&sup2; &rarr; <span class="highlight">11&sup2; = 121</span></p>
+
+  <h2>Pattern Type 3: Cube Series</h2>
+
+  <h3>Consecutive Cubes</h3>
+  <p><span class="handwritten-eq">64, 125, 216, 343, ___</span> &rarr; 4&sup3;,5&sup3;,6&sup3;,7&sup3; &rarr; <span class="highlight">8&sup3; = 512</span></p>
+
+  <h3>Cube of Prime Numbers</h3>
+  <p><span class="handwritten-eq" style="font-size:22px;">8, 27, 125, 343, ___</span></p>
+  <p>2&sup3;, 3&sup3;, 5&sup3;, 7&sup3; &rarr; <span class="highlight">11&sup3; = 1331</span></p>
+
+  <div class="exam-tip">
+    Prime cubes pattern: 2,3,5,7,11,13,... (primes). Recognizing this saves time!
+  </div>
+
+  <h2>Pattern Type 4: 10 + Prime Series</h2>
+  <p><span class="handwritten-eq">12, 13, 15, 17, ___</span></p>
+  <p>10+2=12, 10+3=13, 10+5=15, 10+7=17 &rarr; <span class="highlight">10+11 = 21</span></p>
+
+  <div class="memory-trick">
+    <strong>Think:</strong> Break each number as "10 + prime". The primes increase: 2,3,5,7,11...
+  </div>
+
+  <h2>Pattern Type 5: Fibonacci-like (Sum of Previous)</h2>
+  <p><span class="handwritten-eq">1, 3, 4, 8, 15, 27, ___</span> <span class="star-5">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</span></p>
+  <ul>
+    <li>1+3+4=8, 3+4+8=15, 4+8+15=27 &rarr; 8+15+27 = <span class="highlight">50</span></li>
+  </ul>
+
+  <div class="diagram-box">
+    <svg viewBox="0 0 400 65" style="max-width:100%;">
+      <text x="200" y="18" text-anchor="middle" font-family="Kalam" font-size="16" font-weight="700" fill="#c0392b">Fibonacci-like (Sum of previous 3)</text>
+      <text x="80" y="42" text-anchor="middle" font-family="Caveat" font-size="14" fill="#1a4a7a">1 + 3 + 4 = 8</text>
+      <text x="200" y="42" text-anchor="middle" font-family="Caveat" font-size="14" fill="#1a4a7a">3 + 4 + 8 = 15</text>
+      <text x="320" y="42" text-anchor="middle" font-family="Caveat" font-size="14" fill="#1a4a7a">4 + 8 + 15 = 27</text>
+      <text x="200" y="60" text-anchor="middle" font-family="Kalam" font-size="14" font-weight="700" fill="#c0392b">8 + 15 + 27 = 50</text>
+    </svg>
+  </div>
+
+  <div class="exam-tip">
+    This is called the <span class="highlight">Fibonacci-like Series</span>. The Fibonacci sequence is found in nature &mdash; galaxies, sunflowers, etc. In exams, this pattern uses sum of previous 3 terms!
+  </div>
+
+  <h2>Pattern Type 6: Product Series</h2>
+
+  <h3>× 1.5 Pattern</h3>
+  <p><span class="handwritten-eq">2, 3, 4.5, 6.75, ___</span></p>
+  <p>2 × 1.5 = 3, 3 × 1.5 = 4.5, 4.5 × 1.5 = 6.75 &rarr; <span class="highlight">6.75 × 1.5 = 10.125</span></p>
+
+  <h3>× Increasing Multiplier</h3>
+  <p><span class="handwritten-eq">7, 14, 42, 168, 840, ___</span></p>
+  <p>7×1=7, 7×2=14, 14×3=42, 42×4=168, 168×5=840 &rarr; <span class="highlight">840×6 = 5040</span></p>
+
+  <div class="page-num">Page 4</div>
+</div>
+
+<div class="page page-break">
+  <div class="doodle" style="bottom:120px;right:10px;transform:rotate(-5deg);">&#x2728;</div>
+
+  <h2>Pattern Type 7: Double Difference (MMS Series)</h2>
+  <p><span class="handwritten-eq">5, 12, 27, 58, 121, ___</span> <span class="star-5">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</span></p>
+
+  <div class="step-box">
+    <strong>Step 1:</strong> Find 1st difference &rarr; 7, 15, 31, 63 (no clear pattern)<br>
+    <strong>Step 2:</strong> Find 2nd difference &rarr; 8, 16, 32 (doubling!)<br>
+    <strong>Step 3:</strong> Next 2nd diff = 64 &rarr; Next 1st diff = 63+64 = 127<br>
+    <strong>Answer:</strong> 121 + 127 = <span class="highlight">248</span>
+  </div>
+
+  <div class="memory-trick">
+    <strong>Also called "Saadi Kinara" / MMS Series (Manish Manorath Series):</strong> When 2nd difference creates a pattern (like doubling), it's like the beautiful border design on a saree!
+  </div>
+
+  <h2>Pattern Type 8: n&sup3; &plusmn; n Pattern</h2>
+
+  <h3>n&sup3; &minus; n</h3>
+  <p><span class="handwritten-eq">0, 6, 24, 60, 120, ___</span></p>
+  <p>1&sup3;&minus;1=0, 2&sup3;&minus;2=6, 3&sup3;&minus;3=24, 4&sup3;&minus;4=60, 5&sup3;&minus;5=120 &rarr; <span class="highlight">6&sup3;&minus;6 = 210</span></p>
+
+  <h3>n&sup3; + n (Alternating)</h3>
+  <p><span class="handwritten-eq">10, 24, 68, 120, ___</span></p>
+  <p>2&sup3;+2=10, 3&sup3;&minus;3=24, 4&sup3;+4=68, 5&sup3;&minus;5=120 &rarr; <span class="highlight">6&sup3;+6 = 222</span></p>
+
+  <div class="exam-tip">
+    When you see numbers close to cubes (like 24=27&minus;3, 120=125&minus;5), check for n&sup3; &plusmn; n pattern!
+  </div>
+
+  <h2>Pattern Type 9: Mixed Cube-Square Series</h2>
+  <p><span class="handwritten-eq">512, 16, 343, 25, ___</span></p>
+  <p>Alternating: 8&sup3;=512, 4&sup2;=16, 7&sup3;=343, 5&sup2;=25 &rarr; <span class="highlight">6&sup3; = 216</span></p>
+
+  <div class="diagram-box">
+    <svg viewBox="0 0 400 50" style="max-width:100%;">
+      <text x="40" y="20" text-anchor="middle" font-family="Caveat" font-size="14" fill="#1a4a7a">8&sup3;</text>
+      <text x="80" y="35" text-anchor="middle" font-family="Caveat" font-size="13" fill="#c0392b">512</text>
+      <text x="130" y="20" text-anchor="middle" font-family="Caveat" font-size="14" fill="#1a4a7a">4&sup2;</text>
+      <text x="170" y="35" text-anchor="middle" font-family="Caveat" font-size="13" fill="#c0392b">16</text>
+      <text x="220" y="20" text-anchor="middle" font-family="Caveat" font-size="14" fill="#1a4a7a">7&sup3;</text>
+      <text x="260" y="35" text-anchor="middle" font-family="Caveat" font-size="13" fill="#c0392b">343</text>
+      <text x="310" y="20" text-anchor="middle" font-family="Caveat" font-size="14" fill="#1a4a7a">5&sup2;</text>
+      <text x="350" y="35" text-anchor="middle" font-family="Caveat" font-size="13" fill="#c0392b">25</text>
+    </svg>
+  </div>
+
+  <h2>Pattern Type 10: "Never Give Up" Series</h2>
+  <p><span class="handwritten-eq">8, 4, 6, 12, 30, ___</span> <span class="star-5">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</span></p>
+
+  <div class="step-box">
+    <strong>Pattern:</strong> Falls then rises!<br>
+    8 &rarr; &divide;2 = <strong>4</strong> &rarr; ×1.5 (add half) = <strong>6</strong> &rarr; ×2 = <strong>12</strong> &rarr; ×2.5 (double+half) = <strong>30</strong> &rarr; <span class="highlight">×3 = 90</span>
+  </div>
+
+  <div class="memory-trick">
+    <strong>"Never Give Up"</strong> &rarr; The series drops once, then keeps rising with increasing multipliers: 0.5, 1.5, 2, 2.5, 3, ...
+  </div>
+
+  <h2>Pattern Type 11: "Blue Hai Pani Pani" Series</h2>
+  <p><span class="handwritten-eq" style="font-size:21px;">15, 14, 19, 11, 23, 8, 27, ?</span> <span class="star-5">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</span></p>
+
+  <div class="step-box">
+    <strong>Two series merged (alternating):</strong><br>
+    <strong>Series 1:</strong> 15 &rarr; 19 &rarr; 23 &rarr; 27 &rarr; (+4 each) &rarr; next = 31<br>
+    <strong>Series 2:</strong> 14 &rarr; 11 &rarr; 8 &rarr; (&minus;3 each) &rarr; next = <span class="highlight">5</span><br>
+    Answer: <strong>5</strong>
+  </div>
+
+  <div class="exam-tip">
+    <strong>How to identify:</strong> Series is long (6+ terms), keeps going up-down-up-down. Split into 2 alternating series!
+  </div>
+
+  <div class="page-num">Page 5</div>
+</div>
+
+<div class="page page-break">
+  <div class="doodle" style="top:30px;right:40px;">&#x1F3B5;</div>
+
+  <h2>Pattern Type 12: Triple Series</h2>
+  <p><span class="handwritten-eq">0, 4, 3, 6, 6, 7, 12, 10, ?</span> <span class="star-5">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</span></p>
+
+  <div class="step-box">
+    <strong>Three series merged!</strong><br>
+    <strong>Series 1:</strong> 0 &rarr; 6 &rarr; 12 &rarr; (+6 each) &rarr; next = 18<br>
+    <strong>Series 2:</strong> 4 &rarr; 6 &rarr; 10 &rarr; (+2, +4, ... )<br>
+    <strong>Series 3:</strong> 3 &rarr; 7 &rarr; ? &rarr; (+4 each) &rarr; <span class="highlight">? = 11</span>
+  </div>
+
+  <div class="exam-tip">
+    When normal difference doesn't work, check if <span class="underline-important">3 (or more) patterns</span> are interleaved!
+  </div>
+
+  <h2>Pattern Type 13: Decimal / Fraction Series</h2>
+  <p><span class="handwritten-eq">4.5, 16, 5.5, 33, 3.5, 38, 1.5, ?</span> <span class="star-5">&#x2605;&#x2605;&#x2605;&#x2605;</span></p>
+
+  <div class="step-box">
+    Two series: <strong>Decimals:</strong> 4.5 &rarr; 5.5 &rarr; 3.5 &rarr; 1.5 (+1, &minus;2, &minus;2) <br>
+    <strong>Other:</strong> 16 &rarr; 33 &rarr; 38 &rarr; ? (+17, +5, ...) <br>
+    Gap pattern for other series: 17 &rarr; 5 &rarr; &minus;? Check differences of decimals!<br>
+    Overall next &rarr; <span class="highlight">25.5</span>
+  </div>
+
+  <h2>Pattern Type 14: Product + Addition</h2>
+  <p><span class="handwritten-eq">9, 19, 40, 83, 170, ___</span></p>
+
+  <div class="step-box">
+    9×2+1=19, 19×2+2=40, 40×2+3=83, 83×2+4=170 &rarr; <span class="highlight">170×2+5 = 345</span>
+  </div>
+
+  <div class="solved-example">
+    <strong>Another:</strong> 8, 20, 63, 256, 1285, ___<br>
+    8×2+4=20, 20×3+3=63, 63×4+4=256, 256×5+5=1285 &rarr; <strong>1285×6+6 = 7716</strong>
+  </div>
+
+  <h2>Pattern Type 15: Mains Level (Decimal Multiplication)</h2>
+  <p><span class="handwritten-eq">1898, 949, 22776, 11388, ___</span> <span class="star-5">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</span></p>
+
+  <div class="step-box">
+    <strong>Pattern:</strong> &divide;2, ×24, &divide;2, ×?<br>
+    1898 &divide;2 = 949, 949 × 24 = 22776, 22776 &divide;2 = 11388 &rarr; <span class="highlight">11388 × 3.6 = ?</span><br>
+    The multiplier moves decimal: 2 &rarr; 2.4 &rarr; 3 &rarr; <strong>3.6</strong><br>
+    11388 × 3.6 = <strong>5694</strong> (shift decimal: 569.4 × 10... check pattern)
+  </div>
+
+  <div class="common-mistake">
+    In Mains, the decimal point shifts! Always track how many places the decimal moves between terms.
+  </div>
+
+  <h2>Pattern Type 16: Gap with Table Series</h2>
+  <p><span class="handwritten-eq">325, 259, 204, 160, 127, 105, ___</span></p>
+
+  <div class="step-box">
+    Differences: 66, 55, 44, 33, 22 &rarr; decreasing by 11 (13-table pattern!)<br>
+    Next diff = 11 &rarr; <span class="highlight">94</span> (Use partition approach to find gaps quickly!)
+  </div>
+  <p style="font-size:18px;color:#1a4a7a;">Check gaps: 66=13×6, 55=13×5, 44=13×4, 33=13×3, 22=13×2, 11=13×1</p>
+
+  <div class="page-num">Page 6</div>
+</div>
+
+<div class="page page-break">
+  <div class="doodle" style="top:50px;right:10px;transform:rotate(-7deg);">&#x270D;</div>
+
+  <h2>More Pattern Types from the Video</h2>
+
+  <h3>&#x2460; Geometric Progression (×3)</h3>
+  <p><span class="handwritten-eq">1.5, 4.5, 13.5, 40.5, ___</span></p>
+  <p>×3 each step &rarr; 40.5 × 3 = <span class="highlight">121.5</span></p>
+
+  <h3>&#x2461; "Cross 2 + 1" Pattern</h3>
+  <p><span class="handwritten-eq">1, 3, 7, 15, 31, 63, ___</span></p>
+  <div class="step-box">
+    <strong>Pattern 1 (Gaps):</strong> +2, +4, +8, +16, +32, +64 &rarr; <span class="highlight">127</span><br>
+    <strong>Pattern 2 (×2+1):</strong> 1×2+1=3, 3×2+1=7, 7×2+1=15 &hellip; 63×2+1 = <span class="highlight">127</span>
+  </div>
+
+  <div class="exam-tip">
+    <strong>"Cross 2 + 1"</strong> — Very common in exams! Both approaches work. The gaps double each time.
+  </div>
+
+  <h3>&#x2462; Decreasing Multipliers</h3>
+  <p><span class="handwritten-eq">10, 40, 120, 240, ___</span></p>
+  <p>10×4=40, 40×3=120, 120×2=240 &rarr; <span class="highlight">240×1 = 240</span></p>
+
+  <h3>&#x2463; Gap Increasing by +2</h3>
+  <p><span class="handwritten-eq">10, 18, 28, 40, 54, 70, ___</span></p>
+  <p>Gaps: +8, +10, +12, +14, +16 &rarr; next +18 &rarr; <span class="highlight">88</span></p>
+
+  <h3>&#x2464; Gap Doubling Pattern</h3>
+  <p><span class="handwritten-eq">26, 28, 36, 52, 84, ___</span></p>
+  <p>Gaps: +2, +4, +8, +16, +32 &rarr; next +64 &rarr; <span class="highlight">148</span></p>
+
+  <h3>&#x2465; Square + n (Multiple Valid Patterns)</h3>
+  <p><span class="handwritten-eq">3, 7, 13, 21, ___</span> <span class="star-5">&#x2605;&#x2605;&#x2605;&#x2605;</span></p>
+  <div class="step-box">
+    <strong>Pattern 1 (Gaps):</strong> +4, +6, +8, +10 &rarr; <span class="highlight">31</span><br>
+    <strong>Pattern 2 (Square+n):</strong> 1²+2=3, 2²+3=7, 3²+4=13, 4²+5=21, <strong>5²+6=31</strong>
+  </div>
+  <div class="common-mistake">
+    A series can have <span class="underline-important">more than one valid pattern</span>! In exams, check which matches the options. Note BOTH in your notes.
+  </div>
+
+  <h3>&#x2466; Alternating Cube ± n</h3>
+  <p><span class="handwritten-eq">10, 24, 68, 120, ___</span> <span class="star-5">&#x2605;&#x2605;&#x2605;&#x2605;</span></p>
+  <p>2³+2=10, 3³&minus;3=24, 4³+4=68, 5³&minus;5=120 &rarr; <span class="highlight">6³+6 = 222</span></p>
+
+  <h3>&#x2467; Repeating Digits Pattern</h3>
+  <p><span class="handwritten-eq">1, 11, 111, 1111, ___</span></p>
+  <p>One 1, two 1s, three 1s, four 1s &rarr; <span class="highlight">11111</span> (five 1s)</p>
+
+  <h3>&#x2468; 13-Table Gap Pattern (Previous Year)</h3>
+  <p><span class="handwritten-eq">325, 259, 204, 160, 127, 105, ___</span></p>
+  <div class="step-box">
+    Gaps: 66, 55, 44, 33, 22 &rarr; These are 13×6, 13×5, 13×4, 13×3, 13×2<br>
+    Next gap = 13×1 = 11 &rarr; <span class="highlight">105 &minus; 11 = 94</span>
+  </div>
+
+  <h3>&#x2469; Alternating +5, &minus;2 Pattern (PYQ)</h3>
+  <p><span class="handwritten-eq">(Series with alternating +, &minus; pattern)</span> <span class="star-5">&#x2605;&#x2605;&#x2605;&#x2605;</span></p>
+  <div class="step-box">
+    When the series goes up then down then up then down &rarr; check for alternating + and &minus; operations.<br>
+    This is a <span class="highlight">Previous Year Question</span> pattern. Use gap analysis carefully!
+  </div>
+
+  <div class="solved-example">
+    <strong>Another Triple Series (Mains Level):</strong><br>
+    Series: 8, 9, 10, 7, 10, 11, 6, 11, 12, ___ <span class="star-5">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</span><br>
+    <strong>Series 1 (decreasing):</strong> 8 &rarr; 7 &rarr; 6 &rarr; <strong>5</strong> (&minus;1)<br>
+    <strong>Series 2 (increasing):</strong> 9 &rarr; 10 &rarr; 11 &rarr; <strong>12</strong> (+1)<br>
+    <strong>Series 3 (increasing):</strong> 10 &rarr; 11 &rarr; 12 &rarr; <strong>13</strong> (+1)<br>
+    Three interleaved APs with &plusmn;1. Identify by long length & no single pattern!
+  </div>
+
+  <div class="page-num">Page 7</div>
+</div>
+
+<div class="page page-break">
+  <div class="doodle" style="bottom:150px;right:30px;transform:rotate(10deg);">&#x1F3AF;</div>
+
+  <h2>Master Summary — All Patterns at a Glance</h2>
+
+  <div class="table-scroll"><table class="table-hand">
+    <tr><th>Pattern Type</th><th>How to Identify</th><th>Example</th><th>Answer</th></tr>
+    <tr><td>Even Numbers</td><td>Gap of 2</td><td>2,4,6,8,10</td><td>12</td></tr>
+    <tr><td>Odd Numbers</td><td>Gap of 2</td><td>1,3,5,7,9</td><td>11</td></tr>
+    <tr><td>Prime Numbers</td><td>Prime sequence</td><td>2,3,5,7</td><td>11</td></tr>
+    <tr><td>Skipped Primes</td><td>Skip 1 or more primes</td><td>3,7,13,19</td><td>29</td></tr>
+    <tr><td>Squares</td><td>Perfect squares</td><td>4,9,16,25,36</td><td>49</td></tr>
+    <tr><td>Odd Squares</td><td>Squares of odd numbers</td><td>1,9,25,49,81</td><td>121</td></tr>
+    <tr><td>Cubes</td><td>Perfect cubes</td><td>64,125,216,343</td><td>512</td></tr>
+    <tr><td>Prime Cubes</td><td>Cubes of primes</td><td>8,27,125,343</td><td>1331</td></tr>
+    <tr><td>10+Prime</td><td>Break into 10 + p</td><td>12,13,15,17</td><td>21</td></tr>
+    <tr><td>Fibonacci-like</td><td>Sum of previous 3</td><td>1,3,4,8,15,27</td><td>50</td></tr>
+    <tr><td>Product Series</td><td>Multipliers increase</td><td>7,14,42,168,840</td><td>5040</td></tr>
+    <tr><td>n&sup3;&plusmn;n</td><td>Close to cube numbers</td><td>0,6,24,60,120</td><td>210</td></tr>
+    <tr><td>MMS (DD)</td><td>Double difference</td><td>5,12,27,58,121</td><td>248</td></tr>
+    <tr><td>Never Give Up</td><td>Falls then rises</td><td>8,4,6,12,30</td><td>90</td></tr>
+    <tr><td>Blue Pani Pani</td><td>2 alternating series</td><td>15,14,19,11,23,8</td><td>5</td></tr>
+    <tr><td>Triple Series</td><td>3 merged series</td><td>0,4,3,6,6,7,12</td><td>11</td></tr>
+    <tr><td>Product + Add</td><td>×n + n</td><td>9,19,40,83,170</td><td>345</td></tr>
+    <tr><td>Cross 2+1</td><td>×2 + 1</td><td>1,3,7,15,31,63</td><td>127</td></tr>
+    <tr><td>GP (×3)</td><td>Multiply by 3</td><td>1.5,4.5,13.5,40.5</td><td>121.5</td></tr>
+    <tr><td>Decreasing Mult.</td><td>×4,×3,×2,×1</td><td>10,40,120,240</td><td>240</td></tr>
+    <tr><td>Gap+2 each</td><td>Gap increases by 2</td><td>10,18,28,40,54,70</td><td>88</td></tr>
+    <tr><td>Gap Doubling</td><td>Gap doubles</td><td>26,28,36,52,84</td><td>148</td></tr>
+    <tr><td>Square+n</td><td>n² + (n+1)</td><td>3,7,13,21</td><td>31</td></tr>
+    <tr><td>Alt Cube±n</td><td>n³ ± n (alt)</td><td>10,24,68,120</td><td>222</td></tr>
+    <tr><td>Repeating Digits</td><td>Repetition pattern</td><td>1,11,111,1111</td><td>11111</td></tr>
+    <tr><td>13-Table Gap</td><td>Gaps in ×13 table</td><td>325,259,204,160,127</td><td>94</td></tr>
+  </table></div>
+
+  <h2>Step-by-Step Approach to Solve ANY Number Series</h2>
+
+  <div class="diagram-box">
+    <svg viewBox="0 0 480 240" style="max-width:100%;">
+      <rect x="140" y="0" width="200" height="32" rx="8" fill="rgba(192,57,43,0.15)" stroke="#c0392b" stroke-width="1.5"/>
+      <text x="240" y="21" text-anchor="middle" font-family="Kalam" font-size="15" font-weight="700" fill="#c0392b">Number Series Flowchart</text>
+
+      <rect x="160" y="42" width="160" height="28" rx="6" fill="rgba(26,74,122,0.08)" stroke="#1a4a7a" stroke-width="1"/>
+      <text x="240" y="61" text-anchor="middle" font-family="Caveat" font-size="13" fill="#1a4a7a">Step 1: Is it Slow or Fast?</text>
+
+      <rect x="100" y="82" width="120" height="28" rx="6" fill="rgba(46,204,113,0.1)" stroke="#27ae60" stroke-width="1"/>
+      <text x="160" y="101" text-anchor="middle" font-family="Caveat" font-size="13" fill="#27ae60">SLOW → Find Difference</text>
+
+      <rect x="260" y="82" width="120" height="28" rx="6" fill="rgba(46,204,113,0.1)" stroke="#27ae60" stroke-width="1"/>
+      <text x="320" y="101" text-anchor="middle" font-family="Caveat" font-size="13" fill="#27ae60">FAST → Find Product</text>
+
+      <rect x="80" y="122" width="160" height="28" rx="6" fill="rgba(155,89,182,0.08)" stroke="#8e44ad" stroke-width="1"/>
+      <text x="160" y="141" text-anchor="middle" font-family="Caveat" font-size="12" fill="#8e44ad">Found pattern? → Answer</text>
+
+      <rect x="260" y="122" width="160" height="28" rx="6" fill="rgba(155,89,182,0.08)" stroke="#8e44ad" stroke-width="1"/>
+      <text x="340" y="141" text-anchor="middle" font-family="Caveat" font-size="12" fill="#8e44ad">Found pattern? → Answer</text>
+
+      <rect x="50" y="162" width="200" height="28" rx="6" fill="rgba(231,76,60,0.08)" stroke="#e74c3c" stroke-width="1"/>
+      <text x="150" y="181" text-anchor="middle" font-family="Caveat" font-size="12" fill="#e74c3c">No → Try Double Difference</text>
+
+      <rect x="270" y="162" width="200" height="28" rx="6" fill="rgba(231,76,60,0.08)" stroke="#e74c3c" stroke-width="1"/>
+      <text x="370" y="181" text-anchor="middle" font-family="Caveat" font-size="12" fill="#e74c3c">No → Add/Sub with Product</text>
+
+      <rect x="110" y="202" width="260" height="28" rx="6" fill="rgba(192,57,43,0.1)" stroke="#c0392b" stroke-width="1.5" stroke-dasharray="4,2"/>
+      <text x="240" y="221" text-anchor="middle" font-family="Kalam" font-size="14" fill="#c0392b">Still stuck? Check for merged series!</text>
+
+      <line x1="240" y1="32" x2="240" y2="42" stroke="#333" stroke-width="1"/>
+      <line x1="160" y1="70" x2="160" y2="82" stroke="#333" stroke-width="1"/>
+      <line x1="320" y1="70" x2="320" y2="82" stroke="#333" stroke-width="1"/>
+      <line x1="160" y1="110" x2="160" y2="122" stroke="#333" stroke-width="1"/>
+      <line x1="320" y1="110" x2="340" y2="122" stroke="#333" stroke-width="1"/>
+      <line x1="160" y1="150" x2="150" y2="162" stroke="#333" stroke-width="1"/>
+      <line x1="340" y1="150" x2="370" y2="162" stroke="#333" stroke-width="1"/>
+      <line x1="150" y1="190" x2="240" y2="202" stroke="#333" stroke-width="1"/>
+      <line x1="370" y1="190" x2="370" y2="196" stroke="#333" stroke-width="0"/>
+      <line x1="370" y1="196" x2="240" y2="202" stroke="#333" stroke-width="1"/>
+    </svg>
+  </div>
+
+  <div class="exam-tip">
+    <strong>Final Advice:</strong> Practice daily! 30 min at 6 AM with Viral Maths. The more patterns you solve, the faster you'll recognize them in exams.
+  </div>
+
+  <div class="memory-trick" style="margin-top:16px;">
+    <strong>Remember these "named" series for quick recall:</strong><br>
+    &bull; <span class="highlight">MMS (Saadi Kinara)</span> &rarr; Double Difference pattern<br>
+    &bull; <span class="highlight">Never Give Up</span> &rarr; Drop then rise with increasing multiplier<br>
+    &bull; <span class="highlight">Blue Hai Pani Pani</span> &rarr; Two alternating series merged<br>
+    &bull; <span class="highlight">Fibonacci-like</span> &rarr; Sum of previous 3 terms
+  </div>
+
+  <hr class="divider">
+
+  <p style="text-align:center;color:#888;font-size:16px;">
+    Next Topic: <strong>Wrong Number Series</strong> &mdash; coming soon!<br>
+    Keep practicing! &#x270D; &mdash; Best of luck! &#x1F9E1;
+  </p>
+
+  <div class="page-num">Page 8</div>
+</div>
+<script>
+(function () {
+  var body = document.body;
+  var button = document.getElementById('darkToggle');
+  var KEY = 'darkMode';
+
+  function apply(on) {
+    body.classList.toggle('dark-mode', on);
+    button.innerHTML = on ? '&#9728;&#65039;' : '&#127769;';
+    button.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+
+  var saved = false;
+  try { saved = window.localStorage.getItem(KEY) === 'true'; } catch (e) {}
+  apply(saved);
+
+  button.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-mode');
+    apply(next);
+    try { window.localStorage.setItem(KEY, next ? 'true' : 'false'); } catch (e) {}
+  });
+})();
+</script>
+</body>
+</html>

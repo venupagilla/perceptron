@@ -1,0 +1,137 @@
+{
+  "js/app.js": {
+    "mtime": 1789229406.347923,
+    "ast_hash": "b66f68517b598b37aad17029f83383be",
+    "semantic_hash": ""
+  },
+  "scripts/build-aptitude.mjs": {
+    "mtime": 1795689161.3475714,
+    "ast_hash": "c7a3445d1cb41611d9f75941e1da8e9c",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1795689346.4783537,
+    "ast_hash": "86f948857dd3756f84f6f99b2e134084",
+    "semantic_hash": ""
+  },
+  "agentic-ai-foundations.html": {
+    "mtime": 1787159818.3749497,
+    "ast_hash": "efc9102e7a23e1b70602237186265fe7",
+    "semantic_hash": ""
+  },
+  "aptitude/averages.html": {
+    "mtime": 1795689181.7873938,
+    "ast_hash": "2a5885b2f9904cd4498b5e72b41111aa",
+    "semantic_hash": ""
+  },
+  "aptitude/clocks.html": {
+    "mtime": 1795689181.7883942,
+    "ast_hash": "cf21a9a4afeecdff77303a22289f2ca2",
+    "semantic_hash": ""
+  },
+  "aptitude/hcf-and-lcm.html": {
+    "mtime": 1795689181.785019,
+    "ast_hash": "275488e7b5472f739bb436b3f804f6d3",
+    "semantic_hash": ""
+  },
+  "aptitude/index.html": {
+    "mtime": 1795689181.792396,
+    "ast_hash": "21db64a8fbdf6bf5c86d34d3a78ae184",
+    "semantic_hash": ""
+  },
+  "aptitude/number-series.html": {
+    "mtime": 1795689181.7913952,
+    "ast_hash": "1f06ec07750ae619fa330b8060964350",
+    "semantic_hash": ""
+  },
+  "aptitude/percentages.html": {
+    "mtime": 1795689181.7903953,
+    "ast_hash": "cac8875e4c9e9402004db578a7361f52",
+    "semantic_hash": ""
+  },
+  "aptitude/ratio-and-proportion.html": {
+    "mtime": 1795689181.7893958,
+    "ast_hash": "af15d24634c360a3131bdb74c2d9dd15",
+    "semantic_hash": ""
+  },
+  "aptitude/speed-time-distance.html": {
+    "mtime": 1795689181.7913952,
+    "ast_hash": "832a18b9e29c592dad685ac081b71554",
+    "semantic_hash": ""
+  },
+  "aws.html": {
+    "mtime": 1787159818.3759484,
+    "ast_hash": "8ab6e543478ae0018382b11981aa6079",
+    "semantic_hash": ""
+  },
+  "devops.html": {
+    "mtime": 1787159818.3779488,
+    "ast_hash": "4577e9aa6b7caa8ce160c89506d0d697",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-08-19-five-subject-pages.md": {
+    "mtime": 1787150260.461728,
+    "ast_hash": "e63f9277495df9a3b5b688cb79a6d1bb",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-08-19-perceptron-landing-page.md": {
+    "mtime": 1787145940.19071,
+    "ast_hash": "e3b37af478422d891071837f8b3b28d0",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-08-19-remove-source-and-project-files.md": {
+    "mtime": 1787148444.2141824,
+    "ast_hash": "4bf7e33a109349676995390a07e52713",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/specs/2026-08-19-five-subject-pages-design.md": {
+    "mtime": 1787150165.9996927,
+    "ast_hash": "437cf76d95bb48e4f54e516ca849d4be",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/specs/2026-08-19-perceptron-landing-page-design.md": {
+    "mtime": 1787145808.120307,
+    "ast_hash": "4bf6fbdab560a4386b8cc29fbe480a8e",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/specs/2026-08-19-remove-source-and-project-files-design.md": {
+    "mtime": 1787148405.4919307,
+    "ast_hash": "062ec7d1a65e1f90b9686bfd99b19896",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/specs/2026-09-12-ui-polish-design.md": {
+    "mtime": 1789226420.01227,
+    "ast_hash": "71e0b7a04f83b45488b9232722b017a7",
+    "semantic_hash": ""
+  },
+  "fastapi.html": {
+    "mtime": 1787159818.3789475,
+    "ast_hash": "7f09790d64015fcc0bef0e802c0ecbe7",
+    "semantic_hash": ""
+  },
+  "index.html": {
+    "mtime": 1795688632.7377203,
+    "ast_hash": "20798e2edb3464337b16e4878cd05877",
+    "semantic_hash": ""
+  },
+  "introduction-to-llm.html": {
+    "mtime": 1787159818.3814056,
+    "ast_hash": "1adcbfd1da8c328e507ff856c53767ae",
+    "semantic_hash": ""
+  },
+  "java.html": {
+    "mtime": 1787159818.3834171,
+    "ast_hash": "84a0f687e30480ecbeff5edd371ce792",
+    "semantic_hash": ""
+  },
+  "langchain.html": {
+    "mtime": 1787159818.3844166,
+    "ast_hash": "929de005c36b358fa955905e18d881e1",
+    "semantic_hash": ""
+  },
+  "neural-networks.html": {
+    "mtime": 1789225713.0071852,
+    "ast_hash": "5150ee081af0ece7c9ef8e948cbe545b",
+    "semantic_hash": ""
+  }
+}
