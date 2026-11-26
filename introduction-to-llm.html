@@ -3,6 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Tokenization, embeddings, attention, transformers, RAG, RLHF — lecture-by-lecture LLM notes.">
+<meta property="og:title" content="Introduction to LLM — Complete Notes">
+<meta property="og:description" content="Tokenization, embeddings, attention, transformers, RAG, RLHF — lecture-by-lecture LLM notes.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://venupagilla.github.io/perceptron/introduction-to-llm.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Introduction to LLM — Complete Notes">
+<meta name="twitter:description" content="Tokenization, embeddings, attention, transformers, RAG, RLHF — lecture-by-lecture LLM notes.">
+<link rel="stylesheet" href="css/main.css">
 <title>Introduction to LLM — Complete Notes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -127,7 +136,7 @@ a:hover { text-decoration: underline; }
 .menu-toggle {
   display: none; position: fixed; top: 16px; left: 16px; z-index: 30;
   background: var(--panel-2); border: 1px solid var(--border); color: var(--text);
-  width: 40px; height: 40px; border-radius: 8px; font-size: 18px; cursor: pointer;
+  width: 44px; height: 44px; border-radius: 8px; font-size: 18px; cursor: pointer;
 }
 
 .main { margin-left: var(--sidebar-w); flex: 1; min-width: 0; }
@@ -216,7 +225,7 @@ section.lecture h2 .lec-badge {
 section.lecture .subtitle { color: var(--muted); font-size: 14px; font-style: italic; margin: 0 0 24px; }
 
 /* ===== Typography ===== */
-h3 { font-family: var(--display); font-size: 19px; font-weight: 600; letter-spacing: -0.01em; margin: 38px 0 12px; color: var(--text); }
+h3 { font-family: var(--display); font-size: 19px; font-weight: 600; letter-spacing: -0.01em; margin: 30px 0 12px; color: var(--text); }
 h3 strong { color: var(--amber); }
 h4 { font-family: var(--display); font-size: 15.5px; font-weight: 600; margin: 24px 0 8px; color: var(--text-soft); }
 p { margin: 10px 0; color: var(--text-soft); }
@@ -234,7 +243,7 @@ code {
 }
 pre {
   background: var(--code-bg); border: 1px solid var(--border); border-radius: 10px;
-  padding: 18px 20px; overflow-x: auto; margin: 16px 0; font-size: 13px; line-height: 1.7;
+  padding: 20px 24px; overflow-x: auto; margin: 16px 0; font-size: 13px; line-height: 1.7;
   font-family: var(--mono); color: var(--text-soft);
 }
 pre code { background: none; border: none; padding: 0; color: inherit; }
@@ -271,7 +280,7 @@ table.heatmap td[rowspan] { writing-mode: vertical-rl; }
 
 /* ===== Callout Boxes ===== */
 .callout {
-  position: relative; margin: 20px 0; padding: 16px 18px 16px 46px;
+  position: relative; margin: 20px 0; padding: 18px 22px 18px 48px;
   border: 1px solid var(--border); border-left: 3px solid var(--teal); border-radius: 12px;
   background: var(--panel);
 }
@@ -314,6 +323,9 @@ table.heatmap td[rowspan] { writing-mode: vertical-rl; }
   border-bottom: 1px solid var(--border);
 }
 .diagram pre.mermaid { background: transparent; text-align: center; margin: 0; overflow-x: auto; }
+.mermaid{background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:24px; margin:20px 0; display:flex; justify-content:center; position:relative; overflow:hidden;}
+.mermaid::before{content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, var(--amber), var(--teal), var(--periwinkle));}
+.diagram-label{font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.14em; color:var(--muted-2); text-align:center; margin-bottom:8px;}
 
 /* ===== Footer ===== */
 footer { margin: 0 40px; padding: 24px 0 60px; border-top: 1px solid var(--border); color: var(--muted-2); font-size: 12.5px; font-family: var(--mono); }
@@ -429,6 +441,16 @@ footer a { color: var(--muted); }
             <span class="tag">Word Embeddings</span>
             <span class="tag">LSTM / GRU</span>
             <span class="tag">Fine-Tuning</span>
+          </div>
+          <div class="lesson-meta">
+            <div class="lm-row"><strong>Prerequisites:</strong> Basic Python, linear algebra foundations</div>
+            <div class="lm-row"><span class="lm-badge intermediate">Intermediate · ~30 min</span></div>
+            <h2>What you will learn</h2>
+            <ul>
+              <li><strong>Explain</strong> tokenization, embeddings, and self-attention from scratch.</li>
+              <li><strong>Contrast</strong> statistical n-gram models with transformer LMs.</li>
+              <li><strong>Describe</strong> the RAG pipeline and RLHF alignment loop.</li>
+            </ul>
           </div>
         </div>
         <div class="hero-rail" aria-hidden="true">
@@ -2178,6 +2200,13 @@ xychart-beta
       </div>
     </section>
 
+    <section class="checkpoint" aria-labelledby="chk-llm">
+      <h2 id="chk-llm">Check Your Understanding</h2>
+      <p>Active recall — try answering before expanding.</p>
+      <details><summary>Why do n-gram models suffer from sparsity, and what's one fix?</summary><p>Most longer n-grams never appear in training, so raw counts give zero probability. Fixes: smoothing (add-k, Kneser-Ney) or backoff to shorter contexts.</p></details>
+      <details><summary>Why do transformers need positional encoding?</summary><p>Self-attention is permutation-invariant — without position info, "dog bites man" and "man bites dog" look identical. Positional encodings inject order.</p></details>
+      <details><summary>When would you choose RAG over fine-tuning?</summary><p>When knowledge changes fast or must be cited (docs, KBs): RAG grounds answers in retrieved passages without retraining. Fine-tune for style, format, or stable domain behavior.</p></details>
+    </section>
     <footer>
       <p><em>Note: a few lectures are not yet covered in these notes — only the lectures above have complete write-ups.</em></p>
       <p>Compiled from personal study notes.</p>
@@ -2189,27 +2218,30 @@ xychart-beta
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     var themeVars = {
-      background: '#11151d',
-      primaryColor: '#1a2230',
-      primaryTextColor: '#e8eaf0',
-      primaryBorderColor: '#2f3a4d',
-      lineColor: '#8b93a7',
-      secondaryColor: '#232a38',
-      tertiaryColor: '#161c27',
-      clusterBkg: '#11151d',
-      clusterBorder: '#2f3a4d',
-      titleColor: '#f5a623',
-      edgeLabelBackground: '#161c27',
-      nodeTextColor: '#e8eaf0',
-      fontSize: '13px'
+      background:'#11151d',
+      primaryColor:'#1a2332',
+      primaryTextColor:'#e8eaf0',
+      primaryBorderColor:'#3a4560',
+      lineColor:'#7c9cff',
+      secondaryColor:'#1a2a28',
+      tertiaryColor:'#2a1a28',
+      fontFamily:'JetBrains Mono, monospace',
+      fontSize:'14px',
+      nodeBorder:'#3a4560',
+      mainBkg:'#1a2332',
+      nodeBkg:'#1a2332',
+      clusterBkg:'#11151d',
+      clusterBorder:'#232a38',
+      titleColor:'#e8eaf0',
+      edgeLabelBackground:'#11151d'
     };
     mermaid.initialize({
-      startOnLoad: false,
-      theme: 'base',
-      themeVariables: themeVars,
-      flowchart: { curve: 'basis' },
-      suppressErrorRendering: true,
-      securityLevel: 'loose'
+      startOnLoad:false,
+      theme:'base',
+      themeVariables:themeVars,
+      flowchart:{curve:'basis', padding:15},
+      suppressErrorRendering:true,
+      securityLevel:'loose'
     });
     mermaid.run({ querySelector: 'pre.mermaid' }).catch(function () {});
 
@@ -2254,5 +2286,6 @@ xychart-beta
     onScroll();
   });
 </script>
+<script src="js/app.js" defer></script>
 </body>
 </html>

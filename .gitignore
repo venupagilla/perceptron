@@ -12,3 +12,6 @@ node_modules/
 
 # Local superpowers scratch
 .superpowers/
+
+# Graphify generated output
+graphify-out/
