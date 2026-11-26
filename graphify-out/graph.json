@@ -102,7 +102,7 @@
       "label": "initScrollSpy()",
       "file_type": "code",
       "source_file": "js/app.js",
-      "source_location": "L281",
+      "source_location": "L282",
       "_callable": true,
       "_origin": "ast",
       "id": "js_app_initscrollspy",
@@ -1154,7 +1154,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "js/app.js",
-      "source_location": "L281",
+      "source_location": "L282",
       "weight": 1.0,
       "_origin": "ast",
       "source": "js_app",
@@ -1212,7 +1212,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "js/app.js",
-      "source_location": "L274",
+      "source_location": "L275",
       "weight": 1.0,
       "_origin": "ast",
       "source": "js_app_initmobilenav",
@@ -1224,7 +1224,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "js/app.js",
-      "source_location": "L282",
+      "source_location": "L283",
       "weight": 1.0,
       "_origin": "ast",
       "source": "js_app_initscrollspy",
@@ -2185,5 +2185,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "f474622ced1838bc8d316b9dff08f72c5e44c68b"
+  "built_at_commit": "f392803ea4019dafdbdfd507fca700f3fd513ac3"
 }

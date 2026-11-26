@@ -1,7 +1,7 @@
 # Graph Report - venunotes website  (2026-11-26)
 
 ## Corpus Check
-- 10 files · ~114,616 words
+- 10 files · ~117,201 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `f474622c`
+- Built from commit: `f392803e`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

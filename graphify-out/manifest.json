@@ -1,72 +1,72 @@
 {
   "js/app.js": {
-    "mtime": 1789229406.347923,
-    "ast_hash": "b66f68517b598b37aad17029f83383be",
+    "mtime": 1795691659.4955678,
+    "ast_hash": "e86c7da3f5493f0fdfcca79e39d069a9",
     "semantic_hash": ""
   },
   "scripts/build-aptitude.mjs": {
-    "mtime": 1795689161.3475714,
-    "ast_hash": "c7a3445d1cb41611d9f75941e1da8e9c",
+    "mtime": 1795689564.1498363,
+    "ast_hash": "4269b91ce067bc89c92b04d3e67c15b9",
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1795689346.4783537,
-    "ast_hash": "86f948857dd3756f84f6f99b2e134084",
+    "mtime": 1795689564.1227934,
+    "ast_hash": "0f028a5f7a1aa8b6df1db7ef5a449c3b",
     "semantic_hash": ""
   },
   "agentic-ai-foundations.html": {
-    "mtime": 1787159818.3749497,
-    "ast_hash": "efc9102e7a23e1b70602237186265fe7",
+    "mtime": 1795689661.3001728,
+    "ast_hash": "6fcae3cc5d1cb5b952757aabc06f276c",
     "semantic_hash": ""
   },
   "aptitude/averages.html": {
-    "mtime": 1795689181.7873938,
-    "ast_hash": "2a5885b2f9904cd4498b5e72b41111aa",
+    "mtime": 1795689564.1238165,
+    "ast_hash": "a72eda48908cd72fe056447c46d75128",
     "semantic_hash": ""
   },
   "aptitude/clocks.html": {
-    "mtime": 1795689181.7883942,
-    "ast_hash": "cf21a9a4afeecdff77303a22289f2ca2",
+    "mtime": 1795689564.1248248,
+    "ast_hash": "af3dc63a66f1ca5a97005b9a7b385878",
     "semantic_hash": ""
   },
   "aptitude/hcf-and-lcm.html": {
-    "mtime": 1795689181.785019,
-    "ast_hash": "275488e7b5472f739bb436b3f804f6d3",
+    "mtime": 1795689564.1248248,
+    "ast_hash": "3885f73692a4a0eb52701a4881b7da89",
     "semantic_hash": ""
   },
   "aptitude/index.html": {
-    "mtime": 1795689181.792396,
-    "ast_hash": "21db64a8fbdf6bf5c86d34d3a78ae184",
+    "mtime": 1795689564.1263282,
+    "ast_hash": "5743577f82fab082d1310ff79f66b9ad",
     "semantic_hash": ""
   },
   "aptitude/number-series.html": {
-    "mtime": 1795689181.7913952,
-    "ast_hash": "1f06ec07750ae619fa330b8060964350",
+    "mtime": 1795689564.1273346,
+    "ast_hash": "5705a80fb69a5ba77a13491c54a11968",
     "semantic_hash": ""
   },
   "aptitude/percentages.html": {
-    "mtime": 1795689181.7903953,
-    "ast_hash": "cac8875e4c9e9402004db578a7361f52",
+    "mtime": 1795689564.1283352,
+    "ast_hash": "71dff2ce271a7b961977b16c2327df9c",
     "semantic_hash": ""
   },
   "aptitude/ratio-and-proportion.html": {
-    "mtime": 1795689181.7893958,
-    "ast_hash": "af15d24634c360a3131bdb74c2d9dd15",
+    "mtime": 1795689564.1283352,
+    "ast_hash": "7d609d306ea7adc1e36152e253e3fcd1",
     "semantic_hash": ""
   },
   "aptitude/speed-time-distance.html": {
-    "mtime": 1795689181.7913952,
-    "ast_hash": "832a18b9e29c592dad685ac081b71554",
+    "mtime": 1795689564.1293356,
+    "ast_hash": "367ccda1a2bb5e2b3f0114ff918133a0",
     "semantic_hash": ""
   },
   "aws.html": {
-    "mtime": 1787159818.3759484,
-    "ast_hash": "8ab6e543478ae0018382b11981aa6079",
+    "mtime": 1795689661.301172,
+    "ast_hash": "f34622c30379560581f155b724f27f11",
     "semantic_hash": ""
   },
   "devops.html": {
-    "mtime": 1787159818.3779488,
-    "ast_hash": "4577e9aa6b7caa8ce160c89506d0d697",
+    "mtime": 1795689661.302172,
+    "ast_hash": "5a165fcec67c5dede8a0dd3da94a82b0",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-08-19-five-subject-pages.md": {
@@ -105,33 +105,33 @@
     "semantic_hash": ""
   },
   "fastapi.html": {
-    "mtime": 1787159818.3789475,
-    "ast_hash": "7f09790d64015fcc0bef0e802c0ecbe7",
+    "mtime": 1795689661.303172,
+    "ast_hash": "06e5a9f0aa750f72063c57496f609c5c",
     "semantic_hash": ""
   },
   "index.html": {
-    "mtime": 1795688632.7377203,
-    "ast_hash": "20798e2edb3464337b16e4878cd05877",
+    "mtime": 1795691642.0130436,
+    "ast_hash": "2c3eb07f3916c3eed0001ae170047dc3",
     "semantic_hash": ""
   },
   "introduction-to-llm.html": {
-    "mtime": 1787159818.3814056,
-    "ast_hash": "1adcbfd1da8c328e507ff856c53767ae",
+    "mtime": 1795689661.305172,
+    "ast_hash": "97afa0f2255441476aca1fd0a675a268",
     "semantic_hash": ""
   },
   "java.html": {
-    "mtime": 1787159818.3834171,
-    "ast_hash": "84a0f687e30480ecbeff5edd371ce792",
+    "mtime": 1795689661.3067725,
+    "ast_hash": "48cd7cc18d534802700a2410f617c113",
     "semantic_hash": ""
   },
   "langchain.html": {
-    "mtime": 1787159818.3844166,
-    "ast_hash": "929de005c36b358fa955905e18d881e1",
+    "mtime": 1795689661.307779,
+    "ast_hash": "ebe43535e6c3022d0ef767020febef62",
     "semantic_hash": ""
   },
   "neural-networks.html": {
-    "mtime": 1789225713.0071852,
-    "ast_hash": "5150ee081af0ece7c9ef8e948cbe545b",
+    "mtime": 1795689690.9233851,
+    "ast_hash": "63eff76375ee169776f7e634e19eb6f4",
     "semantic_hash": ""
   }
 }

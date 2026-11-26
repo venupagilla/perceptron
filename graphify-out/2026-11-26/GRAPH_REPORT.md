@@ -1,11 +1,11 @@
 # Graph Report - venunotes website  (2026-11-26)
 
 ## Corpus Check
-- 11 files · ~105,509 words
+- 10 files · ~114,616 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 106 nodes · 111 edges · 11 communities
+- 98 nodes · 98 edges · 11 communities
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
@@ -15,7 +15,7 @@
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- Note Page Changes (all8 files)
+- Landing Page Changes
 - Global Constraints
 - Source-Attribution Removal, .gitignore, README — Design Spec
 - Five Subject Note Pages — Design Spec
@@ -24,7 +24,7 @@
 - Perceptron Landing Page — Design Spec
 - app.js
 - Global Constraints
-- aptitude.js
+- Note Page Changes (all8 files)
 - perceptron
 
 ## God Nodes (most connected - your core abstractions)
@@ -35,9 +35,9 @@
 5. `Note Page Changes (all8 files)` - 7 edges
 6. `Global Constraints` - 6 edges
 7. `Source-Attribution Removal, .gitignore, README — Design Spec` - 6 edges
-8. `esc()` - 5 edges
-9. `perceptron` - 5 edges
-10. `Global Constraints` - 5 edges
+8. `perceptron` - 5 edges
+9. `Global Constraints` - 5 edges
+10. `Task A — Remove source attribution` - 5 edges
 
 ## Surprising Connections (you probably didn't know these)
 - None detected - all connections are within the same source files.
@@ -47,9 +47,9 @@
 
 ## Communities (11 total, 0 thin omitted)
 
-### Community 0 - "Note Page Changes (all8 files)"
-Cohesion: 0.12
-Nodes (15): Callout Boxes, Code Blocks, CTA Band, Feature Grid, Files to Modify, Footer, Goals, Hero Section (+7 more)
+### Community 0 - "Landing Page Changes"
+Cohesion: 0.22
+Nodes (8): CTA Band, Feature Grid, Files to Modify, Footer, Goals, Hero Section, Landing Page Changes, UI Polish Design Spec
 
 ### Community 1 - "Global Constraints"
 Cohesion: 0.18
@@ -64,8 +64,8 @@ Cohesion: 0.20
 Nodes (9): Acceptance criteria, Content conversion rules, Deliverables, Five Subject Note Pages — Design Spec, Landing page update (`index.html`), Purpose, README update, Source content (+1 more)
 
 ### Community 4 - "build-aptitude.mjs"
-Cohesion: 0.36
-Nodes (9): dashboardPage(), __dirname, esc(), notePage(), notes, outDir, pager(), root (+1 more)
+Cohesion: 0.33
+Nodes (8): dashboardPage(), dashboardShell(), __dirname, esc(), notePage(), notes, outDir, root
 
 ### Community 5 - "Global Constraints"
 Cohesion: 0.22
@@ -83,9 +83,9 @@ Nodes (7): $all(), initCodeBlocks(), initLandingFilters(), initMobileNav(), init
 Cohesion: 0.25
 Nodes (7): Global Constraints, Perceptron Landing Page Implementation Plan, Self-Review, Task 1: Scaffold `index.html` — head, nav, theme styles, Task 2: Hero section markup and content, Task 3: Neural-node canvas animation, Task 4: Feature strip, notes cards, CTA band, footer
 
-### Community 9 - "aptitude.js"
-Cohesion: 0.43
-Nodes (4): $all(), initPrint(), initTOC(), slugify()
+### Community 9 - "Note Page Changes (all8 files)"
+Cohesion: 0.29
+Nodes (7): Callout Boxes, Code Blocks, Mobile, Note Page Changes (all8 files), Sidebar, Tables, Typography
 
 ### Community 10 - "perceptron"
 Cohesion: 0.33
@@ -98,7 +98,9 @@ Nodes (5): Files, Notes, perceptron, Regenerating the aptitude pages, Usage
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
+- **Why does `UI Polish Design Spec` connect `Landing Page Changes` to `Note Page Changes (all8 files)`?**
+  _High betweenness centrality (0.016) - this node is a cross-community bridge._
+- **Why does `Note Page Changes (all8 files)` connect `Note Page Changes (all8 files)` to `Landing Page Changes`?**
+  _High betweenness centrality (0.015) - this node is a cross-community bridge._
 - **What connects `__dirname`, `root`, `outDir` to the rest of the system?**
   _62 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `Note Page Changes (all8 files)` be split into smaller, more focused modules?**
-  _Cohesion score 0.125 - nodes in this community are weakly interconnected._

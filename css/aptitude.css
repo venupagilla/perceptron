@@ -66,6 +66,8 @@
   padding: 4px 10px;
   margin-bottom: 12px;
 }
+#aptitude .note-card .tag.teal { color: var(--teal); border-color: rgba(79,209,197,.4); }
+#aptitude .note-card .tag.amber { color: var(--amber); border-color: rgba(245,166,35,.4); }
 #aptitude .note-card h3 {
   font-family: var(--display);
   font-size: 19px;

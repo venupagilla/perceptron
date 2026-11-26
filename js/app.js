@@ -244,8 +244,8 @@
       });
       if(empty) empty.hidden = visible !== 0;
       if(count) count.textContent = (q || activeCat !== 'all')
-        ? ('Showing ' + visible + ' of ' + cards.length + ' modules')
-        : ('Showing ' + visible + ' of ' + cards.length + ' modules');
+        ? ('Showing ' + visible + ' of ' + cards.length + ' core modules')
+        : ('Showing ' + visible + ' of ' + cards.length + ' core modules');
     }
     btns.forEach(function(b){
       b.addEventListener('click', function(){
@@ -269,6 +269,7 @@
     toggle.addEventListener('click', function(){
       var open = links.classList.toggle('open');
       toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
       toggle.textContent = open ? '✕' : '☰';
     });
     $all('a', links).forEach(function(a){
